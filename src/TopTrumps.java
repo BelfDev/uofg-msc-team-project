@@ -27,10 +27,9 @@ public class TopTrumps {
 			
 		}
 		
-		// We cannot run online and command line mode simultaniously
+		// We cannot run online and command line mode simultaneously // Do we want to create an exception for this?
 		if (onlineMode && commandLineMode) {
-			System.out.println("ERROR: Both online and command line mode selected, select one or the other!");
-			System.exit(0);
+			throw new IllegalArgumentException("ERROR: Both online and command line mode selected, select one or the other!");
 		}
 		
 		// Start the appropriate application
