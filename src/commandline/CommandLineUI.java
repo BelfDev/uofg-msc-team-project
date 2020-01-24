@@ -3,9 +3,14 @@ package commandline;
 import java.util.Scanner;
 
 public class CommandLineUI {
+
     private Scanner scanner;
+    private OutputLogger logger;
+
+
     public CommandLineUI(){
          scanner = new Scanner(System.in);
+         logger = new OutputLogger();
     }
 
     public void startGame(){
@@ -24,9 +29,18 @@ public class CommandLineUI {
                 "\n");
 
         System.out.println("To start a new game, press f \n To see game statistics, press s");
+        logger.printToLog("Game started");
+        logger.printToLog("New line \n new line too.");
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")){
+            while (!userWantsToQuit) {
 
+
+
+
+
+                userWantsToQuit = true; // use this when the user wants to exit the game
+            }
         }
         if (input.equalsIgnoreCase("s")){
 
@@ -34,14 +48,7 @@ public class CommandLineUI {
         scanner.nextLine(); // clears the scanner.
 
     // Loop until the user wants to exit the game
-		while (!userWantsToQuit) {
 
-
-
-
-
-            userWantsToQuit = true; // use this when the user wants to exit the game
-        }
     System.out.println("Thanks for playing!");
     }
 
