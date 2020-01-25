@@ -6,14 +6,14 @@ public class Card {
     // instance variables
     private String description;
     private HashMap<String, Integer> cardValuesByCat;
-    private ArrayList bestCat;
+    private ArrayList<String> bestCat;
 
 
     public Card(String description) {
 
         this.description = description;
         cardValuesByCat = new HashMap<>(); // creates new hashmap;
-        findBestCats(); // finds the best categories for the card in question
+
 
     }
 
@@ -23,6 +23,18 @@ public class Card {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getBestCat() {
+        if(bestCat.size() == 1){
+               String best =  bestCat.get(0);
+               return best;
+        }
+        else{
+            int index = (int)(Math.random()*bestCat.size());
+            String best = bestCat.get(index);
+            return best;
+        }
     }
 
     protected int getCat(String cat) {
@@ -42,7 +54,7 @@ public class Card {
         return cardValuesByCat;
     }
 
-    private void findBestCats() {
+    protected void findBestCats() {
         int max = Collections.max(cardValuesByCat.values());
 
         ArrayList<String> keys = new ArrayList<>();

@@ -34,6 +34,7 @@ public class Deck {
 
                     for (int i = 1; i < 5; i++) { // loops over the remaining elements in the array.
                         card.addValueToCat(categories[i], Integer.parseInt(currentCards[i])); // adds a card to the HashMap in the card object
+                        card.findBestCats(); // finds the card's strongest categorey. If there is more than one it add them to an ArrayList
                     }
 
                     cards.add(card); // adds a card to the array.
@@ -54,6 +55,7 @@ public class Deck {
         // Loops through the array of cards! !!! Must be deleted before submission!
         for (Card c : cards) {
             System.out.println(c.toString());
+            System.out.println(c.getBestCat());
         }
 
 
