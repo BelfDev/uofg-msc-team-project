@@ -24,24 +24,22 @@ public class OutputLogger {
 
     }
 
-    private void clearFile(){
+    private void clearFile() {
         try {
             PrintWriter writer = new PrintWriter(file);
             writer.print("");
             writer.close();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e);
         }
     }
 
-    public void printToLog(String s){
+    public void printToLog(String s) {
         try {
             PrintWriter writer = new PrintWriter(file);
             writer.print(s);
             writer.close();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e);
         }
     }
