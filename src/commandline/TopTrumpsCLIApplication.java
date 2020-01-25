@@ -13,7 +13,6 @@ public class TopTrumpsCLIApplication {
      * This main method is called by TopTrumps.java when the user specifies that they want to run in
      * command line mode. The contents of args[0] is whether we should write game logs to a file.
      *
-     * @param args
      */
     public static void main(String[] args) {
 
@@ -23,7 +22,6 @@ public class TopTrumpsCLIApplication {
 
         CommandLineUI commandLineUI = new CommandLineUI();
         Deck d = new Deck();
-        d.getCardHeader();
 
 
     }

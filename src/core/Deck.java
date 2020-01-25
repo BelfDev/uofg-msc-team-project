@@ -10,11 +10,11 @@ public class Deck {
     private ArrayList<Card> cards;
 
     public Deck() {
-
+        buildDeck();
     }
 
-    public void getCardHeader() {
-        ArrayList<Card> cards = new ArrayList<Card>();
+    private void buildDeck() {
+        ArrayList<Card> cards = new ArrayList<>();
 
         File cardsFile = new File("StarCitizenDeck.txt");
 
@@ -24,13 +24,11 @@ public class Deck {
 
             try {
                 String header = br.readLine();
-                String categories[] = header.split(" ");
-                for (String x : categories) {
-                    System.out.println(x);
-                }
+                String[] categories = header.split(" ");
+
                 while (br.readLine() != null) {
                     String line = br.readLine();
-                    String currentCards[] = line.split(" ");
+                    String[] currentCards = line.split(" ");
                     Card card = new Card(currentCards[0]);
 
                     for (int i = 1; i < 5; i++) {
@@ -38,7 +36,6 @@ public class Deck {
                     }
 
                     cards.add(card);
-
 
                 }
 
@@ -52,10 +49,9 @@ public class Deck {
             e.printStackTrace();
         }
 
-        for(Card c : cards){
-            System.out.println(c.getDescription());
+        for (Card c : cards) {
+            System.out.println(c.toString());
         }
-
 
 
     }

@@ -1,6 +1,7 @@
 package core;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Card {
 
@@ -9,17 +10,16 @@ public class Card {
     private HashMap<String, Integer> cardValuesByCat;
 
 
-
     public Card(String description) {
 
         this.description = description;
 
 
-         cardValuesByCat = new HashMap<>();
+        cardValuesByCat = new HashMap<>();
 
     }
 
-    public void addValueToCat(String cat, int value){
+    void addValueToCat(String cat, int value) {
         cardValuesByCat.put(cat, value);
     }
 
@@ -27,10 +27,22 @@ public class Card {
         return description;
     }
 
+    protected int getCat(String cat) {
+        return cardValuesByCat.get(cat);
+    }
+
+    public String toString() {
+        String string = description;
+
+        for (String key : cardValuesByCat.keySet()){
+            string += " " + key + " " + getCat(key);
+        }
+        return string;
+    }
+
     public HashMap<String, Integer> getCardValuesByCat() {
         return cardValuesByCat;
     }
-
 
 
 }
