@@ -1,25 +1,21 @@
 package core;
 
 import java.util.HashMap;
-import java.util.Set;
 
 public class Card {
-
+    // instance variables
     private String description;
-
     private HashMap<String, Integer> cardValuesByCat;
 
 
     public Card(String description) {
 
         this.description = description;
-
-
-        cardValuesByCat = new HashMap<>();
+        cardValuesByCat = new HashMap<>(); // creates new hashmap;
 
     }
 
-    void addValueToCat(String cat, int value) {
+    protected void addValueToCat(String cat, int value) { // adds new item to the HashMap
         cardValuesByCat.put(cat, value);
     }
 
