@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+// TODO: Remove this class
 public class OutputLogger {
 
     private File file;

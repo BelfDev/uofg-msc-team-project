@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Refactor this class
 public class Card {
     // instance variables
     private String description;

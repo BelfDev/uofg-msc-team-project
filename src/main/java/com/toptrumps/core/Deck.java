@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 
+// TODO: Remove this class
 public class Deck {
 
     private ArrayList<Card> cards;
