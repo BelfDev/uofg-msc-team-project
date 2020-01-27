@@ -1,6 +1,9 @@
-package main.java.com.toptrumps.core;
+package com.toptrumps.core;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Card {
     // instance variables
@@ -26,12 +29,11 @@ public class Card {
     }
 
     public String getBestCat() {
-        if(bestCat.size() == 1){
-               String best =  bestCat.get(0);
-               return best;
-        }
-        else{
-            int index = (int)(Math.random()*bestCat.size());
+        if (bestCat.size() == 1) {
+            String best = bestCat.get(0);
+            return best;
+        } else {
+            int index = (int) (Math.random() * bestCat.size());
             String best = bestCat.get(index);
             return best;
         }
@@ -44,7 +46,7 @@ public class Card {
     public String toString() {
         String string = description;
 
-        for (String key : cardValuesByCat.keySet()){
+        for (String key : cardValuesByCat.keySet()) {
             string += " " + key + " " + getCat(key);
         }
         return string;
@@ -59,7 +61,7 @@ public class Card {
 
         ArrayList<String> keys = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : cardValuesByCat.entrySet()) {
-            if (entry.getValue()==max) {
+            if (entry.getValue() == max) {
                 keys.add(entry.getKey());
             }
         }

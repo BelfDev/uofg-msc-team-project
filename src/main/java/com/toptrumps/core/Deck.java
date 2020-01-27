@@ -1,4 +1,4 @@
-package main.java.com.toptrumps.core;
+package com.toptrumps.core;
 
 
 import java.io.*;

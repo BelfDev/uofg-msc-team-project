@@ -1,4 +1,4 @@
-package main.java.com.toptrumps.commandline;
+package com.toptrumps.commandline;
 
 import java.util.Scanner;
 
