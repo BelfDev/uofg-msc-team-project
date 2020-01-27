@@ -1,4 +1,4 @@
-package com.toptrumps.online.resources;
+package com.toptrumps.online.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;

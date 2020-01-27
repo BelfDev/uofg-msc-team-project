@@ -1,8 +1,8 @@
-package com.toptrumps.online.dwResources;
+package com.toptrumps.online.resources;
 
-import com.toptrumps.online.dwViews.GameScreenView;
-import com.toptrumps.online.dwViews.SelectionScreenView;
-import com.toptrumps.online.dwViews.StatisticsView;
+import com.toptrumps.online.views.GameScreenView;
+import com.toptrumps.online.views.SelectionScreenView;
+import com.toptrumps.online.views.StatisticsView;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
