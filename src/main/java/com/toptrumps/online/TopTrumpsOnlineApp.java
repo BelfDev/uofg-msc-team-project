@@ -1,12 +1,12 @@
 package com.toptrumps.online;
 
+import com.toptrumps.online.api.TopTrumpsRESTAPI;
+import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
+import com.toptrumps.online.resources.GameWebPagesResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
-import main.java.com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
-import main.java.com.toptrumps.online.dwResources.GameWebPagesResource;
-import main.java.com.toptrumps.online.dwResources.TopTrumpsRESTAPI;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
 import javax.servlet.DispatcherType;
@@ -17,7 +17,7 @@ import java.util.EnumSet;
  * Top Trumps Web Application. This class is complete, you do not need to edit it, you
  * instead need to complete TopTrumpsRESTAPI and the HTML/Javascript views.
  */
-public class TopTrumpsOnlineApplication extends Application<TopTrumpsJSONConfiguration> {
+public class TopTrumpsOnlineApp extends Application<TopTrumpsJSONConfiguration> {
 
     /**
      * This is the main class for the Top Trumps Web application. It is called by TopTrumps.java
@@ -27,7 +27,7 @@ public class TopTrumpsOnlineApplication extends Application<TopTrumpsJSONConfigu
      */
     public static void main(String[] args) {
         try {
-            new TopTrumpsOnlineApplication().run(args); // Create a new online application and run it
+            new TopTrumpsOnlineApp().run(args); // Create a new online application and run it
         } catch (Exception e) {
             e.printStackTrace();
         }

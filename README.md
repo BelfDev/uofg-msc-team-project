@@ -11,8 +11,8 @@ This project is being developed as part of the University of Glasgow MSc in Soft
 3. Make sure you have ```Maven``` properly installed in your environment. Then, simply generate the ```.jar``` as illustrated below<br> 
 ```mvn package```<br><br>
 4. Now simply execute the JAR<br>
-```java -jar TopTrumps.jar -c```for the **CLI** mode<br>
-or
+```java -jar TopTrumps.jar -c``` for the **CLI** mode<br>
+or<br>
 ```java -jar TopTrumps.jar -o``` for the **online** mode<br>
 
 

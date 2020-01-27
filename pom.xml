@@ -194,7 +194,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <!-- Main class for the Jar file -->
-                                    <mainClass>main.java.com.toptrumps.TopTrumps</mainClass>
+                                    <mainClass>com.toptrumps.TopTrumps</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>

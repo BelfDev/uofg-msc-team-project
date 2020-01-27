@@ -1,8 +1,8 @@
-package com.toptrumps.online.dwResources;
+package com.toptrumps.online.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import main.java.com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
+import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

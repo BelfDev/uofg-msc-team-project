@@ -17,7 +17,7 @@ public class Deck {
         cards = new ArrayList<>(); // creates a new array list
 
         // creates a new File called cardsFile at the location of the file to be read in.
-        File cardsFile = new File("StarCitizenDeck.txt");
+        File cardsFile = new File("src/main/resources/assets/StarCitizenDeck.txt");
 
         try {
             FileReader fr = new FileReader(cardsFile);

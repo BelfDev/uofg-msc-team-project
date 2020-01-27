@@ -1,4 +1,4 @@
-package com.toptrumps.commandline;
+package com.toptrumps.cli;
 
 import java.io.File;
 import java.io.IOException;

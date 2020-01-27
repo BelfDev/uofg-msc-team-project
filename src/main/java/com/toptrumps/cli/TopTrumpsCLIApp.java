@@ -1,11 +1,11 @@
-package com.toptrumps.commandline;
+package com.toptrumps.cli;
 
 import com.toptrumps.core.Deck;
 
 /**
  * Top Trumps command line application
  */
-public class TopTrumpsCLIApplication {
+public class TopTrumpsCLIApp {
 
     /**
      * This main method is called by TopTrumps.java when the user specifies that they want to run in

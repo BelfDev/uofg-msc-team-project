@@ -1,5 +1,5 @@
 {
-    "deckFile": "StarCitizenDeck.txt",
+    "deckFile": "src/main/resources/assets/StarCitizenDeck.txt",
     "numAIPlayers": 4,
     "server": {
         "applicationConnectors" : [{"type" : "http", "port" : 7777}],

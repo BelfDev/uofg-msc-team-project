@@ -1,8 +1,7 @@
 package com.toptrumps;
 
-
-import main.java.com.toptrumps.commandline.TopTrumpsCLIApplication;
-import main.java.com.toptrumps.online.TopTrumpsOnlineApplication;
+import com.toptrumps.cli.TopTrumpsCLIApp;
+import com.toptrumps.online.TopTrumpsOnlineApp;
 
 public class TopTrumps {
 
@@ -38,11 +37,11 @@ public class TopTrumps {
         if (onlineMode) {
             // Start the online application
             String[] commandArgs = {"server", "TopTrumps.json"};
-            TopTrumpsOnlineApplication.main(commandArgs);
+            TopTrumpsOnlineApp.main(commandArgs);
         } else if (commandLineMode) {
             // Start the command line application
             String[] commandArgs = {String.valueOf(printTestLog)};
-            TopTrumpsCLIApplication.main(commandArgs);
+            TopTrumpsCLIApp.main(commandArgs);
         }
 
     }

@@ -1,4 +1,4 @@
-package com.toptrumps.online.dwViews;
+package com.toptrumps.online.views;
 
 import io.dropwizard.views.View;
 
