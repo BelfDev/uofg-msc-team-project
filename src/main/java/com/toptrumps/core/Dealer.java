@@ -1,4 +1,30 @@
 package com.toptrumps.core;
 
 public class Dealer {
+
+    private DeckParser deckParser;
+    private Game game;
+
+    public Dealer(DeckParser deckParser, Game game) {
+        this.deckParser = deckParser;
+        this.game = game;
+    }
+
+    public void dealCards() {
+        while (!deckParser.getCards().isEmpty()) {
+            for (Dealable d : game.getPlayers()) {
+                d.dealCard(deckParser.getCards().get(deckParser.getCards().size() - 1));
+                deckParser.getCards().remove(deckParser.getCards().size() - 1);
+            }
+        }
+
+        for (Dealable d : game.getPlayers()) {
+            d.printHand();
+            System.out.println();
+        }
+    }
+
+
 }
+
+

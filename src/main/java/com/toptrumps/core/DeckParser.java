@@ -25,11 +25,11 @@ public class DeckParser {
             BufferedReader br = new BufferedReader(fr);
 
             try {
-                String header = br.readLine(); // reads the first line of the file (contains the headers).
-                String[] categories = header.split(" "); // splits the file based on the spaces into an array called categories.
+                String line = br.readLine(); // reads the first line of the file (contains the headers).
+                String[] categories = line.split(" "); // splits the file based on the spaces into an array called categories.
 
-                while (br.readLine() != null) { // loops until an empty line is encountered.
-                    String line = br.readLine(); // takes a single line as a String.
+                while ((line = br.readLine()) != null) { // loops until an empty line is encountered.
+                    // takes a single line as a String.
                     String[] currentCards = line.split(" "); // again, splits them based on the presence of spaces.
                     Card card = new Card(currentCards[0]); // creates a new reference to a card object with the description which is held at index 0.
 
@@ -56,7 +56,6 @@ public class DeckParser {
         // Loops through the array of cards! !!! Must be deleted before submission!
         for (Card c : cards) {
             System.out.println(c.toString());
-            System.out.println(c.getBestCat());
         }
 
 

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: Refactor this class
-public class Card implements Comparable{
+public class Card implements Comparable {
     // instance variables
     private String description;
     private HashMap<String, Integer> cardValuesByCat;
@@ -31,7 +31,9 @@ public class Card implements Comparable{
         return description;
     }
 
-    protected ArrayList<String> getBestCat() { return bestCat; }
+    protected ArrayList<String> getBestCat() {
+        return bestCat;
+    }
 
     protected HashMap<String, Integer> getCardValuesByCat() {
         return cardValuesByCat;
@@ -63,13 +65,12 @@ public class Card implements Comparable{
         bestCat = keys;
     }
 
-//   TODO: Finish this method off.
+    //   TODO: Finish this method off.
     @Override
     public int compareTo(Object o) {
-        if(o instanceof Card){
+        if (o instanceof Card) {
             return +1;
-        }
-        else{
+        } else {
             return -1;
         }
     }

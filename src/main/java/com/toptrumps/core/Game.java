@@ -4,17 +4,20 @@ import java.util.ArrayList;
 
 public class Game {
 
-    private ArrayList<AIPlayer> aiPlayers;
+    private ArrayList<Dealable> players;
 
-    public Game(){
-        aiPlayers = new ArrayList<AIPlayer>();
+    public Game() {
+        players = new ArrayList<Dealable>();
     }
 
-    public void newGame(int numOfPlayers){
-        for (int i = 0; i < numOfPlayers ; i++){
-            aiPlayers.add(new AIPlayer("Player" + (i+1)));
+    public void newGame(int numOfPlayers) {
+        for (int i = 0; i < numOfPlayers; i++) {
+            players.add(new AIPlayer("Player" + (i + 1)));
         }
+        players.add(new Player());
     }
 
-
+    public ArrayList<Dealable> getPlayers() {
+        return players;
+    }
 }
