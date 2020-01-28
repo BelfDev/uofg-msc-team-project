@@ -1,6 +1,6 @@
 package com.toptrumps.cli;
 
-import com.toptrumps.core.Deck;
+import com.toptrumps.core.DeckParser;
 
 /**
  * Top Trumps command line application
@@ -18,7 +18,7 @@ public class TopTrumpsCLIApp {
 
 
         CommandLineUI commandLineUI = new CommandLineUI();
-        Deck d = new Deck();
+        DeckParser d = new DeckParser();
 
 
     }

@@ -1,12 +1,14 @@
 package com.toptrumps.core;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 // TODO: Refactor this class
-public class Card {
+public class Card implements Comparable{
     // instance variables
     private String description;
     private HashMap<String, Integer> cardValuesByCat;
@@ -25,19 +27,14 @@ public class Card {
         cardValuesByCat.put(cat, value);
     }
 
-    public String getDescription() {
+    protected String getDescription() {
         return description;
     }
 
-    public String getBestCat() {
-        if (bestCat.size() == 1) {
-            String best = bestCat.get(0);
-            return best;
-        } else {
-            int index = (int) (Math.random() * bestCat.size());
-            String best = bestCat.get(index);
-            return best;
-        }
+    protected ArrayList<String> getBestCat() { return bestCat; }
+
+    protected HashMap<String, Integer> getCardValuesByCat() {
+        return cardValuesByCat;
     }
 
     protected int getCat(String cat) {
@@ -53,9 +50,6 @@ public class Card {
         return string;
     }
 
-    public HashMap<String, Integer> getCardValuesByCat() {
-        return cardValuesByCat;
-    }
 
     protected void findBestCats() {
         int max = Collections.max(cardValuesByCat.values());
@@ -69,5 +63,14 @@ public class Card {
         bestCat = keys;
     }
 
-
+//   TODO: Finish this method off.
+    @Override
+    public int compareTo(Object o) {
+        if(o instanceof Card){
+            return +1;
+        }
+        else{
+            return -1;
+        }
+    }
 }
