@@ -32,7 +32,7 @@ public class Deck {
                     String[] currentCards = line.split(" "); // again, splits them based on the presence of spaces.
                     Card card = new Card(currentCards[0]); // creates a new reference to a card object with the description which is held at index 0.
 
-                    for (int i = 1; i < 5; i++) { // loops over the remaining elements in the array.
+                    for (int i = 1; i < categories.length; i++) { // loops over the remaining elements in the array.
                         card.addValueToCat(categories[i], Integer.parseInt(currentCards[i])); // adds a card to the HashMap in the card object
                         card.findBestCats(); // finds the card's strongest categorey. If there is more than one it add them to an ArrayList
                     }
