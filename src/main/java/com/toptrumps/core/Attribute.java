@@ -9,11 +9,12 @@ public class Attribute {
         this.value = value;
     }
 
-    public String getAttName(){
+    public String getName() {
         return name;
     }
 
-    public String getAttValue(){
+    public int getValue() {
         return value;
     }
+
 }

@@ -36,20 +36,25 @@ public class DeckParser {
             BufferedReader br = new BufferedReader(fr);
 
             try {
+
                 String line = br.readLine(); // reads the first line of the file (contains the headers).
                 String[] categories = line.split(" "); // splits the file based on the spaces into an array called categories.
 
                 while ((line = br.readLine()) != null) { // loops until an empty line is encountered.
                     String[] currentCards = line.split(" "); // again, splits them based on the presence of spaces.
-                    Card card = new Card(currentCards[0]); // creates a new reference to a card object with the description which is held at index 0.
 
+                    // TODO: Fix the Card class to be compatible with this implementation
+                    // Card card = new Card(currentCards[0]); // creates a new reference to a card object with the description which is held at index 0.
+
+                    // TODO: Create card.addValueToCategory() inside the card object. Or even better: absorb these info and add to Card's constructor.
+                    /*
                     for (int i = 1; i < categories.length; i++) { // loops over the remaining elements in the array.
                         card.addValueToCat(categories[i], Integer.parseInt(currentCards[i])); // loops over the remaining elements in the array.
                         card.findBestCats();
                     }
+                    */
 
-                    cards.add(card);
-
+                    // cards.add(card);
                 }
 
             } catch (IOException e) {
