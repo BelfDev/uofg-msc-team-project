@@ -25,15 +25,14 @@ public class DeckParser {
             BufferedReader br = new BufferedReader(fr);
 
             try {
-                String header = br.readLine(); // reads the first line of the file (contains the headers).
-                String[] categories = header.split(" "); // splits the file based on the spaces into an array called categories.
+                String line = br.readLine(); // reads the first line of the file (contains the headers).
+                String[] categories = line.split(" "); // splits the file based on the spaces into an array called categories.
 
-                while (br.readLine() != null) { // loops until an empty line is encountered.
-                    String line = br.readLine(); // takes a single line as a String.
+                while ((line = br.readLine()) != null) { // loops until an empty line is encountered.
                     String[] currentCards = line.split(" "); // again, splits them based on the presence of spaces.
                     Card card = new Card(currentCards[0]); // creates a new reference to a card object with the description which is held at index 0.
 
-                    for (int i = 1; i < 5; i++) { // loops over the remaining elements in the array.
+                    for (int i = 1; i < categories.length; i++) { // loops over the remaining elements in the array.
                         card.addValueToCat(categories[i], Integer.parseInt(currentCards[i])); // adds a card to the HashMap in the card object
                         card.findBestCats(); // finds the card's strongest categorey. If there is more than one it add them to an ArrayList
                     }
@@ -56,7 +55,6 @@ public class DeckParser {
         // Loops through the array of cards! !!! Must be deleted before submission!
         for (Card c : cards) {
             System.out.println(c.toString());
-            System.out.println(c.getBestCat());
         }
 
 
