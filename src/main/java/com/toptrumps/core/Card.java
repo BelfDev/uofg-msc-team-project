@@ -1,16 +1,18 @@
 package com.toptrumps.core;
 
+import java.util.ArrayList;
+
 public class Card {
     // instance variables
     private String description;
-    private Attribute[] attributes;
+    private ArrayList<Attribute> attributes;
 
     /**
      * Constructor to initiate the description and attributes array
      * @param String description
-     * @param Attribute[] attributes
+     * @param ArrayList<Attribute> attributes
      */
-    public Card(String description, Attribute[] attributes) {
+    public Card(String description, ArrayList<Attribute> attributes) {
         this.description = description;
         this.attributes = attributes;
     }
