@@ -17,6 +17,9 @@ public class Card {
         this.attributes = attributes;
     }
 
+
+
+
     /**
      * Method to retrieve the card description
      * @return String description
