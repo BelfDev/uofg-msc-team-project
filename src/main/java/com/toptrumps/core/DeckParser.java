@@ -29,7 +29,6 @@ public class DeckParser {
                 String[] categories = line.split(" "); // splits the file based on the spaces into an array called categories.
 
                 while ((line = br.readLine()) != null) { // loops until an empty line is encountered.
-                    // takes a single line as a String.
                     String[] currentCards = line.split(" "); // again, splits them based on the presence of spaces.
                     Card card = new Card(currentCards[0]); // creates a new reference to a card object with the description which is held at index 0.
 

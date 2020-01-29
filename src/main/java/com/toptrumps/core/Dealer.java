@@ -1,5 +1,7 @@
 package com.toptrumps.core;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 public class Dealer {
 
     private DeckParser deckParser;
@@ -23,6 +25,8 @@ public class Dealer {
             System.out.println();
         }
     }
+
+//    TODO: Requires a shuffle method.
 
 
 }
