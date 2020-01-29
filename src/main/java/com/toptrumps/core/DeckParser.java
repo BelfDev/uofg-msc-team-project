@@ -5,60 +5,77 @@ import java.io.*;
 import java.util.ArrayList;
 
 
-// TODO: Remove this class
 public class DeckParser {
 
     private ArrayList<Card> cards;
+    private final String FILE_PATH = "src/main/resources/assets/StarCitizenDeck.txt";
+
+
+    /**
+     * Builds the deck for the game.
+     *
+     */
 
     public DeckParser() {
-        buildDeck(); // calls the build deck method
+        buildDeck();
     }
 
-    private void buildDeck() {
-        cards = new ArrayList<>(); // creates a new array list
+    /**
+     * Gets the cards from the specified card location,
+     * and sets the "deck" in an ArrayList called cards.
+     * @return void
+     */
 
-        // creates a new File called cardsFile at the location of the file to be read in.
-        File cardsFile = new File("src/main/resources/assets/StarCitizenDeck.txt");
+    private void buildDeck() {
+        cards = new ArrayList<>();
+
+
+        File cardsFile = new File(FILE_PATH);
 
         try {
             FileReader fr = new FileReader(cardsFile);
             BufferedReader br = new BufferedReader(fr);
 
             try {
-                String line = br.readLine(); // reads the first line of the file (contains the headers).
-                String[] categories = line.split(" "); // splits the file based on the spaces into an array called categories.
+                String line = br.readLine();
+                String[] categories = line.split(" ");
 
-                while ((line = br.readLine()) != null) { // loops until an empty line is encountered.
-                    String[] currentCards = line.split(" "); // again, splits them based on the presence of spaces.
-                    Card card = new Card(currentCards[0]); // creates a new reference to a card object with the description which is held at index 0.
+                while ((line = br.readLine()) != null) {
+                    String[] currentCards = line.split(" ");
+                    Card card = new Card(currentCards[0]);
 
-                    for (int i = 1; i < categories.length; i++) { // loops over the remaining elements in the array.
-                        card.addValueToCat(categories[i], Integer.parseInt(currentCards[i])); // adds a card to the HashMap in the card object
-                        card.findBestCats(); // finds the card's strongest categorey. If there is more than one it add them to an ArrayList
+                    for (int i = 1; i < categories.length; i++) {
+                        card.addValueToCat(categories[i], Integer.parseInt(currentCards[i]));
+                        card.findBestCats();
                     }
 
-                    cards.add(card); // adds a card to the array.
+                    cards.add(card);
 
                 }
 
-            } catch (IOException e) { // exception handling
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
 
-        } catch (FileNotFoundException e) { // exception handling
+        } catch (FileNotFoundException e) {
             System.err.println("The file could not be found!");
             e.printStackTrace();
         }
 
 
-        // Loops through the array of cards! !!! Must be deleted before submission!
+
         for (Card c : cards) {
             System.out.println(c.toString());
         }
 
 
     }
+
+    /**
+     * Returns an ArrayList of all of the cards read from file.
+     * @return ArrayList containing all of the cards.
+     */
 
     protected ArrayList<Card> getCards() {
         return cards;
