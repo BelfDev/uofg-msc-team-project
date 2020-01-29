@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class AIPlayer extends Player{
 
-    private String name;
+    private final String name;
     private ArrayList<Card> hand;
 
     public AIPlayer(String name){
