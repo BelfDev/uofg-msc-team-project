@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Player {
 
+    private boolean currentPlayer;
     private ArrayList<Card> hand;
 
     public Player() {
@@ -20,5 +21,13 @@ public class Player {
         for (Card c : hand) {
             System.out.println(c.toString());
         }
+    }
+
+    public void isCurrentPlayer(){
+
+    }
+
+    public Card getTopCard(){
+        return hand.get(hand.size()-1);
     }
 }

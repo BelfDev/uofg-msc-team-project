@@ -19,10 +19,7 @@ public class AIPlayer extends Player {
 
     @Override
     public void printHand() {
-        for (Card c : hand) {
-            System.out.println(hand.size());
-            System.out.println(name + " " + c.toString());
-        }
+        for (Card c : hand) System.out.println(name + " " + c.toString());
     }
 
     public String playBestMove() {

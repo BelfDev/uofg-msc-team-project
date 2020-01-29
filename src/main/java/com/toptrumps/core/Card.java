@@ -31,9 +31,7 @@ public class Card implements Comparable {
         return description;
     }
 
-    protected ArrayList<String> getBestCat() {
-        return bestCat;
-    }
+    protected ArrayList<String> getBestCat() { return bestCat; }
 
     protected HashMap<String, Integer> getCardValuesByCat() {
         return cardValuesByCat;
@@ -51,7 +49,6 @@ public class Card implements Comparable {
         }
         return string;
     }
-
 
     protected void findBestCats() {
         int max = Collections.max(cardValuesByCat.values());

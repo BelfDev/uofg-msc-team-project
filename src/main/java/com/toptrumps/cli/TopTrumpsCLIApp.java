@@ -19,12 +19,8 @@ public class TopTrumpsCLIApp {
         //    if (args[0].equalsIgnoreCase("true")) writeGameLogsToFile = true; // Command line selection
 
 
-        //      CommandLineUI commandLineUI = new CommandLineUI();
-        DeckParser d = new DeckParser();
-        Game g = new Game();
-        g.newGame(3);
-        Dealer x = new Dealer(d, g);
-        x.dealCards();
+             CommandLineUI commandLineUI = new CommandLineUI();
+             commandLineUI.startGame();
 
 
     }
