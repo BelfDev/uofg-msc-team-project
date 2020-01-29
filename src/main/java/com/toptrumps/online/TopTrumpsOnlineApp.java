@@ -4,6 +4,7 @@ import com.toptrumps.online.api.TopTrumpsRESTAPI;
 import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
 import com.toptrumps.online.resources.GameWebPagesResource;
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
@@ -18,6 +19,8 @@ import java.util.EnumSet;
  * instead need to complete TopTrumpsRESTAPI and the HTML/Javascript views.
  */
 public class TopTrumpsOnlineApp extends Application<TopTrumpsJSONConfiguration> {
+
+    private static String ONLINE_RESOURCES = "/com/toptrumps/online";
 
     /**
      * This is the main class for the Top Trumps Web application. It is called by TopTrumps.java
@@ -82,5 +85,7 @@ public class TopTrumpsOnlineApp extends Application<TopTrumpsJSONConfiguration> 
     @Override
     public void initialize(Bootstrap<TopTrumpsJSONConfiguration> bootstrap) {
         bootstrap.addBundle(new ViewBundle<TopTrumpsJSONConfiguration>());
+        bootstrap.addBundle(new AssetsBundle(ONLINE_RESOURCES + "/scripts", "/assets/scripts/",  null, "scripts"));
+        bootstrap.addBundle(new AssetsBundle(ONLINE_RESOURCES + "/styles", "/assets/styles/",  null, "styles"));
     }
 }
