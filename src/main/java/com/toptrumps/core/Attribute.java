@@ -5,6 +5,15 @@ public class Attribute {
     private int attValue;
 
     public Attribute(String attName, int attValue){
-        
+        this.attName = attName;
+        this.attValue = attValue;
+    }
+
+    public String getAttName(){
+        return attName;
+    }
+
+    public String getAttValue(){
+        return attValue;
     }
 }
