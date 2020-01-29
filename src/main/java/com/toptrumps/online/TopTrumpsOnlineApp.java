@@ -87,5 +87,6 @@ public class TopTrumpsOnlineApp extends Application<TopTrumpsJSONConfiguration> 
         bootstrap.addBundle(new ViewBundle<TopTrumpsJSONConfiguration>());
         bootstrap.addBundle(new AssetsBundle(ONLINE_RESOURCES + "/scripts", "/assets/scripts/",  null, "scripts"));
         bootstrap.addBundle(new AssetsBundle(ONLINE_RESOURCES + "/styles", "/assets/styles/",  null, "styles"));
+        bootstrap.addBundle(new AssetsBundle("/assets/fonts", "/assets/fonts/",  null, "fonts"));
     }
 }
