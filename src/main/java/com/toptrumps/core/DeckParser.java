@@ -1,8 +1,5 @@
 package com.toptrumps.core;
 
-
-import com.sun.xml.internal.bind.v2.TODO;
-
 import java.io.*;
 import java.util.ArrayList;
 
@@ -65,11 +62,6 @@ public class DeckParser {
             e.printStackTrace();
         }
 
-
-//        TODO: Delete before submission
-        for (Card c : cards) {
-            System.out.println(c.toString());
-        }
 
 
     }
