@@ -1,0 +1,5 @@
+.game-title {
+    font-size: 96px;
+    font-weight: normal;
+    color: var(--color-font-light);
+}
