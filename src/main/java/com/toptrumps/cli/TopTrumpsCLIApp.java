@@ -1,6 +1,8 @@
 package com.toptrumps.cli;
 
-import com.toptrumps.core.Deck;
+import com.toptrumps.core.Dealer;
+import com.toptrumps.core.DeckParser;
+import com.toptrumps.core.Game;
 
 /**
  * Top Trumps command line application
@@ -14,11 +16,11 @@ public class TopTrumpsCLIApp {
     public static void main(String[] args) {
 
         boolean writeGameLogsToFile = false; // Should we write game logs to file?
-        if (args[0].equalsIgnoreCase("true")) writeGameLogsToFile = true; // Command line selection
+        //    if (args[0].equalsIgnoreCase("true")) writeGameLogsToFile = true; // Command line selection
 
 
-        CommandLineUI commandLineUI = new CommandLineUI();
-        Deck d = new Deck();
+             CommandLineUI commandLineUI = new CommandLineUI();
+             commandLineUI.startGame();
 
 
     }

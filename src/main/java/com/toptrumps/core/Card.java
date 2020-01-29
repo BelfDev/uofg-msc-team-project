@@ -10,7 +10,7 @@ public class Card {
         this.attributes = attributes;
     }
 
-    public String getDescription() {
+    protected String getDescription() {
         return description;
     }
 }
