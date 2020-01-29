@@ -3,7 +3,7 @@ package com.toptrumps.core;
 import java.util.ArrayList;
 
 public class Card {
-    // instance variables
+
     private String description;
     private ArrayList<Attribute> attributes;
 
