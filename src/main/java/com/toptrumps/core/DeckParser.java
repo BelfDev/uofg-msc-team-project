@@ -12,7 +12,6 @@ public class DeckParser {
 
     /**
      * Builds the deck for the game.
-     *
      */
 
     public DeckParser() {
@@ -22,6 +21,7 @@ public class DeckParser {
     /**
      * Gets the cards from the specified card location,
      * and sets the "deck" in an ArrayList called cards.
+     *
      * @return void
      */
 
@@ -43,18 +43,14 @@ public class DeckParser {
                 while ((line = br.readLine()) != null) { // loops until an empty line is encountered.
                     String[] currentCards = line.split(" "); // again, splits them based on the presence of spaces.
 
-                    // TODO: Fix the Card class to be compatible with this implementation
-                    // Card card = new Card(currentCards[0]); // creates a new reference to a card object with the description which is held at index 0.
+                    ArrayList<Attribute> attributes = new ArrayList<>();
 
-                    // TODO: Create card.addValueToCategory() inside the card object. Or even better: absorb these info and add to Card's constructor.
-                    /*
                     for (int i = 1; i < categories.length; i++) { // loops over the remaining elements in the array.
-                        card.addValueToCat(categories[i], Integer.parseInt(currentCards[i])); // loops over the remaining elements in the array.
-                        card.findBestCats();
-                    }
-                    */
+                        attributes.add(new Attribute(categories[i], Integer.parseInt(currentCards[i]))); // loops over the remaining elements in the array.
 
-                    // cards.add(card);
+                    }
+                    Card card = new Card(currentCards[0], attributes); // creates a new reference to a card object with the description which is held at index 0, and the ArrayList attributes.
+                    cards.add(card);
                 }
 
             } catch (IOException e) {
@@ -68,11 +64,11 @@ public class DeckParser {
         }
 
 
-
     }
 
     /**
      * Returns an ArrayList of all of the cards read from file.
+     *
      * @return ArrayList containing all of the cards.
      */
 
