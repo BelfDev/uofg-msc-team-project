@@ -63,10 +63,6 @@ public class DeckParser {
             e.printStackTrace();
         }
 
-        for(Card c : cards){
-            System.out.println(c.getDescription());
-        }
-
 
     }
 
