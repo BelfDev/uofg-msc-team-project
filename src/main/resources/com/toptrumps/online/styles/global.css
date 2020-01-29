@@ -357,6 +357,9 @@ template {
 :root {
     --color-font-light: #DBDBDB;
     --color-font-dark: #454545;
+    --color-button-light: #FFFFFF;
+    --color-font-button-light: #FFFFFF;
+    --color-button-light-hovered: #D8D8D8;
 }
 
 @font-face {
@@ -375,10 +378,46 @@ template {
     font-style: normal;
 }
 
+main {
+    min-height: 100%;
+}
+
 body {
     font-family: 'Montserrat', SansSerif;
     font-weight: normal;
     font-style: normal;
     background-color: black;
     color: white;
+    min-width: 800px;
+}
+
+.button {
+    display: inline-block;
+    background-color: var(--color-button-light);
+    color: var(--color-font-dark);
+    padding: 24px 44px;
+    border-radius: 16px;
+    border: 1px solid var(--color-button-light);
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 36px;
+    white-space: nowrap;
+    transition: all .2s ease-in-out;
+}
+
+.button--outlined {
+    background-color: transparent;
+    color: var(--color-font-button-light);
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: var(--color-button-light-hovered);
+    border-color: var(--color-button-light-hovered);
+}
+
+.button--outlined:hover {
+    background-color: transparent;
+    border-color: var(--color-button-light-hovered);
+    color: var(--color-button-light-hovered);
 }
