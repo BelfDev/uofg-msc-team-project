@@ -34,6 +34,14 @@
             <version>${dropwizard.version}</version>
         </dependency>
 
+
+        <!-- A simple way to serve static assets from your application’s-->
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-assets</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
