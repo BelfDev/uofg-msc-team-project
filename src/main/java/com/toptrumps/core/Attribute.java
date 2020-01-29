@@ -13,7 +13,7 @@ public class Attribute {
         return name;
     }
 
-    public String getAttValue(){
+    public int getAttValue(){
         return value;
     }
 }
