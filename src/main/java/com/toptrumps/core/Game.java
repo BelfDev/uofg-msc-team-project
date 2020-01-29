@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class Game {
 
-    private ArrayList<Dealable> players;
+    private ArrayList<Player> players;
 
     public Game() {
-        players = new ArrayList<Dealable>();
+        players = new ArrayList<Player>();
     }
 
     public void newGame(int numOfPlayers) {
@@ -17,7 +17,7 @@ public class Game {
         players.add(new Player());
     }
 
-    public ArrayList<Dealable> getPlayers() {
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 }

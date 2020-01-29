@@ -2,7 +2,7 @@ package com.toptrumps.core;
 
 import java.util.ArrayList;
 
-public class AIPlayer implements Dealable {
+public class AIPlayer extends Player {
 
     private ArrayList<Card> hand;
     private String name;
