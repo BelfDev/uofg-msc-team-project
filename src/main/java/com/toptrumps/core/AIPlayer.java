@@ -1,16 +1,32 @@
 package com.toptrumps.core;
 
-
 import java.util.ArrayList;
 
-public class AIPlayer extends Player{
+/**
+ * Represents an AI player in the game.
+ * There can be many AI players. AIPlayer
+ * extends the super class Player.
+ */
 
+public class AIPlayer extends Player {
+
+    /**
+     * The name of the AIPlayer, set in the constructor.
+     */
     private final String name;
+
+
+    /**
+     * Holds the AIPlayer's current cards.
+     */
     private ArrayList<Card> hand;
 
-    public AIPlayer(String name){
+    /**
+     * Creates a new AIPlayer with the given name.
+     */
+    protected AIPlayer(String name) {
+        hand = new ArrayList<>();
         this.name = name;
-        hand = new ArrayList<Card>();
-    }
 
+    }
 }

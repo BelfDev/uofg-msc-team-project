@@ -65,7 +65,7 @@ public class CommandLineUI {
             System.out.println("Please select 1-4");
 
             int players = scanner.nextInt();
-            while (players < MIN_PLAYERS || MAX_PLAYERS > 4) {
+            while (players < MIN_PLAYERS || players > MAX_PLAYERS src) {
                 System.out.println("Invalid number of players selected. Please select 1-4.");
                 players = scanner.nextInt();
                 scanner.nextInt();
