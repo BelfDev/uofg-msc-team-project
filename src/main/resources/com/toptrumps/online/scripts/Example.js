@@ -1,1 +1,0 @@
-const hi = "Hello World";

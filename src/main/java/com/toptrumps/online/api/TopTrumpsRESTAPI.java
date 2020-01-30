@@ -69,6 +69,27 @@ public class TopTrumpsRESTAPI {
         return listAsJSONString;
     }
 
+    @POST
+    @Path("/helloJSONList")
+    /**
+     * Here is an example of a simple REST get request that returns a String.
+     * We also illustrate here how we can convert Java objects to JSON strings.
+     * @return - List of words as JSON
+     * @throws IOException
+     */
+    public String helloJSONListPOST() throws IOException {
+
+        List<String> listOfWords = new ArrayList<String>();
+        listOfWords.add("Hello");
+        listOfWords.add("World!");
+
+        // We can turn arbatory Java objects directly into JSON strings using
+        // Jackson seralization, assuming that the Java objects are not too complex.
+        String listAsJSONString = oWriter.writeValueAsString(listOfWords);
+
+        return listAsJSONString;
+    }
+
     @GET
     @Path("/helloWord")
     /**
