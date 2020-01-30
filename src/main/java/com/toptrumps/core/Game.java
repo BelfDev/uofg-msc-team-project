@@ -6,11 +6,12 @@ public class Game {
 
     private ArrayList<Player> players;
 
-    public Game() {
+    public Game(int numberOfPlayers) {
+        startNewGame(numberOfPlayers);
         players = new ArrayList<Player>();
     }
 
-    public void startNewGame(int numberOfPlayers) {
+    private void startNewGame(int numberOfPlayers) {
         for (int i = 0; i < numberOfPlayers; i++) {
             String playerName = "Player" + (i + 1);
             players.add(new AIPlayer(playerName));

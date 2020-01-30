@@ -70,8 +70,7 @@ public class CommandLineUI {
                 players = scanner.nextInt();
                 scanner.nextInt();
             }
-            Game game = new Game();
-            game.startNewGame(players);
+            Game game = new Game(players);
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
