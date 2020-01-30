@@ -38,7 +38,7 @@ public class CommandLineUI {
         logger.printToLog("New line \n new line too.");
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")) {
-            askHowManyPlayers();
+            requestNumberOfPlayers();
 
 
             while (!userWantsToQuit) {
@@ -58,14 +58,14 @@ public class CommandLineUI {
     }
 
 
-    public void askHowManyPlayers() {
+    public void requestNumberOfPlayers() {
         try {
 
             System.out.println("How many players do you want to play against?");
             System.out.println("Please select 1-4");
 
             int players = scanner.nextInt();
-            while (players < MIN_PLAYERS || players > MAX_PLAYERS src) {
+            while (players < MIN_PLAYERS || players > MAX_PLAYERS) {
                 System.out.println("Invalid number of players selected. Please select 1-4.");
                 players = scanner.nextInt();
                 scanner.nextInt();
@@ -75,7 +75,7 @@ public class CommandLineUI {
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
-            askHowManyPlayers();
+            requestNumberOfPlayers();
         }
     }
 
