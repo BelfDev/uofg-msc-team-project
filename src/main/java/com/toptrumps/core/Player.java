@@ -12,7 +12,7 @@ public class Player{
     /**
      * The name of the player, set by default.
      */
-    private final String name = "Human player"; // Obviously can be changed later
+    private final String NAME = "Human player"; // Obviously can be changed later
 
     /**
      * Holds the player's current cards.

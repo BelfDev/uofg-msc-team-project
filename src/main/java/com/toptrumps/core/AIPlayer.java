@@ -13,7 +13,7 @@ public class AIPlayer extends Player {
     /**
      * The name of the AIPlayer, set in the constructor.
      */
-    private final String name;
+    private final String NAME;
 
 
     /**
@@ -26,7 +26,7 @@ public class AIPlayer extends Player {
      */
     protected AIPlayer(String name) {
         hand = new ArrayList<>();
-        this.name = name;
+        NAME = name;
 
     }
 }
