@@ -1,6 +1,6 @@
 .game-page {
     padding: 10px 50px 10px;
-    background: url("../images/selection_page_bg.jpg") no-repeat;
+    background: url("../images/game_page_bg.jpg") no-repeat;
     background-size: cover;
     display: grid;
     box-sizing: border-box;
