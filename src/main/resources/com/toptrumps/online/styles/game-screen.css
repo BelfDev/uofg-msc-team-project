@@ -1,4 +1,53 @@
 .game-page {
-  background: url("../images/selection_page_bg.jpg") no-repeat;
-  background-size: cover;
+    padding: 10px 50px 10px;
+    background: url("../images/selection_page_bg.jpg") no-repeat;
+    background-size: cover;
+    display: grid;
+    box-sizing: border-box;
+    grid-row-gap: 30px;
+    grid-template-rows: auto 1fr auto;
+    min-height: 750px;
+    height: 100%;
+}
+
+.game-status {
+    text-align: center;
+    padding: 30px;
+    background-color: black;
+}
+
+.opponents {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pcard {
+    display: inline-block;
+    color: black;
+    background-color: lightgray;
+}
+
+.pcard__content {
+    padding: 10px;
+}
+
+.pcard__char {
+    display: flex;
+    justify-content: space-between;
+}
+
+.human-player {
+    text-align: center;
+}
+
+.action-panel {
+    width: 700px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ai-player__details {
+    padding: 5px 0;
+    text-align: center;
 }
