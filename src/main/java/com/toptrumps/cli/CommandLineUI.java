@@ -1,11 +1,16 @@
 package com.toptrumps.cli;
 
+import com.toptrumps.core.Game;
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CommandLineUI {
 
     private Scanner scanner;
     private OutputLogger logger;
+    private final int MIN_PLAYERS = 1;
+    private final int MAX_PLAYERS = 4;
 
 
     public CommandLineUI() {
@@ -33,6 +38,9 @@ public class CommandLineUI {
         logger.printToLog("New line \n new line too.");
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")) {
+            requestNumberOfPlayers();
+
+
             while (!userWantsToQuit) {
 
 
@@ -47,6 +55,31 @@ public class CommandLineUI {
         // Loop until the user wants to exit the game
 
         System.out.println("Thanks for playing!");
+    }
+
+
+    public void requestNumberOfPlayers() {
+        try {
+
+            System.out.println("How many players do you want to play against?");
+            System.out.println("Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS);
+
+            int players = scanner.nextInt();
+            while (players < MIN_PLAYERS || players > MAX_PLAYERS) {
+                System.out.println("Invalid number of players selected. Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS + ".");
+                players = scanner.nextInt();
+                scanner.nextInt();
+            }
+            Game game = new Game(players);
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("You didn't enter a number!");
+            requestNumberOfPlayers();
+        }
+    }
+
+    public void showPlayerCard() {
+
     }
 
 }
