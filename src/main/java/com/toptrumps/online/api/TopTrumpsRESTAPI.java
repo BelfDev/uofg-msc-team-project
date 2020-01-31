@@ -2,6 +2,8 @@ package com.toptrumps.online.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
 
 import javax.ws.rs.*;
@@ -49,24 +51,32 @@ public class TopTrumpsRESTAPI {
     // ----------------------------------------------------
 
     @GET
-    @Path("/helloJSONList")
+    @Path("/getTopCard")
     /**
-     * Here is an example of a simple REST get request that returns a String.
-     * We also illustrate here how we can convert Java objects to JSON strings.
-     * @return - List of words as JSON
+     * Handler for a GET request to get the top card
+     * 
+     * @param playerID - ID of a player 
+     * @return - card data as JSON (name and attributes)
      * @throws IOException
      */
-    public String helloJSONList() throws IOException {
+    public String getTopCard(@QueryParam("playerID") int playerID) throws IOException {
 
-        List<String> listOfWords = new ArrayList<String>();
-        listOfWords.add("Hello");
-        listOfWords.add("World!");
+        JsonNodeFactory factory = JsonNodeFactory.instance;
 
-        // We can turn arbatory Java objects directly into JSON strings using
-        // Jackson seralization, assuming that the Java objects are not too complex.
-        String listAsJSONString = oWriter.writeValueAsString(listOfWords);
+        ObjectNode attributesNode = factory.objectNode();
+        attributesNode.put("Strength", 10);
+        attributesNode.put("Dexterity", 9);
+        attributesNode.put("Constitution", 8);
+        attributesNode.put("Intelligence", 7);
+        attributesNode.put("Charisma", 6);
 
-        return listAsJSONString;
+        ObjectNode rootNode = factory.objectNode();
+        rootNode.put("name", "Card name");
+        rootNode.put("attributes", attributesNode);
+
+        String cardData = rootNode.toString();
+
+        return cardData;
     }
 
     @GET
