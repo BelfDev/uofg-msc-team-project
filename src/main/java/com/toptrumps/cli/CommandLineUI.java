@@ -62,11 +62,11 @@ public class CommandLineUI {
         try {
 
             System.out.println("How many players do you want to play against?");
-            System.out.println("Please select 1-4");
+            System.out.println("Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS);
 
             int players = scanner.nextInt();
             while (players < MIN_PLAYERS || players > MAX_PLAYERS) {
-                System.out.println("Invalid number of players selected. Please select 1-4.");
+                System.out.println("Invalid number of players selected. Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS + ".");
                 players = scanner.nextInt();
                 scanner.nextInt();
             }
