@@ -10,6 +10,7 @@ public class CommandLineUI {
 
     private Scanner scanner;
     private OutputLogger logger;
+    private Game game;
     private final int MIN_PLAYERS = 1;
     private final int MAX_PLAYERS = 4;
 
@@ -71,7 +72,7 @@ public class CommandLineUI {
                 players = scanner.nextInt();
                 scanner.nextInt();
             }
-            Game game = new Game(players);
+            game = new Game(players);
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
@@ -82,6 +83,10 @@ public class CommandLineUI {
     public void showPlayerCard(Card c) {
         System.out.println("You drew \'" + c.getDescription() + "\':");
         System.out.println(c.stringAttributes());
+    }
+
+    public void showActivePlayer(){
+        
     }
 
 }

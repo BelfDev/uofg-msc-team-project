@@ -1,26 +1,58 @@
 package com.toptrumps.core;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Game {
 
     private ArrayList<Player> players;
     private int numberOfPlayers;
+    private int activePlayerIndex;
 
+    /**
+     * Constructor to initialise the number of players and the ArrayList of players
+     * Starts the game
+     */
     public Game(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
         this.players = new ArrayList<Player>();
         startNewGame();
+        chooseStartingPlayer();
     }
 
+    /**
+     * Method to add the correct number of players to the ArrayList
+     */
     private void startNewGame() {
         for (int i = 0; i < numberOfPlayers; i++) {
-            String playerName = "Player" + (i + 1);
+            String playerName = "Player" + (i + 1); //automatically generates AI names
             players.add(new AIPlayer(playerName));
         }
-        players.add(new Player("Human"));
+        players.add(new Player("Human")); //called "Human" for now 
     }
 
+    /**
+     * Method to randomly select the starting player
+     */
+    private void chooseStartingPlayer(){
+        Random rand = new Random();
+        activePlayerIndex = rand.nextInt(numberOfPlayers+1);
+    }
+
+    /**
+     * Method to move onto the next player
+     */
+    private void nextPlayer(){
+        if(activePlayerIndex == numberOfPlayers){
+            activePlayerIndex = 0; //if player is last in the list, reset to the start
+        }else{
+            activePlayerIndex++; 
+        }
+    }
+
+    /**
+     * Method to get the ArrayList of players
+     */
     public ArrayList<Player> getPlayers() {
         return players;
     }
