@@ -9,8 +9,8 @@ public class Game {
 
     public Game(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
+        this.players = new ArrayList<Player>();
         startNewGame();
-        players = new ArrayList<Player>();
     }
 
     private void startNewGame() {
