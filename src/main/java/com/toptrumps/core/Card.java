@@ -18,8 +18,6 @@ public class Card {
     }
 
 
-
-
     /**
      * Method to retrieve the card description
      * @return String description
@@ -27,4 +25,19 @@ public class Card {
     public String getDescription() {
         return description;
     }
+
+    public ArrayList<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    public String stringAttributes(){
+        String attributesString = "";
+        for(Attribute x : attributes){
+            attributesString += "   >" + x.getName() + ": " + x.getValue() +"\n";
+        }
+        return attributesString;
+    }
+
+
 }
+

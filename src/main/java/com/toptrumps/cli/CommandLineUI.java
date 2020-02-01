@@ -1,5 +1,6 @@
 package com.toptrumps.cli;
 
+import com.toptrumps.core.Card;
 import com.toptrumps.core.Game;
 
 import java.util.InputMismatchException;
@@ -78,8 +79,9 @@ public class CommandLineUI {
         }
     }
 
-    public void showPlayerCard() {
-
+    public void showPlayerCard(Card c) {
+        System.out.println("You drew \'" + c.getDescription() + "\':");
+        System.out.println(c.stringAttributes());
     }
 
 }
