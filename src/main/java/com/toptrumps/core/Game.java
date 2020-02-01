@@ -42,7 +42,7 @@ public class Game {
     /**
      * Method to move onto the next player
      */
-    private void nextPlayer(){
+    public void nextPlayer(){
         if(activePlayerIndex == numberOfPlayers){
             activePlayerIndex = 0; //if player is last in the list, reset to the start
         }else{
@@ -55,5 +55,12 @@ public class Game {
      */
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    /**
+     * Method to return the name of the current active player
+     */
+    public String getActivePlayer(){
+        return players.get(activePlayerIndex).getName();
     }
 }

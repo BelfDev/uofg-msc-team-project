@@ -41,7 +41,7 @@ public class CommandLineUI {
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")) {
             requestNumberOfPlayers();
-
+            showActivePlayer();
 
             while (!userWantsToQuit) {
 
@@ -60,6 +60,9 @@ public class CommandLineUI {
     }
 
 
+    /**
+     * Method to ask the user to select a number of players to play against
+     */
     public void requestNumberOfPlayers() {
         try {
 
@@ -80,13 +83,20 @@ public class CommandLineUI {
         }
     }
 
+    /**
+     * Method to show the users card
+     */
     public void showPlayerCard(Card c) {
         System.out.println("You drew \'" + c.getDescription() + "\':");
         System.out.println(c.stringAttributes());
     }
 
+    /**
+     * Method to show the current active player
+     */
     public void showActivePlayer(){
-        
+        String activePlayerName = game.getActivePlayer();
+        System.out.println("The active player is: " + activePlayerName);
     }
 
 }
