@@ -19,7 +19,7 @@ public class TopTrumpsCLIApp {
 
         CommandLineUI commandLineUI = new CommandLineUI();
         DeckParser d = new DeckParser();
-
+        commandLineUI.startGame();
 
     }
 

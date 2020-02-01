@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class DeckParser {
 
     private ArrayList<Card> cards;
-    private final String FILE_PATH = "src/main/resources/assets/StarCitizenDeck.txt";
+    private final String FILE_PATH = "../src/main/resources/assets/StarCitizenDeck.txt";
 
 
     /**
