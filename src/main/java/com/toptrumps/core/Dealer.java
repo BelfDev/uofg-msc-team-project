@@ -16,7 +16,11 @@ public class Dealer {
     }
 
     private void dealCards(){
+
+        // shuffle the deck
         shuffleCards();
+
+        //set the index equal to the first card
 		int currentCardIndex = 0;
 		
 		//loop through while there is cards left in the deck
