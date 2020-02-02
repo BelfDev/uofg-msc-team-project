@@ -28,4 +28,11 @@ public class Player{
         return name;
     }
 
+    /**
+     * Method to add a card to the player's hand
+     */
+    public void addCardToHand(Card c){
+        hand.add(c);
+    }
+
 }
