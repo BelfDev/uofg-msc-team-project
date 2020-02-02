@@ -1,6 +1,7 @@
 package com.toptrumps.cli;
 
 import com.toptrumps.core.Card;
+import com.toptrumps.core.Attribute;
 import com.toptrumps.core.Game;
 import com.toptrumps.core.Player;
 
@@ -14,6 +15,7 @@ public class CommandLineUI {
 
     private Game game;
     private Player user;
+    private Card userCard;
 
     private final int MIN_PLAYERS = 1;
     private final int MAX_PLAYERS = 4;
@@ -49,7 +51,13 @@ public class CommandLineUI {
             user = new Player("Human");
             requestNumberOfPlayers();
             showPlayerCard();
+
+            //while statement to test user select attribute functionality
+            while(game.getActivePlayer() != user.getName()){
+                game.nextPlayer();
+            }
             showActivePlayer();
+            requestAttribute();
 
             while (!userWantsToQuit) {
 
@@ -99,13 +107,16 @@ public class CommandLineUI {
             System.out.println("Which attribute would you like to choose?");
             System.out.println("Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE);
 
-            int players = scanner.nextInt();
-            while (players < FIRST_ATTRIBUTE || players > LAST_ATTRIBUTE) {
+            int attribute = scanner.nextInt();
+            while (attribute < FIRST_ATTRIBUTE || attribute > LAST_ATTRIBUTE) {
                 System.out.println("Invalid attribute selected. Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE + ".");
-                players = scanner.nextInt();
+                attribute = scanner.nextInt();
                 scanner.nextInt();
             }
-            //TODO: retrieve the selected attibute
+
+            Attribute selectedAttribute = userCard.getAttributes().get(attribute-1);
+            System.out.println("You selected " + selectedAttribute.getName());
+            game.setSelectedAttribute(selectedAttribute);
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
@@ -117,7 +128,7 @@ public class CommandLineUI {
      * Method to show the users card
      */
     public void showPlayerCard() {
-        Card userCard = user.getTopCard();
+        userCard = user.getTopCard();
         System.out.println("You drew \'" + userCard.getDescription() + "\':");
         System.out.println(userCard.stringAttributes());
     }
