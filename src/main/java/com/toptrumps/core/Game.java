@@ -30,6 +30,8 @@ public class Game {
             players.add(new AIPlayer(playerName));
         }
         players.add(new Player("Human")); //called "Human" for now 
+
+        Dealer d = new Dealer(players); //deal out the cards
     }
 
     /**

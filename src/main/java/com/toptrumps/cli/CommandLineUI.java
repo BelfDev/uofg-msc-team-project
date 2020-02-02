@@ -75,7 +75,6 @@ public class CommandLineUI {
             while (players < MIN_PLAYERS || players > MAX_PLAYERS) {
                 System.out.println("Invalid number of players selected. Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS + ".");
                 players = scanner.nextInt();
-                scanner.nextInt();
             }
             game = new Game(players);
         } catch (InputMismatchException e) {
