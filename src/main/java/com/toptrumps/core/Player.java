@@ -35,4 +35,11 @@ public class Player{
         hand.add(c);
     }
 
+    /**
+     * Method to return the top card in the player's hand
+     */
+    public Card getTopCard(){
+        return hand.get(0);
+    }
+
 }

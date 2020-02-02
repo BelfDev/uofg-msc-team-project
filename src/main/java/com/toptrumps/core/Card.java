@@ -44,7 +44,7 @@ public class Card {
         String attributesString = "";
         for(int i=0; i< attributes.size(); i++){
             Attribute a = attributes.get(i);
-            attributeString += String.format("  %d: %20s%d\n", i+1, a.getName(), a.getValue());
+            attributesString += String.format("  %d:    %-12s%d\n", i+1, a.getName(), a.getValue());
         }
         return attributesString;
     }

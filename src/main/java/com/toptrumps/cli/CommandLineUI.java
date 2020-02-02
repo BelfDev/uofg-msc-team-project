@@ -2,6 +2,7 @@ package com.toptrumps.cli;
 
 import com.toptrumps.core.Card;
 import com.toptrumps.core.Game;
+import com.toptrumps.core.Player;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -10,7 +11,10 @@ public class CommandLineUI {
 
     private Scanner scanner;
     private OutputLogger logger;
+
     private Game game;
+    private Player user;
+
     private final int MIN_PLAYERS = 1;
     private final int MAX_PLAYERS = 4;
     private final int FIRST_ATTRIBUTE = 1;
@@ -42,7 +46,9 @@ public class CommandLineUI {
         logger.printToLog("New line \n new line too.");
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")) {
+            user = new Player("Human");
             requestNumberOfPlayers();
+            showPlayerCard();
             showActivePlayer();
 
             while (!userWantsToQuit) {
@@ -76,7 +82,7 @@ public class CommandLineUI {
                 System.out.println("Invalid number of players selected. Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS + ".");
                 players = scanner.nextInt();
             }
-            game = new Game(players);
+            game = new Game(players, user);
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
@@ -110,9 +116,10 @@ public class CommandLineUI {
     /**
      * Method to show the users card
      */
-    public void showPlayerCard(Card c) {
-        System.out.println("You drew \'" + c.getDescription() + "\':");
-        System.out.println(c.stringAttributes());
+    public void showPlayerCard() {
+        Card userCard = user.getTopCard();
+        System.out.println("You drew \'" + userCard.getDescription() + "\':");
+        System.out.println(userCard.stringAttributes());
     }
 
     /**
