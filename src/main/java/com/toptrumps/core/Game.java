@@ -8,6 +8,8 @@ public class Game {
     private ArrayList<Player> players;
     private int numberOfPlayers;
     private int activePlayerIndex;
+    private Attribute selectedAttribute;
+    private Player user;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
@@ -28,8 +30,8 @@ public class Game {
             String playerName = "Player" + (i + 1); //automatically generates AI names
             players.add(new AIPlayer(playerName));
         }
-        players.add(new Player("Human")); //called "Human" for now 
-
+        user = new Player("Human");
+        players.add(user); 
         Dealer d = new Dealer(players); //deal out the cards
     }
 
@@ -64,5 +66,19 @@ public class Game {
      */
     public String getActivePlayer(){
         return players.get(activePlayerIndex).getName();
+    }
+
+    /**
+     * Method to set the selected attribute for the round
+     */
+    public void setSelectedAttribute(Attribute selectedAttribute){
+        this.selectedAttribute = selectedAttribute;
+    }
+
+    /**
+     * Method to retrieve the user player object
+     */
+    public Player getUser(){
+        return user;
     }
 }

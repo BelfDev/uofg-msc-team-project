@@ -1,7 +1,9 @@
 package com.toptrumps.cli;
 
 import com.toptrumps.core.Card;
+import com.toptrumps.core.Attribute;
 import com.toptrumps.core.Game;
+import com.toptrumps.core.Player;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -10,9 +12,14 @@ public class CommandLineUI {
 
     private Scanner scanner;
     private OutputLogger logger;
+
     private Game game;
-    private final int MIN_PLAYERS = 1;
-    private final int MAX_PLAYERS = 4;
+    private Card userCard;
+
+    private static final int MIN_PLAYERS = 1;
+    private static final int MAX_PLAYERS = 4;
+    private static final int FIRST_ATTRIBUTE = 1;
+    private static final int LAST_ATTRIBUTE = 5;
 
 
     public CommandLineUI() {
@@ -41,7 +48,14 @@ public class CommandLineUI {
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")) {
             requestNumberOfPlayers();
+            showPlayerCard();
+
+            //while statement to test user select attribute functionality
+            while(game.getActivePlayer() != game.getUser().getName()){
+                game.nextPlayer();
+            }
             showActivePlayer();
+            requestAttribute();
 
             while (!userWantsToQuit) {
 
@@ -83,11 +97,38 @@ public class CommandLineUI {
     }
 
     /**
+     * Method to ask the user to select an Attribute
+     */
+    public void requestAttribute(){
+        try {
+
+            System.out.println("Which attribute would you like to choose?");
+            System.out.println("Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE);
+
+            int attribute = scanner.nextInt();
+            while (attribute < FIRST_ATTRIBUTE || attribute > LAST_ATTRIBUTE) {
+                System.out.println("Invalid attribute selected. Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE + ".");
+                attribute = scanner.nextInt();
+            }
+
+            Attribute selectedAttribute = userCard.getAttributes().get(attribute-1);
+            System.out.println("You selected " + selectedAttribute.getName());
+            game.setSelectedAttribute(selectedAttribute);
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("You didn't enter a number!");
+            requestAttribute();
+        }
+    }
+
+    /**
      * Method to show the users card
      */
-    public void showPlayerCard(Card c) {
-        System.out.println("You drew \'" + c.getDescription() + "\':");
-        System.out.println(c.stringAttributes());
+    public void showPlayerCard() {
+        Player user = game.getUser();
+        userCard = user.getTopCard();
+        System.out.println("You drew \'" + userCard.getDescription() + "\':");
+        System.out.println(userCard.stringAttributes());
     }
 
     /**
