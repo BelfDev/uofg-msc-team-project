@@ -10,6 +10,7 @@ public class Game {
     private int activePlayerIndex;
     private Attribute selectedAttribute;
     private Player user;
+    private int roundCounter;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
@@ -19,6 +20,7 @@ public class Game {
         this.numberOfPlayers = numberOfPlayers;
         this.players = new ArrayList<Player>();
         this.user = user;
+        this.roundCounter = 1;
         startNewGame();
         chooseStartingPlayer();
     }
@@ -74,4 +76,15 @@ public class Game {
     public void setSelectedAttribute(Attribute selectedAttribute){
         this.selectedAttribute = selectedAttribute;
     }
+
+    /**
+     * Method to increase the roundCounter by 1
+     */
+
+    public void incrementRoundCounter(){roundCounter++;}
+
+    /**
+     * Method to increase the roundCounter by 1
+     */
+    public int getRoundCounter() { return roundCounter; }
 }
