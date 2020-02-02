@@ -72,7 +72,7 @@ public class DeckParser {
      * @return ArrayList containing all of the cards.
      */
 
-    protected ArrayList<Card> getCards() {
+    public ArrayList<Card> getCards() {
         return cards;
     }
 
