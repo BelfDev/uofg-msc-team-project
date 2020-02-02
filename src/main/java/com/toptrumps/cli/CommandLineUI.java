@@ -14,13 +14,12 @@ public class CommandLineUI {
     private OutputLogger logger;
 
     private Game game;
-    private Player user;
     private Card userCard;
 
-    private final int MIN_PLAYERS = 1;
-    private final int MAX_PLAYERS = 4;
-    private final int FIRST_ATTRIBUTE = 1;
-    private final int LAST_ATTRIBUTE = 5;
+    private static final int MIN_PLAYERS = 1;
+    private static final int MAX_PLAYERS = 4;
+    private static final int FIRST_ATTRIBUTE = 1;
+    private static final int LAST_ATTRIBUTE = 5;
 
 
     public CommandLineUI() {
@@ -48,13 +47,12 @@ public class CommandLineUI {
         logger.printToLog("New line \n new line too.");
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")) {
-            user = new Player("Human");
             requestNumberOfPlayers();
             showRound();
             showPlayerCard();
 
             //while statement to test user select attribute functionality
-            while(game.getActivePlayer() != user.getName()){
+            while(game.getActivePlayer() != game.getUser().getName()){
                 game.nextPlayer();
             }
             showActivePlayer();
@@ -91,8 +89,11 @@ public class CommandLineUI {
                 System.out.println("Invalid number of players selected. Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS + ".");
                 players = scanner.nextInt();
             }
+
             System.out.println("Game Start");
-            game = new Game(players, user);
+            game = new Game(players);
+          
+          
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
@@ -113,7 +114,6 @@ public class CommandLineUI {
             while (attribute < FIRST_ATTRIBUTE || attribute > LAST_ATTRIBUTE) {
                 System.out.println("Invalid attribute selected. Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE + ".");
                 attribute = scanner.nextInt();
-                scanner.nextInt();
             }
 
             Attribute selectedAttribute = userCard.getAttributes().get(attribute-1);
@@ -130,6 +130,7 @@ public class CommandLineUI {
      * Method to show the users card
      */
     public void showPlayerCard() {
+        Player user = game.getUser();
         userCard = user.getTopCard();
         System.out.println("You drew \'" + userCard.getDescription() + "\':");
         System.out.println(userCard.stringAttributes());
