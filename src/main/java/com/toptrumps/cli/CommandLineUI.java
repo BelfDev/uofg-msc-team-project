@@ -1,7 +1,9 @@
 package com.toptrumps.cli;
 
 import com.toptrumps.core.Card;
+import com.toptrumps.core.Attribute;
 import com.toptrumps.core.Game;
+import com.toptrumps.core.Player;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -10,9 +12,15 @@ public class CommandLineUI {
 
     private Scanner scanner;
     private OutputLogger logger;
+
     private Game game;
+    private Player user;
+    private Card userCard;
+
     private final int MIN_PLAYERS = 1;
     private final int MAX_PLAYERS = 4;
+    private final int FIRST_ATTRIBUTE = 1;
+    private final int LAST_ATTRIBUTE = 5;
 
 
     public CommandLineUI() {
@@ -40,8 +48,17 @@ public class CommandLineUI {
         logger.printToLog("New line \n new line too.");
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")) {
+            user = new Player("Human");
             requestNumberOfPlayers();
+            showRound();
+            showPlayerCard();
+
+            //while statement to test user select attribute functionality
+            while(game.getActivePlayer() != user.getName()){
+                game.nextPlayer();
+            }
             showActivePlayer();
+            requestAttribute();
 
             while (!userWantsToQuit) {
 
@@ -74,7 +91,8 @@ public class CommandLineUI {
                 System.out.println("Invalid number of players selected. Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS + ".");
                 players = scanner.nextInt();
             }
-            game = new Game(players);
+            System.out.println("Game Start");
+            game = new Game(players, user);
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
@@ -83,11 +101,38 @@ public class CommandLineUI {
     }
 
     /**
+     * Method to ask the user to select an Attribute
+     */
+    public void requestAttribute(){
+        try {
+
+            System.out.println("Which attribute would you like to choose?");
+            System.out.println("Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE);
+
+            int attribute = scanner.nextInt();
+            while (attribute < FIRST_ATTRIBUTE || attribute > LAST_ATTRIBUTE) {
+                System.out.println("Invalid attribute selected. Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE + ".");
+                attribute = scanner.nextInt();
+                scanner.nextInt();
+            }
+
+            Attribute selectedAttribute = userCard.getAttributes().get(attribute-1);
+            System.out.println("You selected " + selectedAttribute.getName());
+            game.setSelectedAttribute(selectedAttribute);
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("You didn't enter a number!");
+            requestAttribute();
+        }
+    }
+
+    /**
      * Method to show the users card
      */
-    public void showPlayerCard(Card c) {
-        System.out.println("You drew \'" + c.getDescription() + "\':");
-        System.out.println(c.stringAttributes());
+    public void showPlayerCard() {
+        userCard = user.getTopCard();
+        System.out.println("You drew \'" + userCard.getDescription() + "\':");
+        System.out.println(userCard.stringAttributes());
     }
 
     /**
@@ -96,6 +141,13 @@ public class CommandLineUI {
     public void showActivePlayer(){
         String activePlayerName = game.getActivePlayer();
         System.out.println("The active player is: " + activePlayerName);
+    }
+
+    public void showRound(){
+        String round = "Round " + game.getRoundCounter();
+        System.out.println(round);
+        System.out.println(round + ": Players have drawn their cards");
+        game.incrementRoundCounter();
     }
 
 }

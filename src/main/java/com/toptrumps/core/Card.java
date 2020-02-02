@@ -30,14 +30,24 @@ public class Card {
         return attributes;
     }
 
+    // Commented out as may be required later
+    
+    // public String stringAttributes(){
+    //     String attributesString = "";
+    //     for(Attribute x : attributes){
+    //         attributesString += "   >" + x.getName() + ": " + x.getValue() +"\n";
+    //     }
+    //     return attributesString;
+    // }
+
     public String stringAttributes(){
         String attributesString = "";
-        for(Attribute x : attributes){
-            attributesString += "   >" + x.getName() + ": " + x.getValue() +"\n";
+        for(int i=0; i< attributes.size(); i++){
+            Attribute a = attributes.get(i);
+            attributesString += String.format("  %d:    %-12s%d\n", i+1, a.getName(), a.getValue());
         }
         return attributesString;
     }
-
 
 }
 

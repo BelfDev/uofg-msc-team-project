@@ -8,14 +8,19 @@ public class Game {
     private ArrayList<Player> players;
     private int numberOfPlayers;
     private int activePlayerIndex;
+    private Attribute selectedAttribute;
+    private Player user;
+    private int roundCounter;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
      * Starts the game
      */
-    public Game(int numberOfPlayers) {
+    public Game(int numberOfPlayers, Player user) {
         this.numberOfPlayers = numberOfPlayers;
         this.players = new ArrayList<Player>();
+        this.user = user;
+        this.roundCounter = 1;
         startNewGame();
         chooseStartingPlayer();
     }
@@ -28,8 +33,7 @@ public class Game {
             String playerName = "Player" + (i + 1); //automatically generates AI names
             players.add(new AIPlayer(playerName));
         }
-        players.add(new Player("Human")); //called "Human" for now 
-
+        players.add(user); 
         Dealer d = new Dealer(players); //deal out the cards
     }
 
@@ -65,4 +69,22 @@ public class Game {
     public String getActivePlayer(){
         return players.get(activePlayerIndex).getName();
     }
+
+    /**
+     * Method to set the selected attribute for the round
+     */
+    public void setSelectedAttribute(Attribute selectedAttribute){
+        this.selectedAttribute = selectedAttribute;
+    }
+
+    /**
+     * Method to increase the roundCounter by 1
+     */
+
+    public void incrementRoundCounter(){roundCounter++;}
+
+    /**
+     * Method to get the roundCounter
+     */
+    public int getRoundCounter() { return roundCounter; }
 }
