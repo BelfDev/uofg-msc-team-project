@@ -48,6 +48,7 @@ public class CommandLineUI {
         input = scanner.nextLine();
         if (input.equalsIgnoreCase("f")) {
             requestNumberOfPlayers();
+            showRound();
             showPlayerCard();
 
             //while statement to test user select attribute functionality
@@ -88,7 +89,11 @@ public class CommandLineUI {
                 System.out.println("Invalid number of players selected. Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS + ".");
                 players = scanner.nextInt();
             }
+
+            System.out.println("Game Start");
             game = new Game(players);
+          
+          
         } catch (InputMismatchException e) {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
@@ -137,6 +142,13 @@ public class CommandLineUI {
     public void showActivePlayer(){
         String activePlayerName = game.getActivePlayer();
         System.out.println("The active player is: " + activePlayerName);
+    }
+
+    public void showRound(){
+        String round = "Round " + game.getRoundCounter();
+        System.out.println(round);
+        System.out.println(round + ": Players have drawn their cards");
+        game.incrementRoundCounter();
     }
 
 }

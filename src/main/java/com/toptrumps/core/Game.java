@@ -10,6 +10,7 @@ public class Game {
     private int activePlayerIndex;
     private Attribute selectedAttribute;
     private Player user;
+    private int roundCounter;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
@@ -18,6 +19,8 @@ public class Game {
     public Game(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
         this.players = new ArrayList<Player>();
+        this.user = user;
+        this.roundCounter = 1;
         startNewGame();
         chooseStartingPlayer();
     }
@@ -76,9 +79,19 @@ public class Game {
     }
 
     /**
+     * Method to increase the roundCounter by 1
+     */
+
+    public void incrementRoundCounter(){roundCounter++;}
+
+    /**
+     * Method to get the roundCounter
+     */
+    public int getRoundCounter() { return roundCounter; }
      * Method to retrieve the user player object
      */
     public Player getUser(){
         return user;
     }
+
 }
