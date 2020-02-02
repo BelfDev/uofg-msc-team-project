@@ -1,5 +1,7 @@
 package com.toptrumps.core;
 
+import java.util.ArrayList;
+
 public class Dealer {
     ArrayList<Card> deck;
     ArrayList<Player> players;
