@@ -4,6 +4,10 @@ import com.toptrumps.online.views.GameScreenView;
 import com.toptrumps.online.views.SelectionScreenView;
 import com.toptrumps.online.views.StatisticsView;
 
+import java.util.ArrayList;
+import java.util.List;
+import com.toptrumps.core.Player;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -40,7 +44,17 @@ public class GameWebPagesResource {
      * @return
      */
     public GameScreenView getGameScreen() {
-        return new GameScreenView();
+        /* 
+        Temporary output to get a list of player
+        TODO: change this to the real player list getter
+        */
+        List<String> players = new ArrayList<String>();
+        for (int i = 0; i < 4; i++) {
+            String playerName = "Player " + (i + 1);
+            players.add(playerName);
+        }
+
+        return new GameScreenView(players);
     }
 
     @GET

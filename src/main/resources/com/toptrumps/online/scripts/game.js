@@ -1,5 +1,7 @@
 const Game = (function() {
-    const init = function() {};
+    const init = function() {
+        Player.getTopCard(0);
+    };
 
     return {
         init
