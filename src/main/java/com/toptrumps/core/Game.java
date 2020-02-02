@@ -15,10 +15,9 @@ public class Game {
      * Constructor to initialise the number of players and the ArrayList of players
      * Starts the game
      */
-    public Game(int numberOfPlayers, Player user) {
+    public Game(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
         this.players = new ArrayList<Player>();
-        this.user = user;
         startNewGame();
         chooseStartingPlayer();
     }
@@ -31,6 +30,7 @@ public class Game {
             String playerName = "Player" + (i + 1); //automatically generates AI names
             players.add(new AIPlayer(playerName));
         }
+        user = new Player("Human");
         players.add(user); 
         Dealer d = new Dealer(players); //deal out the cards
     }
@@ -73,5 +73,12 @@ public class Game {
      */
     public void setSelectedAttribute(Attribute selectedAttribute){
         this.selectedAttribute = selectedAttribute;
+    }
+
+    /**
+     * Method to retrieve the user player object
+     */
+    public Player getUser(){
+        return user;
     }
 }
