@@ -23,8 +23,17 @@
 
 .pcard {
     display: inline-block;
+    height: 228px;
     color: black;
     background-color: lightgray;
+}
+
+.pcard__image-box {
+    height: 100px;
+    overflow: hidden;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
 }
 
 .pcard__content {

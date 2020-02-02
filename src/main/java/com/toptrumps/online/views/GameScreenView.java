@@ -2,6 +2,10 @@ package com.toptrumps.online.views;
 
 import io.dropwizard.views.View;
 
+import java.util.ArrayList;
+import java.util.List;
+import com.toptrumps.core.Player;
+
 /**
  * Each HTML page that is specified in GameWebPagesResource first needs a class that extends
  * View, which is Dropwizard's internal representation of the page. This then points to a
@@ -15,12 +19,14 @@ import io.dropwizard.views.View;
  * however we do not expect you to use the additional functionality that freemarker provides.
  */
 public class GameScreenView extends View {
+    private final List<String> players;
 
-    /**
-     * Simple Constructor method, it simply specifies where the HTML page is to return.
-     */
-    public GameScreenView() {
+    public GameScreenView(List<String> players) {
         super("GameScreen.ftl");
+        this.players = players;
     }
 
+    public List<String> getPlayers() {
+        return players;
+    }
 }

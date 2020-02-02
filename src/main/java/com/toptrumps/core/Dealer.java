@@ -1,6 +1,8 @@
 package com.toptrumps.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 public class Dealer {
     ArrayList<Card> deck;
@@ -14,6 +16,10 @@ public class Dealer {
     }
 
     private void dealCards(){
+
+        // shuffle the deck
+        shuffleCards();
+
         //set the index equal to the first card
 		int currentCardIndex = 0;
 		
@@ -29,4 +35,9 @@ public class Dealer {
 			}
 		}
     }
+
+    private void shuffleCards(){
+        Collections.shuffle(deck, new Random());
+        }
+
 }
