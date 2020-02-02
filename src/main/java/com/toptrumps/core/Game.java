@@ -84,7 +84,7 @@ public class Game {
     public void incrementRoundCounter(){roundCounter++;}
 
     /**
-     * Method to increase the roundCounter by 1
+     * Method to get the roundCounter
      */
     public int getRoundCounter() { return roundCounter; }
 }
