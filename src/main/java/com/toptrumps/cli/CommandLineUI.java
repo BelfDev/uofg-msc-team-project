@@ -13,6 +13,8 @@ public class CommandLineUI {
     private Game game;
     private final int MIN_PLAYERS = 1;
     private final int MAX_PLAYERS = 4;
+    private final int FIRST_ATTRIBUTE = 1;
+    private final int LAST_ATTRIBUTE = 5;
 
 
     public CommandLineUI() {
@@ -80,6 +82,29 @@ public class CommandLineUI {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
             requestNumberOfPlayers();
+        }
+    }
+
+    /**
+     * Method to ask the user to select an Attribute
+     */
+    public void requestAttribute(){
+        try {
+
+            System.out.println("Which attribute would you like to choose?");
+            System.out.println("Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE);
+
+            int players = scanner.nextInt();
+            while (players < FIRST_ATTRIBUTE || players > LAST_ATTRIBUTE) {
+                System.out.println("Invalid attribute selected. Please select " + FIRST_ATTRIBUTE + "-" + LAST_ATTRIBUTE + ".");
+                players = scanner.nextInt();
+                scanner.nextInt();
+            }
+            //TODO: retrieve the selected attibute
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("You didn't enter a number!");
+            requestAttribute();
         }
     }
 

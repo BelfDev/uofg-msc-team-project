@@ -8,6 +8,7 @@ public class Game {
     private ArrayList<Player> players;
     private int numberOfPlayers;
     private int activePlayerIndex;
+    private Attribute selectedAttribute;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
@@ -62,5 +63,12 @@ public class Game {
      */
     public String getActivePlayer(){
         return players.get(activePlayerIndex).getName();
+    }
+
+    /**
+     * Method to set the selected attribute for the round
+     */
+    public void setSelectedAttribute(Attribute selectedAttribute){
+        this.selectedAttribute = selectedAttribute;
     }
 }
