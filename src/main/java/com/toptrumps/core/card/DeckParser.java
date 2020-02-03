@@ -1,6 +1,9 @@
 package com.toptrumps.core.card;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -19,16 +22,14 @@ class DeckParser {
      * @return <code>ArrayList<Card></code> parsed deck
      */
     public static ArrayList<Card> parseDeck(String resource) {
-        File deckFile = getFileFromResources(resource);
         ArrayList<Card> deck = new ArrayList<>();
 
         try {
-            FileReader fr = new FileReader(deckFile);
-            BufferedReader br = new BufferedReader(fr);
-
-            // Reads the first line of the file (contains the headers)
+            InputStream inputStream = getResource(resource);
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            // Reads the first line of the resource (contains the headers)
             String line = br.readLine();
-            // Splits the file based on the spaces into an array of headers
+            // Splits the resource based on the spaces into an array of headers
             String[] headers = line.split(ITEM_SEPARATOR);
 
             // Loops until an empty line is encountered.
@@ -40,9 +41,6 @@ class DeckParser {
                 deck.add(currentCard);
             }
 
-        } catch (FileNotFoundException e) {
-            System.err.println("The file could not be found!");
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,13 +63,13 @@ class DeckParser {
         return new Card(cardValues[0], attributes);
     }
 
-    private static File getFileFromResources(String fileName) {
+    private static InputStream getResource(String fileName) {
         ClassLoader classLoader = DeckParser.class.getClassLoader();
         URL resource = classLoader.getResource(fileName);
         if (resource == null) {
             throw new IllegalArgumentException("File not found");
         } else {
-            return new File(resource.getFile());
+            return classLoader.getResourceAsStream(fileName);
         }
     }
 
