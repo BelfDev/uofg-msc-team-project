@@ -12,25 +12,27 @@ import static java.util.stream.Collectors.toList;
 
 public class Dealer {
 
-    private final static String DECK_RESOURCE = "/assets/StarCitizenDeck.txt";
+    private final static String DECK_RESOURCE = "assets/StarCitizenDeck.txt";
 
-    ArrayList<Card> deck;
-    ArrayList<Card> communalPile;
+    private final ArrayList<Card> deck;
+    private ArrayList<Card> communalPile;
 
     public Dealer() {
         this.deck = DeckParser.parseDeck(DECK_RESOURCE);
         this.communalPile = new ArrayList<>();
+
+        System.out.println(deck);
     }
 
-    private void dealCards(ArrayList<Player> players) {
+    public void dealCards(ArrayList<Player> players) {
         int numberOfPlayers = players.size();
         shuffleCards();
         List<List<Card>> splitDecks = splitDeck(numberOfPlayers);
 
         // Distribute the split decks to the game players
         for (int i = 0; i < numberOfPlayers; i++) {
-            ArrayList<Card> currentDeck = (ArrayList<Card>) splitDecks.get(0);
-            players.get(0).setDeck(currentDeck);
+            ArrayList<Card> currentDeck = new ArrayList<>(splitDecks.get(i));
+            players.get(i).setDeck(currentDeck);
         }
     }
 
@@ -38,21 +40,23 @@ public class Dealer {
         Collections.shuffle(deck, new Random());
     }
 
-    private List<List<Card>> splitDeck(int chunkSize) {
-        // Check if the provided chunk size is plausible
-        if (chunkSize <= 0) throw new IllegalArgumentException("length = " + chunkSize);
-
+    private List<List<Card>> splitDeck(int numberOfSplits) {
         int size = this.deck.size();
 
-        // Returns empty stream if no values were found
-        if (size <= 0) return new ArrayList<>();
+        // Check if the provided numberOfSplits is plausible
+        if (numberOfSplits <= 0) throw new IllegalArgumentException("numberOfsSplits = " + numberOfSplits);
 
-        int fullChunks = (size - 1) / chunkSize;
+        int chunkSize = size / numberOfSplits;
 
         // Splits the deck list into sub-listS of chunkSize length
         return IntStream
-                .range(0, fullChunks + 1)
-                .mapToObj(n -> this.deck.subList(n * chunkSize, n == fullChunks ? size : (n + 1) * chunkSize))
+                .range(0, numberOfSplits)
+                .mapToObj(n ->
+                {
+                    int fromIndex = n * chunkSize;
+                    int toIndex = n == (numberOfSplits - 1) ? size : (n + 1) * chunkSize;
+                    return this.deck.subList(fromIndex, toIndex);
+                })
                 .collect(toList());
     }
 
