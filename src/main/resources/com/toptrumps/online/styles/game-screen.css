@@ -40,9 +40,17 @@
     padding: 10px;
 }
 
+.pcard__chars--active .pcard__char {
+    cursor: pointer;
+}
+
 .pcard__char {
     display: flex;
     justify-content: space-between;
+}
+
+.pcard__char--active {
+    font-weight: bold;
 }
 
 .human-player {
