@@ -80,6 +80,25 @@ public class TopTrumpsRESTAPI {
     }
 
     @GET
+    @Path("/getActivePlayer")
+    /**
+     * Handler to get active player id
+     * 
+     * @return - player id as JSON
+     * @throws IOException
+     */
+    public String getActivePlayer() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode node = factory.objectNode();
+        node.put("playerID", 0);
+
+        String playerID = node.toString();
+
+        return playerID;
+    }
+
+    @GET
     @Path("/helloWord")
     /**
      * Here is an example of how to read parameters provided in an HTML Get request.
