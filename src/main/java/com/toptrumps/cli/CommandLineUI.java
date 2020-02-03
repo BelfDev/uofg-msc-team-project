@@ -1,11 +1,12 @@
 package com.toptrumps.cli;
 
-import com.toptrumps.core.Card;
-import com.toptrumps.core.Attribute;
+import com.toptrumps.core.card.Card;
+import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.Game;
-import com.toptrumps.core.Player;
+import com.toptrumps.core.player.Player;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class CommandLineUI {
@@ -132,8 +133,19 @@ public class CommandLineUI {
     public void showPlayerCard() {
         Player user = game.getUser();
         userCard = user.getTopCard();
-        System.out.println("You drew \'" + userCard.getDescription() + "\':");
-        System.out.println(userCard.stringAttributes());
+        System.out.println("You drew \'" + userCard.getName() + "\':");
+        printCardAttributes(userCard);
+    }
+
+    // TODO: Refactor this method.
+    public void printCardAttributes(Card card){
+        List<Attribute> attributes = card.getAttributes();
+        for(int i=0; i< attributes.size(); i++){
+            String attributeName = attributes.get(i).getName();
+            int attributeValue = attributes.get(i).getValue();
+            String message = String.format("  %d:    %-12s%d\n", i+1, attributeName, attributeValue);
+            System.out.println(message);
+        }
     }
 
     /**

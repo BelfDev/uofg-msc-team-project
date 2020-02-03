@@ -1,5 +1,10 @@
 package com.toptrumps.core;
 
+import com.toptrumps.core.card.Attribute;
+import com.toptrumps.core.card.Dealer;
+import com.toptrumps.core.player.AIPlayer;
+import com.toptrumps.core.player.Player;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -88,8 +93,7 @@ public class Game {
      * Method to get the roundCounter
      */
     public int getRoundCounter() { return roundCounter; }
-     * Method to retrieve the user player object
-     */
+
     public Player getUser(){
         return user;
     }
