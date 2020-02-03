@@ -11,14 +11,20 @@ import java.util.ArrayList;
  */
 public class Player {
 
+    final protected int id;
     final protected String name;
     protected ArrayList<Card> deck;
 
     private Attribute selectedAttribute;
 
-    public Player(String name) {
+    public Player(int id, String name) {
+        this.id = id;
         this.name = name;
         this.deck = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -42,6 +48,12 @@ public class Player {
         if (selectedAttribute == null) throw new NoSelectionException();
         if (!selectedAttribute.getName().equals(remoteAttribute.getName())) throw new IncompatibleComparisonException();
         return selectedAttribute.compareTo(remoteAttribute);
+    }
+
+    // TODO: Come up with a better format
+    @Override
+    public String toString() {
+        return String.format("Player => id: %d\tname: %s\tdeck: %s", id, name, deck.toString());
     }
 
 }

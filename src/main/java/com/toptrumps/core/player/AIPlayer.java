@@ -10,16 +10,10 @@ import com.toptrumps.core.card.Card;
 
 public class AIPlayer extends Player {
 
-    private final static String DEFAULT_AI_NAME = "AI_Player";
-    private int id;
+    private static final String DEFAULT_AI_NAME = "AI_Player";
 
     public AIPlayer(int id) {
-        super(String.format("%s_%d", DEFAULT_AI_NAME, id));
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
+        super(id, String.format("%s_%d", DEFAULT_AI_NAME, id));
     }
 
     public void selectAttribute() {
