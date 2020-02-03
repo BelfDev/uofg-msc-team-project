@@ -31,4 +31,8 @@ public class Card {
         return this.highestAttribute.get();
     }
 
+    @Override
+    public String toString() {
+        return String.format("Card => name: %s\tattributes: %s\t", name, attributes);
+    }
 }
