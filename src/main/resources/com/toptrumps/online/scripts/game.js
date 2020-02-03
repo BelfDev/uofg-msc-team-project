@@ -3,6 +3,7 @@ const Game = (function() {
     const endTurnButtonSelector = ".js-end-turn-button";
 
     let activeCategory = null;
+    let activePlayerID = null;
 
     const init = function() {
         runStartPhase();
@@ -11,10 +12,21 @@ const Game = (function() {
 
     const bindEvents = function() {
         $(document).on("game:setActivePlayer", function(event, data) {
+            activePlayerID = data.playerID;
             runCategorySelectionPhase(data.playerID);
         });
 
         $(document).on("game:categorySelect", function(event, data) {
+            if (activePlayerID === 0) {
+                $(document).trigger("message:log", {
+                    content: `You selected the "${data.category}" category`
+                });
+            } else {
+                $(document).trigger("message:log", {
+                    content: `Player ${activePlayerID} selected the "${data.category}" category`
+                });
+            }
+
             activeCategory = data.category;
         });
 
@@ -39,16 +51,33 @@ const Game = (function() {
                 content: "You are an active player. Choose a category"
             });
 
-            Card.enableCategorySelection();
+            $(document).trigger("card:categorySelection", { active: true });
         } else {
-            Card.disableCategorySelection();
-            // TODO: send request to get chosen category
+            $(document).trigger("message:log", {
+                content: `Player ${playerID} is an active player and choosing a category`
+            });
+
+            $(document).trigger("card:categorySelection", { active: false });
+
+            setTimeout(function() {
+                $(document).trigger("countdown:run", {
+                    callback: getChosenCategory
+                });
+            }, 2000);
         }
     };
 
     const runRoundConclusionPhase = function() {
         console.log("runRoundConclusionPhase");
         // TODO: reveal other players cards and announce the winner
+    };
+
+    const getChosenCategory = function() {
+        $.get(`${restAPIurl}/getChosenCategory`, function(response) {
+            $(document).trigger("game:categorySelect", {
+                category: response.category
+            });
+        });
     };
 
     const getActivePlayer = function() {
