@@ -25,9 +25,14 @@ const Game = (function() {
                 $(document).trigger("message:log", {
                     content: `Player ${activePlayerID} selected the "${data.category}" category`
                 });
+                Card.highlightCategory(data.category);
             }
 
             activeCategory = data.category;
+        });
+
+        $(document).on("game.cardsShown", function() {
+            Card.highlightCategory(activeCategory);
         });
 
         $(endTurnButtonSelector).on("click", function(e) {
@@ -68,8 +73,7 @@ const Game = (function() {
     };
 
     const runRoundConclusionPhase = function() {
-        console.log("runRoundConclusionPhase");
-        // TODO: reveal other players cards and announce the winner
+        Player.getOpponentsCards();
     };
 
     const getChosenCategory = function() {
@@ -77,6 +81,8 @@ const Game = (function() {
             $(document).trigger("game:categorySelect", {
                 category: response.category
             });
+
+            runRoundConclusionPhase();
         });
     };
 
