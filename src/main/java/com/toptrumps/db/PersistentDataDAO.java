@@ -89,6 +89,14 @@ public class PersistentDataDAO{
             e.printStackTrace();   
         }
         
+        finally{
+             try{
+                if(getStats != null){getStats.close();}
+                if(conn != null){conn.close();}
+                }catch(SQLException e){
+                    e.printStackTrace();}
+                }
+
         return results;
     }
 }
