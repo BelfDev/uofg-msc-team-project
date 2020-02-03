@@ -88,8 +88,7 @@ public class PersistentDataDAO{
         }catch(SQLException e){
             e.printStackTrace();   
         }
-
-        System.out.println("Got' em");
+        
         return results;
     }
 }
