@@ -116,7 +116,22 @@ public class Game {
                 outcome = new RoundOutcome(DRAW, winners);
                 dealer.putCardsOnCommunalPile(roundCards);
             }
-            listener.onRoundEnd(outcome);
+
+            //Determine if any players have been eliminated
+            Player eliminatedPlayer = null;
+            for(Player player: players){
+                if(player.getDeck().isEmpty()){
+                    eliminatedPlayer = player;
+                }
+            }
+            
+            //Call the correct method for the round end 
+            if(eliminatedPlayer == null){
+                listener.onRoundEnd(outcome);
+            }else{
+                listener.onRoundEnd(outcome, eliminatedPlayer);
+            }
+            
 
             // Round clean-up
             // Removes players without cards

@@ -80,7 +80,13 @@ public class CommandLineController implements GameEventListener {
 
     @Override
     public void onRoundEnd(RoundOutcome outcome) {
-        System.out.println(outcome);
+        System.out.println("\n"+outcome+"\n");
+    }
+
+    @Override
+    public void onRoundEnd(RoundOutcome outcome, Player eliminatedPlayer){
+        System.out.println("\n"+outcome);
+        System.out.println(eliminatedPlayer.getName() + " has been eliminated from the game\n");
     }
 
     @Override
