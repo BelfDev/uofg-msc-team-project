@@ -1,8 +1,8 @@
 const Game = (function() {
-    const NUMBER_OF_AI_PLAYERS = 4;
+    const NUMBER_OF_AI_PLAYERS = 4; // TODO: to be obtained dynamically later
     const endTurnButtonSelector = ".js-end-turn-button";
 
-    let activeCategory = null;
+    let activeAttribute = null;
 
     const init = function() {
         runStartPhase();
@@ -11,15 +11,15 @@ const Game = (function() {
 
     const bindEvents = function() {
         $(document).on("game:setActivePlayer", function(event, data) {
-            runCategorySelectionPhase(data.playerID);
+            runAttributeSelectionPhase(data.playerID);
         });
 
-        $(document).on("game:categorySelect", function(event, data) {
-            activeCategory = data.category;
+        $(document).on("game:attributeSelect", function(event, data) {
+            activeAttribute = data.attribute;
         });
 
         $(endTurnButtonSelector).on("click", function(e) {
-            if (activeCategory !== null) {
+            if (activeAttribute !== null) {
                 runRoundConclusionPhase();
             }
 
@@ -32,17 +32,17 @@ const Game = (function() {
         getActivePlayer();
     };
 
-    const runCategorySelectionPhase = function(playerID) {
+    const runAttributeSelectionPhase = function(playerID) {
         // Human player has id 0
         if (playerID === 0) {
             $(document).trigger("message:log", {
-                content: "You are an active player. Choose a category"
+                content: "You are an active player. Choose an attribute"
             });
 
-            Card.enableCategorySelection();
+            Card.enableAttributeSelection();
         } else {
-            Card.disableCategorySelection();
-            // TODO: send request to get chosen category
+            Card.disableAttributeSelection();
+            // TODO: send request to get chosen attribute
         }
     };
 
