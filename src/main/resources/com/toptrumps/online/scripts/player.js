@@ -7,7 +7,11 @@ const Player = (function() {
         });
     };
 
-    const getPlayerSelector = function(playerID) {
+    const getHumanPlayerSelector = function() {
+        return humanPlayerSelector;
+    };
+
+    const getPlayerSelectorByID = function(playerID) {
         let playerSelector;
 
         // Temporary approach to separate human player's box selector
@@ -22,6 +26,7 @@ const Player = (function() {
 
     return {
         getTopCard,
-        getPlayerSelector
+        getPlayerSelectorByID,
+        getHumanPlayerSelector
     };
 })();
