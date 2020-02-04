@@ -151,4 +151,31 @@ public class TopTrumpsRESTAPI {
 
         return cardData;
     }
+
+    @GET
+    @Path("/getPlayersCardsCount")
+    /**
+     * Handler to get all players' cards count
+     * 
+     * @return array of players and corresponding cards count as JSON
+     * @throws IOException
+     */
+    public String getPlayersCardsCount() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode rootNode = factory.objectNode();
+
+        for (int i = 0; i < 5; i++) {
+            ObjectNode playerNode = factory.objectNode();
+            playerNode.put("count", 15);
+
+            String playerID = i+"";
+
+            rootNode.put(playerID, playerNode);
+        }
+
+        String cardCount = rootNode.toString();
+
+        return cardCount;
+    }
 }
