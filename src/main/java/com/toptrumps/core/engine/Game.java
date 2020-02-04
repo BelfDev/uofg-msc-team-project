@@ -65,6 +65,9 @@ public class Game {
         while (numberOfPlayers > 1) {
             rounderNumber++;
 
+            Card humanPlayerCard = getHumanPlayer().getTopCard();
+            listener.onRoundStart(activePlayer, humanPlayerCard, rounderNumber);
+
             // Attribute Selection
             Attribute selectedAttribute;
             if (activePlayer.isAIPlayer()) {
@@ -74,6 +77,7 @@ public class Game {
                 activePlayer.setSelectedAttribute(selectedAttribute);
             }
 
+            listener.onAttributeSelected(activePlayer);
             // TODO: Revisit the attribute comparison to increase efficiency
             // Attribute Comparison
             String attributeName = selectedAttribute.getName();
@@ -118,10 +122,9 @@ public class Game {
             // Removes players without cards
             players.removeIf(player -> player.getDeck().isEmpty());
             numberOfPlayers = players.size();
-            System.out.println("END");
         }
 
-        System.out.println("GAME OVER");
+        listener.onGameOver(activePlayer);
     }
 
     private void assignRandomActivePlayer() {
@@ -138,6 +141,10 @@ public class Game {
 
     public ArrayList<Card> getRoundCards() {
         return (ArrayList<Card>) players.stream().map(Player::getTopCard).collect(toList());
+    }
+
+    private Player getHumanPlayer() {
+        return players.get(0);
     }
 
 }
