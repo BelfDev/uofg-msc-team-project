@@ -99,21 +99,21 @@ public class TopTrumpsRESTAPI {
     }
     
     @GET
-    @Path("/getChosenCategory")
+    @Path("/getChosenAttribute")
     /**
-     * Handler to get chosen category
+     * Handler to get chosen attribute
      * 
      * @return chosen category as JSON
      * @throws IOException
      */
-    public String getChosenCategory() throws IOException {
+    public String getChosenAttribute() throws IOException {
         JsonNodeFactory factory = JsonNodeFactory.instance;
 
         ObjectNode node = factory.objectNode();
-        node.put("category", "Dexterity");
+        node.put("attribute", "Dexterity");
 
-        String category = node.toString();
+        String attribute = node.toString();
 
-        return category;
+        return attribute;
     }
 }

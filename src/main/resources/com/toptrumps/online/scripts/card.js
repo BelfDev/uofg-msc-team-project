@@ -12,11 +12,11 @@ const Card = (function() {
     };
 
     const bindEvents = function() {
-        $(document).on("card:categorySelection", function(event, data) {
+        $(document).on("card:attributeSelection", function(event, data) {
             if (data.active === true) {
-                enableCategorySelection();
+                enableAttributeSelection();
             } else {
-                disableCategorySelection();
+                disableAttributeSelection();
             }
         });
     };
@@ -32,7 +32,7 @@ const Card = (function() {
 
         $.each(attributesData, function(name, value) {
             const attrNode = $(attrTpl).clone();
-            attrNode.data("category", name);
+            attrNode.data("attribute", name);
             attrNode.prepend(name);
             attrNode.find(cardAttributeValueSelector).html(value);
             attrNodeCollection.push(attrNode);
@@ -49,7 +49,7 @@ const Card = (function() {
         return $(playerSelector).find(cardAttributeSelector);
     };
 
-    const enableCategorySelection = function() {
+    const enableAttributeSelection = function() {
         let playerSelector = Player.getHumanPlayerSelector();
 
         const $attributesWrapper = getAttributesWrapper(playerSelector);
@@ -63,13 +63,13 @@ const Card = (function() {
                 $($attributes).removeClass(cardAttributeActiveClass);
                 $target.addClass(cardAttributeActiveClass);
 
-                $(document).trigger("game:categorySelect", {
-                    category: $target.data("category")
+                $(document).trigger("game:attributeSelect", {
+                    attribute: $target.data("attribute")
                 });
             });
     };
 
-    const disableCategorySelection = function() {
+    const disableAttributeSelection = function() {
         let playerSelector = Player.getHumanPlayerSelector();
 
         const $attributesWrapper = getAttributesWrapper(playerSelector);
@@ -109,7 +109,7 @@ const Card = (function() {
 
     return {
         update,
-        enableCategorySelection,
-        disableCategorySelection
+        enableAttributeSelection,
+        disableAttributeSelection
     };
 })();
