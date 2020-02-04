@@ -23,6 +23,14 @@ public class Card {
         return name;
     }
 
+    // TODO: Revisit this method to increase efficiency
+    public Attribute getAttributeByName(String name) {
+        return attributes.stream()
+                .filter(a -> a.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
     public ArrayList<Attribute> getAttributes() {
         return attributes;
     }
