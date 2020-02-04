@@ -4,15 +4,17 @@ import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a player of the game.
  * There should only ever be one Human player.
  */
-public class Player {
+public class Player implements Comparable<Player> {
 
     final protected int id;
     final protected String name;
+    private boolean isActive;
     protected ArrayList<Card> deck;
 
     private Attribute selectedAttribute;
@@ -21,6 +23,7 @@ public class Player {
         this.id = id;
         this.name = name;
         this.deck = new ArrayList<>();
+        this.isActive = false;
     }
 
     public int getId() {
@@ -29,6 +32,18 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public ArrayList<Card> getDeck() {
+        return deck;
     }
 
     public void setDeck(ArrayList<Card> deck) {
@@ -40,14 +55,40 @@ public class Player {
         return deck.get(0);
     }
 
+    public void collectCards(List<Card> cards) {
+        deck.addAll(cards);
+    }
+
+    public void removeTopCard() {
+        if (!deck.isEmpty()) {
+            deck.remove(0);
+        }
+    }
+
+    public Attribute getSelectedAttribute() {
+        return selectedAttribute;
+    }
+
     public void setSelectedAttribute(Attribute attribute) {
         this.selectedAttribute = attribute;
     }
 
-    public int compareSelectedAttributeTo(Attribute remoteAttribute) {
-        if (selectedAttribute == null) throw new NoSelectionException();
-        if (!selectedAttribute.getName().equals(remoteAttribute.getName())) throw new IncompatibleComparisonException();
-        return selectedAttribute.compareTo(remoteAttribute);
+//    public int compareCardTo(Card opponentCard) {
+//        if (selectedAttribute == null) throw new NoSelectionException();
+//        Attribute opponentAttribute = opponentCard.getAttributeByName(selectedAttribute.getName());
+//        if (opponentAttribute == null) throw new IncompatibleComparisonException();
+//        return selectedAttribute.compareTo(opponentAttribute);
+//    }
+
+    public boolean isAIPlayer() {
+        return this instanceof AIPlayer;
+    }
+
+    @Override
+    public int compareTo(Player opponent) {
+        Attribute opponentAttribute = opponent.getSelectedAttribute();
+        if (opponentAttribute == null || selectedAttribute == null) throw new NoSelectionException();
+        return selectedAttribute.compareTo(opponentAttribute);
     }
 
     // TODO: Come up with a better format
