@@ -16,10 +16,11 @@ public class AIPlayer extends Player {
         super(id, String.format("%s_%d", DEFAULT_AI_NAME, id));
     }
 
-    public void selectAttribute() {
+    public Attribute selectAttribute() {
         Card topCard = getTopCard();
         Attribute highestAttribute = topCard.getHighestAttribute();
         this.setSelectedAttribute(highestAttribute);
+        return highestAttribute;
     }
 
 }
