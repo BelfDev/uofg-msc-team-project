@@ -91,23 +91,29 @@ public class TopTrumpsRESTAPI {
         JsonNodeFactory factory = JsonNodeFactory.instance;
 
         ObjectNode node = factory.objectNode();
-        node.put("playerID", 0);
+        node.put("playerID", 2);
 
         String playerID = node.toString();
 
         return playerID;
     }
-
+    
     @GET
-    @Path("/helloWord")
+    @Path("/getChosenAttribute")
     /**
-     * Here is an example of how to read parameters provided in an HTML Get request.
-     * @param Word - A word
-     * @return - A String
+     * Handler to get chosen attribute
+     * 
+     * @return chosen category as JSON
      * @throws IOException
      */
-    public String helloWord(@QueryParam("Word") String Word) throws IOException {
-        return "Hello " + Word;
-    }
+    public String getChosenAttribute() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
 
+        ObjectNode node = factory.objectNode();
+        node.put("attribute", "Dexterity");
+
+        String attribute = node.toString();
+
+        return attribute;
+    }
 }

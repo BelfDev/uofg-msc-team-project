@@ -53,6 +53,34 @@
     font-weight: bold;
 }
 
+.countdown {
+    position: absolute;
+    font-weight: 900;
+    font-size: 4.5em;
+    background-color: rgba(0, 0, 0, 0.9);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in;
+}
+
+.countdown--active {
+    pointer-events: initial;
+    opacity: 1 !important;
+}
+
+.countdown__numbers {
+    position: absolute;
+    margin: auto;
+    left: 50%;
+    top: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+}
+
 .human-player {
     text-align: center;
 }

@@ -7,6 +7,20 @@ const Card = (function() {
     const cardImageSelector = ".js-card-image";
     const cardTitleSelector = ".js-card-title";
 
+    const init = function() {
+        bindEvents();
+    };
+
+    const bindEvents = function() {
+        $(document).on("card:attributeSelection", function(event, data) {
+            if (data.active === true) {
+                enableAttributeSelection();
+            } else {
+                disableAttributeSelection();
+            }
+        });
+    };
+
     const getImagePath = function(cardName) {
         const imageName = cardName.replace(" ", "_").toLowerCase();
         return `/assets/images/${imageName}.png`;
@@ -42,15 +56,17 @@ const Card = (function() {
         $attributesWrapper.addClass(cardAttributesWrapperActiveClass);
 
         const $attributes = getAttributes(playerSelector);
-        $($attributes).on("click", function() {
-            const $target = $(this);
-            $($attributes).removeClass(cardAttributeActiveClass);
-            $target.addClass(cardAttributeActiveClass);
+        $($attributes)
+            .off("click")
+            .on("click", function() {
+                const $target = $(this);
+                $($attributes).removeClass(cardAttributeActiveClass);
+                $target.addClass(cardAttributeActiveClass);
 
-            $(document).trigger("game:attributeSelect", {
-                attribute: $target.data("attribute")
+                $(document).trigger("game:attributeSelect", {
+                    attribute: $target.data("attribute")
+                });
             });
-        });
     };
 
     const disableAttributeSelection = function() {
@@ -89,8 +105,11 @@ const Card = (function() {
             .append(attrNodeCollection);
     };
 
+    init();
+
     return {
         update,
-        enableAttributeSelection
+        enableAttributeSelection,
+        disableAttributeSelection
     };
 })();

@@ -3,6 +3,7 @@ const Game = (function() {
     const endTurnButtonSelector = ".js-end-turn-button";
 
     let activeAttribute = null;
+    let activePlayerID = null;
 
     const init = function() {
         runStartPhase();
@@ -11,10 +12,21 @@ const Game = (function() {
 
     const bindEvents = function() {
         $(document).on("game:setActivePlayer", function(event, data) {
+            activePlayerID = data.playerID;
             runAttributeSelectionPhase(data.playerID);
         });
 
         $(document).on("game:attributeSelect", function(event, data) {
+            if (activePlayerID === 0) {
+                $(document).trigger("message:log", {
+                    content: `You selected the "${data.attribute}" attribute`
+                });
+            } else {
+                $(document).trigger("message:log", {
+                    content: `Player ${activePlayerID} selected the "${data.attribute}" attribute`
+                });
+            }
+
             activeAttribute = data.attribute;
         });
 
@@ -39,16 +51,33 @@ const Game = (function() {
                 content: "You are an active player. Choose an attribute"
             });
 
-            Card.enableAttributeSelection();
+            $(document).trigger("card:attributeSelection", { active: true });
         } else {
-            Card.disableAttributeSelection();
-            // TODO: send request to get chosen attribute
+            $(document).trigger("message:log", {
+                content: `Player ${playerID} is an active player and choosing an attribute`
+            });
+
+            $(document).trigger("card:attributeSelection", { active: false });
+
+            setTimeout(function() {
+                $(document).trigger("countdown:run", {
+                    callback: getChosenAttribute
+                });
+            }, 2000);
         }
     };
 
     const runRoundConclusionPhase = function() {
         console.log("runRoundConclusionPhase");
         // TODO: reveal other players cards and announce the winner
+    };
+
+    const getChosenAttribute = function() {
+        $.get(`${restAPIurl}/getChosenAttribute`, function(response) {
+            $(document).trigger("game:attributeSelect", {
+                attribute: response.attribute
+            });
+        });
     };
 
     const getActivePlayer = function() {
