@@ -2,9 +2,7 @@ package com.toptrumps.online.views;
 
 import io.dropwizard.views.View;
 
-import java.util.ArrayList;
 import java.util.List;
-import com.toptrumps.core.Player;
 
 /**
  * Each HTML page that is specified in GameWebPagesResource first needs a class that extends
