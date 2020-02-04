@@ -1,5 +1,7 @@
 package com.toptrumps.core.card;
 
+import com.toptrumps.core.utils.ResourceLoader;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,8 +14,7 @@ class DeckParser {
 
     private final static String ITEM_SEPARATOR = " ";
 
-    private DeckParser() {
-    }
+    private DeckParser() {}
 
     /**
      * Parses the content from a local text resource
@@ -25,7 +26,7 @@ class DeckParser {
         ArrayList<Card> deck = new ArrayList<>();
 
         try {
-            InputStream inputStream = getResource(resource);
+            InputStream inputStream = ResourceLoader.getResource(resource);
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             // Reads the first line of the resource (contains the headers)
             String line = br.readLine();
@@ -61,16 +62,6 @@ class DeckParser {
             attributes.add(currentAttribute);
         }
         return new Card(cardValues[0], attributes);
-    }
-
-    private static InputStream getResource(String fileName) {
-        ClassLoader classLoader = DeckParser.class.getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
-            throw new IllegalArgumentException("File not found");
-        } else {
-            return classLoader.getResourceAsStream(fileName);
-        }
     }
 
 }
