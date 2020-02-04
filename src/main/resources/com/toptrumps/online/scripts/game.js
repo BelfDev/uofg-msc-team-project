@@ -51,6 +51,7 @@ const Game = (function() {
     const runStartPhase = function() {
         Player.getPlayersCardsCount();
         Player.getTopCard(0);
+        getCommonPileCount();
         getActivePlayer();
     };
 
@@ -110,6 +111,21 @@ const Game = (function() {
             });
 
             runRoundConclusionPhase();
+        });
+    };
+
+    const getCommonPileCount = function() {
+        $.get(`${restAPIurl}/getCommonPileCount`, function(response) {
+            if (response.count > 0) {
+                $(".js-common-pile").addClass(
+                    "game-status__common-pile--active"
+                );
+                $(".js-common-pile-value").text(response.count);
+            } else {
+                $(".js-common-pile").removeClass(
+                    "game-status__common-pile--active"
+                );
+            }
         });
     };
 

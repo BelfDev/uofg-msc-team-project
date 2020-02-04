@@ -185,6 +185,7 @@ public class TopTrumpsRESTAPI {
      * Handler to get game round outcome
      * 
      * @return game outcome (0 if draw, 1 if any player won) and winner ID (if it is a win)
+     * @throws IOException
      */
     public String getRoundOutcome() throws IOException {
         JsonNodeFactory factory = JsonNodeFactory.instance;
@@ -197,5 +198,24 @@ public class TopTrumpsRESTAPI {
         String outcome = rootNode.toString();
 
         return outcome;
+    }
+
+    @GET
+    @Path("/getCommonPileCount")
+    /**
+     * Handler to get common pile count
+     * 
+     * @return common pile count as JSON
+     * @throws IOException
+     */
+    public String getCommonPileCount() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode node = factory.objectNode();
+        node.put("count", 10);
+
+        String count = node.toString();
+
+        return count;
     }
 }
