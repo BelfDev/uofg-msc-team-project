@@ -96,3 +96,45 @@
     padding: 5px 0;
     text-align: center;
 }
+
+.backdrop {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal {
+    display: grid;
+    align-content: space-between;
+    box-sizing: border-box;
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    min-height: 350px;
+    padding: 30px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal__title {
+    font-size: 50px;
+}
+
+.modal__hint {
+}
+
+.modal--opened {
+    opacity: 1;
+    pointer-events: initial;
+}

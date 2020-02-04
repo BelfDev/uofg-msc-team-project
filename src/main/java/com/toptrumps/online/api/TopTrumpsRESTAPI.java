@@ -178,4 +178,24 @@ public class TopTrumpsRESTAPI {
 
         return cardCount;
     }
+
+    @GET
+    @Path("/getRoundOutcome")
+    /**
+     * Handler to get game round outcome
+     * 
+     * @return game outcome (0 if draw, 1 if any player won) and winner ID (if it is a win)
+     */
+    public String getRoundOutcome() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode rootNode = factory.objectNode();
+
+        rootNode.put("outcome", 1);
+        rootNode.put("playerID", 2);
+
+        String outcome = rootNode.toString();
+
+        return outcome;
+    }
 }
