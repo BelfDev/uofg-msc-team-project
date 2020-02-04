@@ -80,7 +80,7 @@ public class CommandLineController implements GameEventListener {
 
     @Override
     public void onRoundEnd(RoundOutcome outcome) {
-        System.out.println("Round finished");
+        System.out.println(outcome);
     }
 
     @Override
