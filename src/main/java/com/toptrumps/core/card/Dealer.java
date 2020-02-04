@@ -24,6 +24,10 @@ public class Dealer {
         System.out.println(deck);
     }
 
+    public ArrayList<Card> getCommunalPile() {
+        return communalPile;
+    }
+
     public void dealCards(ArrayList<Player> players) {
         int numberOfPlayers = players.size();
         shuffleCards();
@@ -34,6 +38,16 @@ public class Dealer {
             ArrayList<Card> currentDeck = new ArrayList<>(splitDecks.get(i));
             players.get(i).setDeck(currentDeck);
         }
+    }
+
+    public void putCardsOnCommunalPile(List<Card> cards) {
+        communalPile.addAll(cards);
+    }
+
+    public List<Card> dealCommunalPile() {
+        List<Card> pileInTransit = communalPile;
+        communalPile = new ArrayList<>();
+        return pileInTransit;
     }
 
     private void shuffleCards() {
