@@ -43,7 +43,6 @@ public class TopTrumps {
             String[] commandArgs = {String.valueOf(printTestLog)};
             TopTrumpsCLIApp.main(commandArgs);
         }
-
     }
 
 }

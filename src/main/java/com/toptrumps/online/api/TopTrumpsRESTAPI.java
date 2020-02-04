@@ -80,15 +80,142 @@ public class TopTrumpsRESTAPI {
     }
 
     @GET
-    @Path("/helloWord")
+    @Path("/getActivePlayer")
     /**
-     * Here is an example of how to read parameters provided in an HTML Get request.
-     * @param Word - A word
-     * @return - A String
+     * Handler to get active player id
+     * 
+     * @return - player id as JSON
      * @throws IOException
      */
-    public String helloWord(@QueryParam("Word") String Word) throws IOException {
-        return "Hello " + Word;
+    public String getActivePlayer() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode node = factory.objectNode();
+        node.put("playerID", 2);
+
+        String playerID = node.toString();
+
+        return playerID;
+    }
+    
+    @GET
+    @Path("/getChosenAttribute")
+    /**
+     * Handler to get chosen attribute
+     * 
+     * @return chosen category as JSON
+     * @throws IOException
+     */
+    public String getChosenAttribute() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode node = factory.objectNode();
+        node.put("attribute", "Dexterity");
+
+        String attribute = node.toString();
+
+        return attribute;
     }
 
+    @GET
+    @Path("/getOpponentsCards")
+    /**
+     * Handler to get all opponents' cards
+     * 
+     * @return array of players and corresponding cards as JSON
+     * @throws IOException
+     */
+    public String getOpponentsCards() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode rootNode = factory.objectNode();
+
+        for (int i = 1; i < 5; i++) {
+            ObjectNode attributesNode = factory.objectNode();
+            attributesNode.put("Strength", 10);
+            attributesNode.put("Dexterity", 9);
+            attributesNode.put("Constitution", 8);
+            attributesNode.put("Intelligence", 7);
+            attributesNode.put("Charisma", 6);
+
+            ObjectNode playerNode = factory.objectNode();
+            playerNode.put("name", "Card name");
+            playerNode.put("attributes", attributesNode);
+
+            String playerID = i+"";
+
+            rootNode.put(playerID, playerNode);
+        }
+
+        String cardData = rootNode.toString();
+
+        return cardData;
+    }
+
+    @GET
+    @Path("/getPlayersCardsCount")
+    /**
+     * Handler to get all players' cards count
+     * 
+     * @return array of players and corresponding cards count as JSON
+     * @throws IOException
+     */
+    public String getPlayersCardsCount() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode rootNode = factory.objectNode();
+
+        for (int i = 0; i < 5; i++) {
+            ObjectNode playerNode = factory.objectNode();
+            playerNode.put("count", 15);
+
+            String playerID = i+"";
+
+            rootNode.put(playerID, playerNode);
+        }
+
+        String cardCount = rootNode.toString();
+
+        return cardCount;
+    }
+
+    @GET
+    @Path("/getRoundOutcome")
+    /**
+     * Handler to get game round outcome
+     * 
+     * @return game outcome (0 if draw, 1 if any player won) and winner ID (if it is a win)
+     * @throws IOException
+     */
+    public String getRoundOutcome() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode rootNode = factory.objectNode();
+
+        rootNode.put("outcome", 1);
+        rootNode.put("playerID", 2);
+
+        String outcome = rootNode.toString();
+
+        return outcome;
+    }
+
+    @GET
+    @Path("/getCommonPileCount")
+    /**
+     * Handler to get common pile count
+     * 
+     * @return common pile count as JSON
+     * @throws IOException
+     */
+    public String getCommonPileCount() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode node = factory.objectNode();
+        node.put("count", 10);
+
+        String count = node.toString();
+
+        return count;
+    }
 }

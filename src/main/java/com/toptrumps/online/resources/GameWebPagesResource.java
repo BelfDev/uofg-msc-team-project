@@ -6,7 +6,6 @@ import com.toptrumps.online.views.StatisticsView;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.toptrumps.core.Player;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
