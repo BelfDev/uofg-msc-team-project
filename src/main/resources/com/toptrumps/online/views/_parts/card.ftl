@@ -1,4 +1,4 @@
-<div class="pcard">
+<div class="pcard js-card">
     <div class="pcard__image-box">
         <img
             class="pcard__image js-card-image"

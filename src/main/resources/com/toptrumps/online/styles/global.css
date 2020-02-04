@@ -33,9 +33,11 @@ main {
 }
 
 body {
+    position: relative;
     font-family: "Montserrat", SansSerif;
     font-weight: normal;
     font-style: normal;
+    font-size: 2rem;
     background-color: black;
     color: white;
     min-width: 800px;
@@ -45,12 +47,12 @@ body {
     display: inline-block;
     background-color: var(--color-button-light);
     color: var(--color-font-dark);
-    padding: 24px 44px;
-    border-radius: 16px;
+    padding: 2.4rem 4.4rem;
+    border-radius: 1.6rem;
     border: 1px solid var(--color-button-light);
     text-transform: uppercase;
     text-decoration: none;
-    font-size: 36px;
+    font-size: 3.6rem;
     white-space: nowrap;
     transition: all 0.2s ease-in-out;
 }
@@ -74,10 +76,10 @@ body {
 
 .button--small {
     box-sizing: border-box;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    min-width: 179px;
+    padding-top: 1.6rem;
+    padding-bottom: 1.6rem;
+    min-width: 17.9rem;
     text-align: center;
-    font-size: 16px;
+    font-size: 1.6rem;
     font-weight: bold;
 }

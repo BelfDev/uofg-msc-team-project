@@ -1,23 +1,69 @@
 .game-page {
-    padding: 10px 50px 10px;
     background: url("../images/game_page_bg.jpg") no-repeat;
     background-size: cover;
     display: grid;
     box-sizing: border-box;
-    grid-row-gap: 30px;
+    grid-row-gap: 3rem;
     grid-template-rows: auto 1fr auto;
-    min-height: 750px;
     height: 100%;
 }
 
 .game-status {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.game-status__content {
+    width: 90rem;
+    height: 16rem;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    margin: 2rem 0 0;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    border: 0.5rem solid #383029;
     text-align: center;
-    padding: 30px;
     background-color: black;
+    color: var(--color-font-light);
+}
+
+.game-status:after,
+.game-status:before {
+    display: block;
+    position: absolute;
+    content: "";
+    width: 53.6rem;
+    height: 17.8rem;
+    background: url(../images/panel_rope.png) no-repeat;
+    background-size: contain;
+}
+
+.game-status:after {
+    right: 0;
+    top: 0;
+    transform: scaleX(-1);
+}
+
+.game-status:before {
+    left: 0;
+    top: 0;
+}
+
+.game-status__log {
+    font-size: 4.2rem;
 }
 
 .game-status__common-pile {
     display: none;
+    position: absolute;
+    width: 100%;
+    font-size: 1.4rem;
+    bottom: 1rem;
 }
 
 .game-status__common-pile--active {
@@ -27,38 +73,94 @@
 .opponents {
     display: flex;
     justify-content: space-between;
+    width: 116rem;
+    margin: auto;
 }
 
 .pcard {
     display: inline-block;
-    height: 228px;
+    width: 18.8rem;
+    height: 28.1rem;
+    text-align: center;
     color: black;
-    background-color: lightgray;
+    background: url(../images/human_player_card_back.png) no-repeat;
+    background-size: cover;
+    border: 0.8rem solid transparent;
+    border-radius: 0.8rem;
+}
+
+.ai-player .pcard {
+    background-image: url(../images/ai_player_card_back.png);
 }
 
 .pcard__image-box {
-    height: 100px;
     overflow: hidden;
     vertical-align: middle;
-    display: flex;
     align-items: center;
+    border: 2px solid #fefefe;
+    border-radius: 0.8rem;
+    width: 16.1rem;
+    height: 15rem;
+}
+
+.pcard__image {
+    width: 100%;
+}
+
+.pcard__title {
+    position: relative;
+    font-size: 1.6rem;
+    font-weight: bold;
+    background-color: #f8f7f5;
+    border-radius: 1.6rem;
+    padding: 0.8rem;
+    color: #383029;
+    margin: -3.4rem 0.5rem 0;
 }
 
 .pcard__content {
-    padding: 10px;
+    color: #fff;
 }
 
 .pcard__chars--active .pcard__char {
     cursor: pointer;
 }
 
+.pcard__chars {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+    height: 11rem;
+    padding: 0.5rem 1rem;
+}
+
 .pcard__char {
     display: flex;
     justify-content: space-between;
+    font-size: 1.4rem;
 }
 
 .pcard__char--active {
     font-weight: bold;
+}
+
+.pcard .pcard__image-box,
+.pcard .pcard__content {
+    display: none;
+}
+
+.pcard--shown {
+    background: #38302a;
+    border-color: #626767;
+}
+
+.pcard--shown .pcard__image-box {
+    display: flex;
+    margin: 0.8rem auto 0;
+}
+
+.pcard--shown .pcard__content {
+    display: block;
 }
 
 .countdown {
@@ -94,15 +196,35 @@
 }
 
 .action-panel {
-    width: 700px;
+    width: 70rem;
     margin: auto;
     display: flex;
     justify-content: space-between;
+    background: rgba(145, 145, 145, 0.4);
+    padding: 2rem 4rem;
+    border-radius: 6rem;
+    border: 1px solid #141a1f;
+    margin-top: -8rem;
+    margin-bottom: 1rem;
 }
 
 .ai-player__details {
-    padding: 5px 0;
+    padding: 0.5rem 0;
     text-align: center;
+    background-color: #f8f7f5;
+    border: 2px solid #626767;
+    color: #626767;
+    border-radius: 0.6rem;
+    margin-top: 0.7rem;
+}
+
+.ai-player__name {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+.ai-player__hand {
+    font-size: 1.6rem;
 }
 
 .backdrop {
@@ -123,9 +245,9 @@
     z-index: 2;
     top: 50%;
     left: 50%;
-    width: 400px;
-    min-height: 350px;
-    padding: 30px;
+    width: 40rem;
+    min-height: 35rem;
+    padding: 3rem;
     transform: translate(-50%, -50%);
     text-align: center;
     background-color: rgba(0, 0, 0, 0.9);
@@ -136,7 +258,7 @@
 }
 
 .modal__title {
-    font-size: 50px;
+    font-size: 5rem;
 }
 
 .modal__hint {

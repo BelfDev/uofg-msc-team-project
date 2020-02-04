@@ -1,4 +1,6 @@
 const Card = (function() {
+    const cardSelector = ".js-card";
+    const cardActiveClass = "pcard--shown";
     const cardAttributeTemplateSelector = "#template-attribute-item";
     const cardAttributeSelector = ".js-card-char";
     const cardAttributeActiveClass = "pcard__char--active";
@@ -113,6 +115,10 @@ const Card = (function() {
         $(playerSelector)
             .find(cardAttributesWrapperSelector)
             .append(attrNodeCollection);
+
+        $(playerSelector)
+            .find(cardSelector)
+            .addClass(cardActiveClass);
     };
 
     init();

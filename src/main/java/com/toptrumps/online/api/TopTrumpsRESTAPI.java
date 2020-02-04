@@ -91,7 +91,7 @@ public class TopTrumpsRESTAPI {
         JsonNodeFactory factory = JsonNodeFactory.instance;
 
         ObjectNode node = factory.objectNode();
-        node.put("playerID", 2);
+        node.put("playerID", 0);
 
         String playerID = node.toString();
 
