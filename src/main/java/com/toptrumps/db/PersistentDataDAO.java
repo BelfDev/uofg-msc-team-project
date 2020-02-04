@@ -93,10 +93,9 @@ public class PersistentDataDAO{
              try{
                 if(getStats != null){getStats.close();}
                 if(conn != null){conn.close();}
-                }catch(SQLException e){
-                    e.printStackTrace();}
-                }
-
+             }catch(SQLException e){
+                e.printStackTrace();}
+             }
         return results;
     }
 }
