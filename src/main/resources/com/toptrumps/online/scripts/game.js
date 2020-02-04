@@ -1,8 +1,8 @@
 const Game = (function() {
-    const NUMBER_OF_AI_PLAYERS = 4;
+    const NUMBER_OF_AI_PLAYERS = 4; // TODO: to be obtained dynamically later
     const endTurnButtonSelector = ".js-end-turn-button";
 
-    let activeCategory = null;
+    let activeAttribute = null;
     let activePlayerID = null;
 
     const init = function() {
@@ -13,26 +13,26 @@ const Game = (function() {
     const bindEvents = function() {
         $(document).on("game:setActivePlayer", function(event, data) {
             activePlayerID = data.playerID;
-            runCategorySelectionPhase(data.playerID);
+            runAttributeSelectionPhase(data.playerID);
         });
 
-        $(document).on("game:categorySelect", function(event, data) {
+        $(document).on("game:attributeSelect", function(event, data) {
             if (activePlayerID === 0) {
                 $(document).trigger("message:log", {
-                    content: `You selected the "${data.category}" category`
+                    content: `You selected the "${data.attribute}" attribute`
                 });
             } else {
                 $(document).trigger("message:log", {
-                    content: `Player ${activePlayerID} selected the "${data.category}" category`
+                    content: `Player ${activePlayerID} selected the "${data.attribute}" attribute`
                 });
-                Card.highlightCategory(data.category);
+                Card.highlightAttribute(data.attribute);
             }
 
-            activeCategory = data.category;
+            activeAttribute = data.attribute;
         });
 
         $(document).on("game.cardsShown", function() {
-            Card.highlightCategory(activeCategory);
+            Card.highlightAttribute(activeAttribute);
 
             setTimeout(function() {
                 getRoundOutcome();
@@ -40,7 +40,7 @@ const Game = (function() {
         });
 
         $(endTurnButtonSelector).on("click", function(e) {
-            if (activeCategory !== null) {
+            if (activeAttribute !== null) {
                 runRoundConclusionPhase();
             }
 
@@ -54,24 +54,24 @@ const Game = (function() {
         getActivePlayer();
     };
 
-    const runCategorySelectionPhase = function(playerID) {
+    const runAttributeSelectionPhase = function(playerID) {
         // Human player has id 0
         if (playerID === 0) {
             $(document).trigger("message:log", {
-                content: "You are an active player. Choose a category"
+                content: "You are an active player. Choose an attribute"
             });
 
-            $(document).trigger("card:categorySelection", { active: true });
+            $(document).trigger("card:attributeSelection", { active: true });
         } else {
             $(document).trigger("message:log", {
-                content: `Player ${playerID} is an active player and choosing a category`
+                content: `Player ${playerID} is an active player and choosing an attribute`
             });
 
-            $(document).trigger("card:categorySelection", { active: false });
+            $(document).trigger("card:attributeSelection", { active: false });
 
             setTimeout(function() {
                 $(document).trigger("countdown:run", {
-                    callback: getChosenCategory
+                    callback: getChosenAttribute
                 });
             }, 2000);
         }
@@ -81,6 +81,7 @@ const Game = (function() {
         Player.getOpponentsCards();
     };
 
+<<<<<<< HEAD
     const getRoundOutcome = function() {
         $.get(`${restAPIurl}/getRoundOutcome`, function(response) {
             let targetModalSelector;
@@ -107,6 +108,12 @@ const Game = (function() {
         $.get(`${restAPIurl}/getChosenCategory`, function(response) {
             $(document).trigger("game:categorySelect", {
                 category: response.category
+=======
+    const getChosenAttribute = function() {
+        $.get(`${restAPIurl}/getChosenAttribute`, function(response) {
+            $(document).trigger("game:attributeSelect", {
+                attribute: response.attribute
+>>>>>>> development
             });
 
             runRoundConclusionPhase();
