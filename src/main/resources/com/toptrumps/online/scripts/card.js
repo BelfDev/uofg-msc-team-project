@@ -60,7 +60,7 @@ const Card = (function() {
     };
 
     const enableAttributeSelection = function() {
-        let playerSelector = Player.getHumanPlayerSelector();
+        let playerSelector = Player.getPlayerSelectorByID(0);
 
         const $attributesWrapper = getAttributesWrapper(playerSelector);
         $attributesWrapper.addClass(cardAttributesWrapperActiveClass);
@@ -80,7 +80,7 @@ const Card = (function() {
     };
 
     const disableAttributeSelection = function() {
-        let playerSelector = Player.getHumanPlayerSelector();
+        let playerSelector = Player.getPlayerSelectorByID(0);
 
         const $attributesWrapper = getAttributesWrapper(playerSelector);
         $attributesWrapper.removeClass(cardAttributesWrapperActiveClass);

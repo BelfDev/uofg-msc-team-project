@@ -45,6 +45,7 @@ const Game = (function() {
     };
 
     const runStartPhase = function() {
+        Player.getPlayersCardsCount();
         Player.getTopCard(0);
         getActivePlayer();
     };

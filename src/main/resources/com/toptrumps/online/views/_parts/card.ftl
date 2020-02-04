@@ -7,7 +7,7 @@
         />
     </div>
     <div class="pcard__content">
-        <div class="pcard__title js-card-title">Card title</div>
+        <div class="pcard__title js-card-title"></div>
         <div class="pcard__chars js-card-chars"></div>
     </div>
 </div>
