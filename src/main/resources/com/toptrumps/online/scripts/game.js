@@ -106,7 +106,7 @@ const Game = (function() {
     const getChosenAttribute = function() {
         $.get(`${restAPIurl}/getChosenAttribute`, function(response) {
             $(document).trigger("game:attributeSelect", {
-                category: response.attribute
+                attribute: response.attribute
             });
 
             runRoundConclusionPhase();
