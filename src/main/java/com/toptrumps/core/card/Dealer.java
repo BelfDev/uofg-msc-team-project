@@ -20,8 +20,6 @@ public class Dealer {
     public Dealer() {
         this.deck = DeckParser.parseDeck(DECK_RESOURCE);
         this.communalPile = new ArrayList<>();
-
-        System.out.println(deck);
     }
 
     public ArrayList<Card> getCommunalPile() {

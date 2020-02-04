@@ -80,7 +80,7 @@ public class TopTrumpsOnlineApp extends Application<TopTrumpsJSONConfiguration> 
 
 
     /**
-     * An initalization method that attaches the Configuration to the views
+     * An initialization method that attaches the Configuration to the views
      */
     @Override
     public void initialize(Bootstrap<TopTrumpsJSONConfiguration> bootstrap) {
