@@ -81,7 +81,6 @@ const Game = (function() {
         Player.getOpponentsCards();
     };
 
-<<<<<<< HEAD
     const getRoundOutcome = function() {
         $.get(`${restAPIurl}/getRoundOutcome`, function(response) {
             let targetModalSelector;
@@ -104,16 +103,10 @@ const Game = (function() {
         });
     };
 
-    const getChosenCategory = function() {
-        $.get(`${restAPIurl}/getChosenCategory`, function(response) {
-            $(document).trigger("game:categorySelect", {
-                category: response.category
-=======
     const getChosenAttribute = function() {
         $.get(`${restAPIurl}/getChosenAttribute`, function(response) {
             $(document).trigger("game:attributeSelect", {
-                attribute: response.attribute
->>>>>>> development
+                category: response.attribute
             });
 
             runRoundConclusionPhase();
