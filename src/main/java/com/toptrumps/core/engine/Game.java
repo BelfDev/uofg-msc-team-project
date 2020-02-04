@@ -119,17 +119,27 @@ public class Game {
 
             //Determine if any players have been eliminated
             Player eliminatedPlayer = null;
+            ArrayList<Player> eliminatedPlayers = new ArrayList<Player>();
             for(Player player: players){
                 if(player.getDeck().isEmpty()){
-                    eliminatedPlayer = player;
+                    if(eliminatedPlayer == null){
+                        eliminatedPlayer = player;
+                    }else{
+                        if(!eliminatedPlayers.contains(eliminatedPlayer)){
+                            eliminatedPlayers.add(eliminatedPlayer);
+                        }
+                        eliminatedPlayers.add(player);
+                    }
                 }
             }
             
             //Call the correct method for the round end 
-            if(eliminatedPlayer == null){
+            if(eliminatedPlayer == null && eliminatedPlayers.isEmpty()){
                 listener.onRoundEnd(outcome);
-            }else{
+            }else if(eliminatedPlayers.isEmpty()){
                 listener.onRoundEnd(outcome, eliminatedPlayer);
+            }else{
+                listener.onRoundEnd(outcome, eliminatedPlayers);
             }
             
 

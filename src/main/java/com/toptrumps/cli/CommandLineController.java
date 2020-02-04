@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -87,6 +88,22 @@ public class CommandLineController implements GameEventListener {
     public void onRoundEnd(RoundOutcome outcome, Player eliminatedPlayer){
         System.out.println("\n"+outcome);
         System.out.println(eliminatedPlayer.getName() + " has been eliminated from the game\n");
+    }
+
+    @Override
+    public void onRoundEnd(RoundOutcome outcome, ArrayList<Player> eliminatedPlayers){
+        System.out.println("\n"+outcome);
+        String eliminatedString = "";
+        for(Player player: eliminatedPlayers){
+            if(player == eliminatedPlayers.get(eliminatedPlayers.size()-1)){
+                eliminatedString += " and " + player.getName() + " have been eliminated from the game\n";
+            }else if(player == eliminatedPlayers.get(eliminatedPlayers.size()-2)){
+                eliminatedString += player.getName();
+            }else{
+                eliminatedString += player.getName() + ", ";
+            }
+        }
+        System.out.println(eliminatedString);
     }
 
     @Override
