@@ -33,6 +33,10 @@ const Game = (function() {
 
         $(document).on("game.cardsShown", function() {
             Card.highlightAttribute(activeAttribute);
+
+            setTimeout(function() {
+                getRoundOutcome();
+            }, 3000);
         });
 
         $(endTurnButtonSelector).on("click", function(e) {
@@ -75,6 +79,28 @@ const Game = (function() {
 
     const runRoundConclusionPhase = function() {
         Player.getOpponentsCards();
+    };
+
+    const getRoundOutcome = function() {
+        $.get(`${restAPIurl}/getRoundOutcome`, function(response) {
+            let targetModalSelector;
+            let modalTitle = null;
+            let modalHint = null;
+
+            if (response.outcome === 0) {
+                targetModalSelector = ".js-round-draw-modal";
+                modalTitle = "It's a draw";
+                modalHint = `Common pile is now - ${response.commonPile} cards`;
+            } else {
+                targetModalSelector = ".js-round-win-modal";
+                modalTitle =
+                    response.playerID === 0
+                        ? "You won!"
+                        : `Player ${response.playerID} won!`;
+            }
+
+            Modal.openModal(targetModalSelector, modalTitle, modalHint);
+        });
     };
 
     const getChosenAttribute = function() {

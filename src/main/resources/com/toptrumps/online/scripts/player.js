@@ -12,6 +12,7 @@ const Player = (function() {
             $.each(response, function(i, card) {
                 Card.update(i, card);
             });
+            $(document).trigger("game.cardsShown");
         });
     };
 

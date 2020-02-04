@@ -113,8 +113,6 @@ const Card = (function() {
         $(playerSelector)
             .find(cardAttributesWrapperSelector)
             .append(attrNodeCollection);
-
-        $(document).trigger("game.cardsShown");
     };
 
     init();
