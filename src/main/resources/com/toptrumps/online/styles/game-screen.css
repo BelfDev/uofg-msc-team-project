@@ -16,6 +16,14 @@
     background-color: black;
 }
 
+.game-status__common-pile {
+    display: none;
+}
+
+.game-status__common-pile--active {
+    display: block;
+}
+
 .opponents {
     display: flex;
     justify-content: space-between;
