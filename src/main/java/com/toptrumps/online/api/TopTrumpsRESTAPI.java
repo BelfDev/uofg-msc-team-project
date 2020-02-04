@@ -116,4 +116,39 @@ public class TopTrumpsRESTAPI {
 
         return attribute;
     }
+
+    @GET
+    @Path("/getOpponentsCards")
+    /**
+     * Handler to get all opponents' cards
+     * 
+     * @return array of players and corresponding cards as JSON
+     * @throws IOException
+     */
+    public String getOpponentsCards() throws IOException {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+
+        ObjectNode rootNode = factory.objectNode();
+
+        for (int i = 1; i < 5; i++) {
+            ObjectNode attributesNode = factory.objectNode();
+            attributesNode.put("Strength", 10);
+            attributesNode.put("Dexterity", 9);
+            attributesNode.put("Constitution", 8);
+            attributesNode.put("Intelligence", 7);
+            attributesNode.put("Charisma", 6);
+
+            ObjectNode playerNode = factory.objectNode();
+            playerNode.put("name", "Card name");
+            playerNode.put("attributes", attributesNode);
+
+            String playerID = i+"";
+
+            rootNode.put(playerID, playerNode);
+        }
+
+        String cardData = rootNode.toString();
+
+        return cardData;
+    }
 }

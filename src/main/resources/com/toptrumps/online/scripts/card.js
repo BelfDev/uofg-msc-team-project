@@ -1,4 +1,5 @@
 const Card = (function() {
+    const cardAttributeTemplateSelector = "#template-attribute-item";
     const cardAttributeSelector = ".js-card-char";
     const cardAttributeActiveClass = "pcard__char--active";
     const cardAttributeValueSelector = ".js-card-char-value";
@@ -26,9 +27,18 @@ const Card = (function() {
         return `/assets/images/${imageName}.png`;
     };
 
+    const highlightAttribute = function(attribute) {
+        $(cardAttributeSelector).removeClass(cardAttributeActiveClass);
+        $(cardAttributeSelector)
+            .filter(function() {
+                return $(this).data("attribute") == attribute;
+            })
+            .addClass(cardAttributeActiveClass);
+    };
+
     const createAttributesNodes = function(playerSelector, attributesData) {
         let attrNodeCollection = [];
-        const attrTpl = $(playerSelector).find(cardAttributeSelector);
+        const attrTpl = $(cardAttributeTemplateSelector).html();
 
         $.each(attributesData, function(name, value) {
             const attrNode = $(attrTpl).clone();
@@ -103,6 +113,8 @@ const Card = (function() {
         $(playerSelector)
             .find(cardAttributesWrapperSelector)
             .append(attrNodeCollection);
+
+        $(document).trigger("game.cardsShown");
     };
 
     init();
@@ -110,6 +122,7 @@ const Card = (function() {
     return {
         update,
         enableAttributeSelection,
-        disableAttributeSelection
+        disableAttributeSelection,
+        highlightAttribute
     };
 })();

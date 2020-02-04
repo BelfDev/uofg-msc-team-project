@@ -25,9 +25,14 @@ const Game = (function() {
                 $(document).trigger("message:log", {
                     content: `Player ${activePlayerID} selected the "${data.attribute}" attribute`
                 });
+                Card.highlightAttribute(data.attribute);
             }
 
             activeAttribute = data.attribute;
+        });
+
+        $(document).on("game.cardsShown", function() {
+            Card.highlightAttribute(activeAttribute);
         });
 
         $(endTurnButtonSelector).on("click", function(e) {
@@ -68,8 +73,7 @@ const Game = (function() {
     };
 
     const runRoundConclusionPhase = function() {
-        console.log("runRoundConclusionPhase");
-        // TODO: reveal other players cards and announce the winner
+        Player.getOpponentsCards();
     };
 
     const getChosenAttribute = function() {
@@ -77,6 +81,8 @@ const Game = (function() {
             $(document).trigger("game:attributeSelect", {
                 attribute: response.attribute
             });
+
+            runRoundConclusionPhase();
         });
     };
 
