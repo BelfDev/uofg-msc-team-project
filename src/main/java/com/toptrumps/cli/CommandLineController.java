@@ -114,11 +114,11 @@ public class CommandLineController implements GameEventListener {
     private void showEliminatedPlayers(ArrayList<Player> removedPlayers){
         String eliminatedString = "";
         if(removedPlayers.size()==1){
-            eliminatedString += removedPlayers.get(0).getName() + " has been eliminated from the game\n";
+            eliminatedString += removedPlayers.get(0).getName() + " has been eliminated from the game";
         }else{
             for(Player player: removedPlayers){
                 if(player == removedPlayers.get(removedPlayers.size()-1)){
-                    eliminatedString += " and " + player.getName() + " have been eliminated from the game\n";
+                    eliminatedString += " and " + player.getName() + " have been eliminated from the game";
                 }else if(player == removedPlayers.get(removedPlayers.size()-2)){
                     eliminatedString += player.getName();
                 }else{
@@ -131,12 +131,12 @@ public class CommandLineController implements GameEventListener {
 
     @Override
     public void onGameOver(Player winner) {
-        String message = String.format("GAME OVER, %s won", winner.getName());
+        String message = String.format("\nGAME OVER, %s won", winner.getName());
         System.out.println(message);
     }
 
     private void showRound(int roundNumber) {
-        String message = String.format("\nRound %d: Players have drawn their cards", roundNumber);
+        String message = String.format("\n\nRound %d: Players have drawn their cards", roundNumber);
         System.out.println(message);
     }
 
