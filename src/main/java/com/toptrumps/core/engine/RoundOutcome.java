@@ -40,26 +40,4 @@ public class RoundOutcome {
         return draws;
     }
 
-    public String toString(){
-        String outcome = "The round resulted in a: ";
-        switch(result){
-            case VICTORY:
-                outcome += "Victory!\nThe winner is: " + winner.getName();
-                break;
-            case DRAW:
-                outcome += "Draw\nThe score was tied between: ";
-                for(Player player: draws){
-                    if(player == draws.get(draws.size()-1)){
-                        outcome += " and " + player.getName();
-                    }else if(player == draws.get(draws.size()-2)){
-                        outcome += player.getName();
-                    }else{
-                        outcome += player.getName() + ", ";
-                    }
-                }
-                break;
-        }
-        return outcome;
-    }
-
 }

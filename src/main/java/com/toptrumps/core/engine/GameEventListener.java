@@ -12,8 +12,6 @@ public interface GameEventListener {
     Attribute onRequestSelection(final Card card);
     void onAttributeSelected(final Player activePlayer);
     void onRoundEnd(final RoundOutcome outcome);
-    void onRoundEnd(final RoundOutcome outcome, final Player eliminatedPlayer);
-    void onRoundEnd(final RoundOutcome outcome, final ArrayList<Player> eliminatedPlayers);
     void onGameOver(Player winner);
 
 }

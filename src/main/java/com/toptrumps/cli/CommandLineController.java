@@ -81,7 +81,24 @@ public class CommandLineController implements GameEventListener {
 
     @Override
     public void onRoundEnd(RoundOutcome outcome) {
-        System.out.println("\n"+outcome+"\n");
+        String roundResult = "The round resulted in a: ";
+        switch(outcome.getResult()){
+            case VICTORY:
+                outcome += "Victory!\nThe winner is: " + outcome.getWinner().getName();
+                break;
+            case DRAW:
+                outcome += "Draw\nThe score was tied between: ";
+                for(Player player: draws){
+                    if(player == outcome.getDraws().get(outcome.getDraws().size()-1)){
+                        outcome += " and " + player.getName();
+                    }else if(player == outcome.getDraws().get(outcome.getDraws().size()-2)){
+                        outcome += player.getName();
+                    }else{
+                        outcome += player.getName() + ", ";
+                    }
+                }
+                break;
+        }
     }
 
     @Override
