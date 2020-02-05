@@ -73,22 +73,34 @@ public class PersistentDataDAO{
       }
     }
 
-    public static ResultSet getStatistics(){
+    public static Statistics getStatistics(){
 
         Connection conn = ConnectionFactory.getConnection();
         PreparedStatement getStats = null;
         String getStatsSQL = "SELECT * FROM persistent_game_data;";
         ResultSet results = null;
+        Statistics statistics = null;
 
         try{
 
             getStats = conn.prepareStatement(getStatsSQL);
             results = getStats.executeQuery();
+
+            while(results.next()) {statistics = new Statistics(results);}
             
         }catch(SQLException e){
             e.printStackTrace();   
         }
-        
-        return results;
+
+        finally{
+            try{
+               if(getStats != null){getStats.close();}
+               if(conn != null){conn.close();}
+               results.close();
+            }catch(SQLException e){
+               e.printStackTrace();}
+            }
+
+        return statistics;
     }
 }
