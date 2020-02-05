@@ -10,7 +10,9 @@ const Player = (function() {
     const getOpponentsCards = function() {
         $.get(`${restAPIurl}/getOpponentsCards`, function(response) {
             $.each(response, function(i, card) {
-                Card.update(i, card);
+                setTimeout(function() {
+                    Card.update(i, card);
+                }, 500 * i);
             });
             $(document).trigger("game.cardsShown");
         });

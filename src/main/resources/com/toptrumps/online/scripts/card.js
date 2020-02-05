@@ -116,9 +116,27 @@ const Card = (function() {
             .find(cardAttributesWrapperSelector)
             .append(attrNodeCollection);
 
-        $(playerSelector)
-            .find(cardSelector)
-            .addClass(cardActiveClass);
+        const $card = $(playerSelector).find(cardSelector);
+
+        $card.addClass(cardActiveClass);
+
+        animateCard($card, playerID);
+    };
+
+    const animateCard = function($card, playerID) {
+        var card = document.querySelector(
+            `.js-player[data-player-id="Player ${playerID}"] .js-card`
+        );
+
+        const options = {
+            targets: card,
+            scale: [{ value: 1 }, { value: 1.3 }, { value: 1, delay: 250 }],
+            rotateY: { value: "+=180", delay: 200 },
+            easing: "easeInOutSine",
+            duration: 400
+        };
+
+        anime(options);
     };
 
     init();

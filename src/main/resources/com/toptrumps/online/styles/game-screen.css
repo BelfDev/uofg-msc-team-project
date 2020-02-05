@@ -6,6 +6,7 @@
     grid-row-gap: 3rem;
     grid-template-rows: auto 1fr auto;
     height: 100%;
+    min-height: 105rem;
 }
 
 .game-status {
@@ -78,22 +79,44 @@
 }
 
 .pcard {
+    position: relative;
     display: inline-block;
-    width: 18.8rem;
-    height: 28.1rem;
-    text-align: center;
-    color: black;
-    background: url(../images/human_player_card_back.png) no-repeat;
-    background-size: cover;
-    border: 0.8rem solid transparent;
-    border-radius: 0.8rem;
+    width: 20.4rem;
+    height: 30.7rem;
+    transform-style: preserve-3d;
 }
 
-.ai-player .pcard {
+.pcard__front,
+.pcard__back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    backface-visibility: hidden;
+}
+
+.pcard__back {
+    background: url(../images/human_player_card_back.png) no-repeat;
+    background-size: cover;
+}
+
+.pcard__front {
+    text-align: center;
+    color: black;
+    border: 0.8rem solid transparent;
+    border-radius: 0.8rem;
+    transform: rotateY(180deg);
+}
+
+.ai-player .pcard__back {
     background-image: url(../images/ai_player_card_back.png);
 }
 
 .pcard__image-box {
+    display: flex;
+    margin: 0.8rem auto 0;
     overflow: hidden;
     vertical-align: middle;
     align-items: center;
@@ -119,6 +142,7 @@
 }
 
 .pcard__content {
+    display: block;
     color: #fff;
 }
 
@@ -130,7 +154,7 @@
     display: flex;
     flex-flow: column;
     justify-content: space-evenly;
-    height: 11rem;
+    height: 12rem;
     padding: 0.5rem 1rem;
 }
 
@@ -144,23 +168,13 @@
     font-weight: bold;
 }
 
-.pcard .pcard__image-box,
-.pcard .pcard__content {
-    display: none;
-}
-
-.pcard--shown {
+.pcard__front {
     background: #38302a;
     border-color: #626767;
 }
 
-.pcard--shown .pcard__image-box {
-    display: flex;
-    margin: 0.8rem auto 0;
-}
-
-.pcard--shown .pcard__content {
-    display: block;
+.human-player .pcard {
+    /* transform: scale(1.3) translateY(-4rem); */
 }
 
 .countdown {
@@ -192,6 +206,7 @@
 }
 
 .human-player {
+    padding-top: 10rem;
     text-align: center;
 }
 
@@ -245,16 +260,31 @@
     z-index: 2;
     top: 50%;
     left: 50%;
-    width: 40rem;
-    min-height: 35rem;
-    padding: 3rem;
+    width: 70rem;
+    min-height: 50rem;
+    padding: 12rem;
     transform: translate(-50%, -50%);
+    border: 0.4rem solid #dbdbdb;
+    border-radius: 1.6rem;
     text-align: center;
-    background-color: rgba(0, 0, 0, 0.9);
     color: #fff;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
+}
+
+.modal:after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 1.6rem;
+    background: rgba(13, 33, 44, 0.5);
+    z-index: -1;
+    backdrop-filter: blur(1px);
 }
 
 .modal__title {

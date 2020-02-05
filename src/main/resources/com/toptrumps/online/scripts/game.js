@@ -6,7 +6,9 @@ const Game = (function() {
     let activePlayerID = null;
 
     const init = function() {
-        runStartPhase();
+        setTimeout(function() {
+            runStartPhase();
+        }, 2000);
         bindEvents();
     };
 
