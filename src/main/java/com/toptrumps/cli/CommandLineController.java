@@ -81,43 +81,48 @@ public class CommandLineController implements GameEventListener {
 
     @Override
     public void onRoundEnd(RoundOutcome outcome) {
+        showRoundResult(outcome);
+        ArrayList<Player> removedPlayers = outcome.getRemovedPlayers();
+        if(!removedPlayers.isEmpty()){
+            showEliminatedPlayers(removedPlayers);
+        }
+    }
+
+    private void showRoundResult(RoundOutcome outcome){
         String roundResult = "\nThe round resulted in a: ";
         switch(outcome.getResult()){
             case VICTORY:
-                outcome += "Victory!\nThe winner is: " + outcome.getWinner().getName();
+                roundResult += "Victory!\nThe winner is: " + outcome.getWinner().getName();
                 break;
             case DRAW:
-                outcome += "Draw\nThe score was tied between: ";
+                roundResult += "Draw\nThe score was tied between: ";
                 for(Player player: draws){
                     if(player == outcome.getDraws().get(outcome.getDraws().size()-1)){
-                        outcome += " and " + player.getName();
+                        roundResult += " and " + player.getName();
                     }else if(player == outcome.getDraws().get(outcome.getDraws().size()-2)){
-                        outcome += player.getName();
+                        roundResult += player.getName();
                     }else{
-                        outcome += player.getName() + ", ";
+                        roundResult += player.getName() + ", ";
                     }
                 }
                 break;
         }
+        System.out.println(roundResult);
     }
 
-    @Override
-    public void onRoundEnd(RoundOutcome outcome, Player eliminatedPlayer){
-        System.out.println("\n"+outcome);
-        System.out.println(eliminatedPlayer.getName() + " has been eliminated from the game\n");
-    }
-
-    @Override
-    public void onRoundEnd(RoundOutcome outcome, ArrayList<Player> eliminatedPlayers){
-        System.out.println("\n"+outcome);
-        String eliminatedString = "";
-        for(Player player: eliminatedPlayers){
-            if(player == eliminatedPlayers.get(eliminatedPlayers.size()-1)){
-                eliminatedString += " and " + player.getName() + " have been eliminated from the game\n";
-            }else if(player == eliminatedPlayers.get(eliminatedPlayers.size()-2)){
-                eliminatedString += player.getName();
-            }else{
-                eliminatedString += player.getName() + ", ";
+    private void showEliminatedPlayers(ArrayList<Player> removedPlayers){
+        String eliminatedString = ""
+        if(removedPlayers.size()==1){
+            eliminatedString += removedPlayers.getName() + " has been eliminated from the game\n"
+        }else{
+            for(Player player: removedPlayers){
+                if(player == removedPlayers.get(eliminatedPlayers.size()-1)){
+                    eliminatedString += " and " + player.getName() + " have been eliminated from the game\n";
+                }else if(player == removedPlayers.get(eliminatedPlayers.size()-2)){
+                    eliminatedString += player.getName();
+                }else{
+                    eliminatedString += player.getName() + ", ";
+                }
             }
         }
         System.out.println(eliminatedString);
