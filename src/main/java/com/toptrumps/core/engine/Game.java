@@ -121,6 +121,8 @@ public class Game {
                 outcome = new RoundOutcome(DRAW, winners, defeatedPlayers);
                 dealer.putCardsOnCommunalPile(roundCards);
             }
+
+            listener.onRoundEnd(outcome);
         }
 
         listener.onGameOver(activePlayer);

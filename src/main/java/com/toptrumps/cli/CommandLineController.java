@@ -136,7 +136,7 @@ public class CommandLineController implements GameEventListener {
     }
 
     private void showRound(int roundNumber) {
-        String message = String.format("Round %d: Players have drawn their cards", roundNumber);
+        String message = String.format("\nRound %d: Players have drawn their cards", roundNumber);
         System.out.println(message);
     }
 
