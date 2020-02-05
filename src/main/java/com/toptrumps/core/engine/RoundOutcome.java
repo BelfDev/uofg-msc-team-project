@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class RoundOutcome {
 
-    enum Result {
+    public enum Result {
         VICTORY, DRAW
     }
 

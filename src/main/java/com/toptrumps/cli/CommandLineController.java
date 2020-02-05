@@ -89,14 +89,15 @@ public class CommandLineController implements GameEventListener {
     }
 
     private void showRoundResult(RoundOutcome outcome){
+        RoundOutcome.Result result = outcome.getResult();
         String roundResult = "\nThe round resulted in a: ";
-        switch(outcome.getResult()){
+        switch(result){
             case VICTORY:
                 roundResult += "Victory!\nThe winner is: " + outcome.getWinner().getName();
                 break;
             case DRAW:
                 roundResult += "Draw\nThe score was tied between: ";
-                for(Player player: draws){
+                for(Player player: outcome.getDraws()){
                     if(player == outcome.getDraws().get(outcome.getDraws().size()-1)){
                         roundResult += " and " + player.getName();
                     }else if(player == outcome.getDraws().get(outcome.getDraws().size()-2)){
@@ -111,14 +112,14 @@ public class CommandLineController implements GameEventListener {
     }
 
     private void showEliminatedPlayers(ArrayList<Player> removedPlayers){
-        String eliminatedString = ""
+        String eliminatedString = "";
         if(removedPlayers.size()==1){
-            eliminatedString += removedPlayers.getName() + " has been eliminated from the game\n"
+            eliminatedString += removedPlayers.get(0).getName() + " has been eliminated from the game\n";
         }else{
             for(Player player: removedPlayers){
-                if(player == removedPlayers.get(eliminatedPlayers.size()-1)){
+                if(player == removedPlayers.get(removedPlayers.size()-1)){
                     eliminatedString += " and " + player.getName() + " have been eliminated from the game\n";
-                }else if(player == removedPlayers.get(eliminatedPlayers.size()-2)){
+                }else if(player == removedPlayers.get(removedPlayers.size()-2)){
                     eliminatedString += player.getName();
                 }else{
                     eliminatedString += player.getName() + ", ";
