@@ -84,49 +84,51 @@ public class CommandLineController implements GameEventListener {
         showRoundResult(outcome);
         ArrayList<Player> removedPlayers = outcome.getRemovedPlayers();
         if(!removedPlayers.isEmpty()){
-            showEliminatedPlayers(removedPlayers);
+            showRemovedPlayers(removedPlayers);
         }
     }
 
     private void showRoundResult(RoundOutcome outcome){
         RoundOutcome.Result result = outcome.getResult();
-        String roundResult = "\nThe round resulted in a: ";
+        String outcomeMessage = "\nThe round resulted in a: ";
         switch(result){
             case VICTORY:
-                roundResult += "Victory!\nThe winner is: " + outcome.getWinner().getName();
+                outcomeMessage += "Victory!\nThe winner is: " + outcome.getWinner().getName();
                 break;
             case DRAW:
-                roundResult += "Draw\nThe score was tied between: ";
+                outcomeMessage += "Draw\nThe score was tied between: ";
                 for(Player player: outcome.getDraws()){
                     if(player == outcome.getDraws().get(outcome.getDraws().size()-1)){
-                        roundResult += " and " + player.getName();
+                        outcomeMessage += " and " + player.getName();
                     }else if(player == outcome.getDraws().get(outcome.getDraws().size()-2)){
-                        roundResult += player.getName();
+                        outcomeMessage += player.getName();
                     }else{
-                        roundResult += player.getName() + ", ";
+                        outcomeMessage += player.getName() + ", ";
                     }
                 }
                 break;
         }
-        System.out.println(roundResult);
+        System.out.println(outcomeMessage);
     }
 
-    private void showEliminatedPlayers(ArrayList<Player> removedPlayers){
-        String eliminatedString = "";
+    private void showRemovedPlayers(ArrayList<Player> removedPlayers){
+        String removedPlayersString = "";
         if(removedPlayers.size()==1){
-            eliminatedString += removedPlayers.get(0).getName() + " has been eliminated from the game";
+            removedPlayersString += removedPlayers.get(0).getName() + " has been removed from the game";
         }else{
+            Player lastPlayerInList = removedPlayers.get(removedPlayers.size()-1);
+            Player secondLastPlayerInList = removedPlayers.get(removedPlayers.size()-2);
             for(Player player: removedPlayers){
-                if(player == removedPlayers.get(removedPlayers.size()-1)){
-                    eliminatedString += " and " + player.getName() + " have been eliminated from the game";
-                }else if(player == removedPlayers.get(removedPlayers.size()-2)){
-                    eliminatedString += player.getName();
+                if(player == lastPlayerInList){
+                    removedPlayersString += " and " + player.getName() + " have been removed from the game";
+                }else if(player == secondLastPlayerInList){
+                    removedPlayersString += player.getName();
                 }else{
-                    eliminatedString += player.getName() + ", ";
+                    removedPlayersString += player.getName() + ", ";
                 }
             }
         }
-        System.out.println(eliminatedString);
+        System.out.println(removedPlayersString);
     }
 
     @Override
