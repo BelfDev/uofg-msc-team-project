@@ -100,12 +100,17 @@ public class Game {
             // TODO: Revisit this to avoid another loop
             players.forEach(Player::removeTopCard);
 
+            //collect any defeated players and remove them from the game
+            ArrayList<Player> defeatedPlayers = (ArrayList<Player>) players.stream().filter(p -> p.getDeck().isEmpty()).collect(toList());
+            players.removeAll(defeatedPlayers);
+            numberOfPlayers = players.size();
+
             if (winners.size() == 1) {
                 // There's a winner
                 activePlayer.setActive(false);
                 Player winner = winners.get(0);
                 winner.setActive(true);
-                outcome = new RoundOutcome(VICTORY, winner);
+                outcome = new RoundOutcome(VICTORY, winner, defeatedPlayers);
                 // Collect all player's cards
                 List<Card> communalPile = dealer.dealCommunalPile();
                 roundCards.addAll(communalPile);
@@ -113,40 +118,9 @@ public class Game {
                 activePlayer = winner;
             } else {
                 // Draw
-                outcome = new RoundOutcome(DRAW, winners);
+                outcome = new RoundOutcome(DRAW, winners, defeatedPlayers);
                 dealer.putCardsOnCommunalPile(roundCards);
             }
-
-            //Determine if any players have been eliminated
-            Player eliminatedPlayer = null;
-            ArrayList<Player> eliminatedPlayers = new ArrayList<Player>();
-            for(Player player: players){
-                if(player.getDeck().isEmpty()){
-                    if(eliminatedPlayer == null){
-                        eliminatedPlayer = player;
-                    }else{
-                        if(!eliminatedPlayers.contains(eliminatedPlayer)){
-                            eliminatedPlayers.add(eliminatedPlayer);
-                        }
-                        eliminatedPlayers.add(player);
-                    }
-                }
-            }
-            
-            //Call the correct method for the round end 
-            if(eliminatedPlayer == null && eliminatedPlayers.isEmpty()){
-                listener.onRoundEnd(outcome);
-            }else if(eliminatedPlayers.isEmpty()){
-                listener.onRoundEnd(outcome, eliminatedPlayer);
-            }else{
-                listener.onRoundEnd(outcome, eliminatedPlayers);
-            }
-            
-
-            // Round clean-up
-            // Removes players without cards
-            players.removeIf(player -> player.getDeck().isEmpty());
-            numberOfPlayers = players.size();
         }
 
         listener.onGameOver(activePlayer);
