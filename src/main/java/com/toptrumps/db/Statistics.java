@@ -7,38 +7,38 @@ import java.sql.Statement;
 
 public class Statistics{
 
-    private int games_played;
-    private int ai_wins;
-    private int human_wins;
-    private int draws_average;
-    private int max_rounds; 
+    private int gamesPlayed;
+    private int aiWins;
+    private int humanWins;
+    private int drawsAverage;
+    private int maxRounds; 
 
     public Statistics(ResultSet resultSet)throws SQLException{
-        this.games_played = resultSet.getInt(1);
-        this.ai_wins = resultSet.getInt(2);
-        this.human_wins = resultSet.getInt(3);
-        this.draws_average = resultSet.getInt(4);
-        this.max_rounds = resultSet.getInt(5);
+        this.gamesPlayed = resultSet.getInt(1);
+        this.aiWins = resultSet.getInt(2);
+        this.humanWins = resultSet.getInt(3);
+        this.drawsAverage = resultSet.getInt(4);
+        this.maxRounds = resultSet.getInt(5);
     }
 
     public int getGamesPlayed(){
-        return games_played;
+        return gamesPlayed;
     }
 
     public int getAiWins(){
-        return ai_wins;
+        return aiWins;
     }
 
     public int getHumanWins(){
-        return human_wins;
+        return humanWins;
     }
 
     public int getAverageDraws(){
-        return draws_average;
+        return drawsAverage;
     }
 
     public int getMaxRounds(){
-        return max_rounds;
+        return maxRounds;
     }
 }
 
