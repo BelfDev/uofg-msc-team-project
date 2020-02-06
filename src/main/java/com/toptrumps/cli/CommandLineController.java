@@ -37,14 +37,16 @@ public class CommandLineController implements GameEventListener {
     }
 
     public void startGame() {
-        String input = "";
         printWelcomeBanner();
+        newGameHandler();
+    }
 
-        System.out.println("To start a new game, press f \n To see game statistics, press s");
+    private void newGameHandler(){
+        String input = "";
+        System.out.println("To start a new game, press f\nTo see game statistics, press s");
         logger.printToLog("Game started");
         logger.printToLog("New line \n new line too.");
         input = scanner.nextLine();
-        System.out.println(input);
 
         if (input.equalsIgnoreCase("f")) {
             int numberOfPlayers = requestNumberOfPlayers();
@@ -133,10 +135,10 @@ public class CommandLineController implements GameEventListener {
 
     @Override
     public void onGameOver(Player winner) {
-        String message = String.format("\nGAME OVER, %s won", winner.getName());
+        String message = String.format("\nGAME OVER, %s won\n\n", winner.getName());
         System.out.println(message);
-        scanner.nextLine();
-        startGame();
+        scanner.nextLine(); //clear the scanner ready for new game selection
+        newGameHandler();
     }
 
     private void showRound(int roundNumber) {
