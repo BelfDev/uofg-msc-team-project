@@ -16,6 +16,14 @@
     background-color: black;
 }
 
+.game-status__common-pile {
+    display: none;
+}
+
+.game-status__common-pile--active {
+    display: block;
+}
+
 .opponents {
     display: flex;
     justify-content: space-between;
@@ -40,9 +48,45 @@
     padding: 10px;
 }
 
+.pcard__chars--active .pcard__char {
+    cursor: pointer;
+}
+
 .pcard__char {
     display: flex;
     justify-content: space-between;
+}
+
+.pcard__char--active {
+    font-weight: bold;
+}
+
+.countdown {
+    position: absolute;
+    font-weight: 900;
+    font-size: 4.5em;
+    background-color: rgba(0, 0, 0, 0.9);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in;
+}
+
+.countdown--active {
+    pointer-events: initial;
+    opacity: 1 !important;
+}
+
+.countdown__numbers {
+    position: absolute;
+    margin: auto;
+    left: 50%;
+    top: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%);
 }
 
 .human-player {
@@ -59,4 +103,46 @@
 .ai-player__details {
     padding: 5px 0;
     text-align: center;
+}
+
+.backdrop {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal {
+    display: grid;
+    align-content: space-between;
+    box-sizing: border-box;
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    min-height: 350px;
+    padding: 30px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal__title {
+    font-size: 50px;
+}
+
+.modal__hint {
+}
+
+.modal--opened {
+    opacity: 1;
+    pointer-events: initial;
 }

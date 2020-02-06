@@ -7,9 +7,7 @@
         />
     </div>
     <div class="pcard__content">
-        <div class="pcard__title js-card-title">Card title</div>
-        <div class="pcard__chars js-card-chars">
-            <div class="pcard__char js-card-char"><span class="pcard__char-value js-card-char-value"></span></div>
-        </div>
+        <div class="pcard__title js-card-title"></div>
+        <div class="pcard__chars js-card-chars"></div>
     </div>
 </div>

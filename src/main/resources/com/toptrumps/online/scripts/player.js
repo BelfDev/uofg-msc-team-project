@@ -1,5 +1,5 @@
 const Player = (function() {
-    const humanPlayerSelector = ".js-human-player";
+    const anyPlayerSelector = ".js-player";
 
     const getTopCard = function(playerID) {
         $.get(`${restAPIurl}/getTopCard`, { playerID }, function(response) {
@@ -7,21 +7,41 @@ const Player = (function() {
         });
     };
 
-    const getPlayerSelector = function(playerID) {
-        let playerSelector;
+    const getOpponentsCards = function() {
+        $.get(`${restAPIurl}/getOpponentsCards`, function(response) {
+            $.each(response, function(i, card) {
+                Card.update(i, card);
+            });
+            $(document).trigger("game.cardsShown");
+        });
+    };
 
-        // Temporary approach to separate human player's box selector
-        // from AI player's
-        // TODO: refactor after backend implementation of player's identifier
-        if (playerID === 0) {
-            playerSelector = humanPlayerSelector;
-        }
+    const getPlayersCardsCount = function() {
+        $.get(`${restAPIurl}/getPlayersCardsCount`, function(response) {
+            $.each(response, function(playerID, data) {
+                updateCardsCount(playerID, data.count);
+            });
+        });
+    };
 
-        return playerSelector;
+    const updateCardsCount = function(playerID, count) {
+        let playerSelector = Player.getPlayerSelectorByID(playerID);
+
+        $(playerSelector)
+            .find(".js-player-hand-size")
+            .text(count);
+    };
+
+    const getPlayerSelectorByID = function(playerID) {
+        return $(anyPlayerSelector).filter(
+            `[data-player-id="Player ${playerID}"]`
+        );
     };
 
     return {
         getTopCard,
-        getPlayerSelector
+        getPlayerSelectorByID,
+        getOpponentsCards,
+        getPlayersCardsCount
     };
 })();
