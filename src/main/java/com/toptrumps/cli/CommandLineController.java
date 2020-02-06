@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -80,17 +81,64 @@ public class CommandLineController implements GameEventListener {
 
     @Override
     public void onRoundEnd(RoundOutcome outcome) {
-        System.out.println("Round finished");
+        showRoundResult(outcome);
+        ArrayList<Player> removedPlayers = outcome.getRemovedPlayers();
+        if(!removedPlayers.isEmpty()){
+            showRemovedPlayers(removedPlayers);
+        }
+    }
+
+    private void showRoundResult(RoundOutcome outcome){
+        RoundOutcome.Result result = outcome.getResult();
+        String outcomeMessage = "\nThe round resulted in a: ";
+        switch(result){
+            case VICTORY:
+                outcomeMessage += "Victory!\nThe winner is: " + outcome.getWinner().getName();
+                break;
+            case DRAW:
+                outcomeMessage += "Draw\nThe score was tied between: ";
+                for(Player player: outcome.getDraws()){
+                    if(player == outcome.getDraws().get(outcome.getDraws().size()-1)){
+                        outcomeMessage += " and " + player.getName();
+                    }else if(player == outcome.getDraws().get(outcome.getDraws().size()-2)){
+                        outcomeMessage += player.getName();
+                    }else{
+                        outcomeMessage += player.getName() + ", ";
+                    }
+                }
+                break;
+        }
+        System.out.println(outcomeMessage);
+    }
+
+    private void showRemovedPlayers(ArrayList<Player> removedPlayers){
+        String removedPlayersString = "";
+        if(removedPlayers.size()==1){
+            removedPlayersString += removedPlayers.get(0).getName() + " has been removed from the game";
+        }else{
+            Player lastPlayerInList = removedPlayers.get(removedPlayers.size()-1);
+            Player secondLastPlayerInList = removedPlayers.get(removedPlayers.size()-2);
+            for(Player player: removedPlayers){
+                if(player == lastPlayerInList){
+                    removedPlayersString += " and " + player.getName() + " have been removed from the game";
+                }else if(player == secondLastPlayerInList){
+                    removedPlayersString += player.getName();
+                }else{
+                    removedPlayersString += player.getName() + ", ";
+                }
+            }
+        }
+        System.out.println(removedPlayersString);
     }
 
     @Override
     public void onGameOver(Player winner) {
-        String message = String.format("GAME OVER, %s won", winner.getName());
+        String message = String.format("\nGAME OVER, %s won", winner.getName());
         System.out.println(message);
     }
 
     private void showRound(int roundNumber) {
-        String message = String.format("Round %d: Players have drawn their cards", roundNumber);
+        String message = String.format("\n\nRound %d: Players have drawn their cards", roundNumber);
         System.out.println(message);
     }
 
