@@ -3,7 +3,7 @@ package com.toptrumps.cli;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.core.engine.Game;
-import com.toptrumps.core.engine.GameEventListener;
+import com.toptrumps.core.engine.GameLifeCycle;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.utils.ResourceLoader;
@@ -17,8 +17,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class CommandLineController implements GameEventListener {
+public class CommandLineController implements GameLifeCycle {
 
+    private final static String DECK_RESOURCE = "assets/StarCitizenDeck.txt";
     private static final String WELCOME_BANNER_RESOURCE = "assets/banners/welcome.txt";
 
     private Scanner scanner;
@@ -26,38 +27,88 @@ public class CommandLineController implements GameEventListener {
 
     // TODO: Refactor the controller to use CommandLineView
     private CommandLineView view;
+    private Game gameEngine;
 
-    private static final int MIN_PLAYERS = 1;
-    private static final int MAX_PLAYERS = 4;
+    private static final int MIN_OPPONENTS = 1;
+    private static final int MAX_OPPONENTS = 4;
 
     public CommandLineController() {
+        this.gameEngine = new Game(DECK_RESOURCE);
         this.view = new CommandLineView();
         this.scanner = new Scanner(System.in);
         this.logger = new OutputLogger();
     }
 
-    public void startGame() {
-        String input;
+    public void start() {
+        presentWelcomeMessage();
+
+        String input = scanner.nextLine();
+        // TODO: Create an Enum to encapsulate the flags
+        if (input.equalsIgnoreCase("f")) {
+            // Start the game
+            int numberOfOpponents = requestNumberOfOpponents();
+            startNewGame(numberOfOpponents);
+        } else if (input.equalsIgnoreCase("s")) {
+            // TODO: Start statistics mode
+        }
+
+        scanner.nextLine();
+    }
+
+    private void startNewGame(int numberOfOpponents) {
+        boolean isGameOver = false;
+        int rounderNumber = 0;
+        List<Player> players;
+        Player activePlayer;
+
+        while (isGameOver) {
+            // === GAME START UP ===
+            System.out.println("Game Start");
+            rounderNumber++;
+
+            players = gameEngine.startUp(numberOfOpponents);
+            activePlayer = gameEngine.assignActivePlayer(players);
+            // TODO: Double check if we are going to rely on this convention
+            Card humanPlayerCard = players.get(0).getTopCard();
+            // TODO: We might want to shift to member variables and drop this parameters
+            onRoundStart(activePlayer, humanPlayerCard, rounderNumber);
+
+            // == ATTRIBUTE SELECTION ==
+
+
+
+
+        }
+
+    }
+
+    private void presentWelcomeMessage() {
         printWelcomeBanner();
 
+        // TODO: Move this to the view
         System.out.println("To start a new game, press f \n To see game statistics, press s");
         logger.printToLog("Game started");
         logger.printToLog("New line \n new line too.");
-        input = scanner.nextLine();
-
-        if (input.equalsIgnoreCase("f")) {
-            int numberOfPlayers = requestNumberOfPlayers();
-            Game game = new Game(numberOfPlayers, this);
-            System.out.println("Game Start");
-            game.start();
-        }
-
-        if (input.equalsIgnoreCase("s")) {
-
-        }
-        scanner.nextLine(); // clears the scanner.
     }
 
+    private int requestNumberOfOpponents() {
+        try {
+            // TODO: Move this to the view class
+            System.out.println("How many players do you want to play against?");
+            System.out.println("Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
+
+            int numberOfOpponents = scanner.nextInt();
+            while (numberOfOpponents < MIN_OPPONENTS || numberOfOpponents > MAX_OPPONENTS) {
+                System.out.println("Invalid number of players selected. Please select " + MIN_OPPONENTS + "-" + MAX_OPPONENTS + ".");
+                numberOfOpponents = scanner.nextInt();
+            }
+            return numberOfOpponents;
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("You didn't enter a number!");
+            return requestNumberOfOpponents();
+        }
+    }
 
     @Override
     public void onRoundStart(Player activePlayer, Card humanPlayerCard, int roundNumber) {
@@ -83,26 +134,26 @@ public class CommandLineController implements GameEventListener {
     public void onRoundEnd(RoundOutcome outcome) {
         showRoundResult(outcome);
         ArrayList<Player> removedPlayers = outcome.getRemovedPlayers();
-        if(!removedPlayers.isEmpty()){
+        if (!removedPlayers.isEmpty()) {
             showRemovedPlayers(removedPlayers);
         }
     }
 
-    private void showRoundResult(RoundOutcome outcome){
+    private void showRoundResult(RoundOutcome outcome) {
         RoundOutcome.Result result = outcome.getResult();
         String outcomeMessage = "\nThe round resulted in a: ";
-        switch(result){
+        switch (result) {
             case VICTORY:
                 outcomeMessage += "Victory!\nThe winner is: " + outcome.getWinner().getName();
                 break;
             case DRAW:
                 outcomeMessage += "Draw\nThe score was tied between: ";
-                for(Player player: outcome.getDraws()){
-                    if(player == outcome.getDraws().get(outcome.getDraws().size()-1)){
+                for (Player player : outcome.getDraws()) {
+                    if (player == outcome.getDraws().get(outcome.getDraws().size() - 1)) {
                         outcomeMessage += " and " + player.getName();
-                    }else if(player == outcome.getDraws().get(outcome.getDraws().size()-2)){
+                    } else if (player == outcome.getDraws().get(outcome.getDraws().size() - 2)) {
                         outcomeMessage += player.getName();
-                    }else{
+                    } else {
                         outcomeMessage += player.getName() + ", ";
                     }
                 }
@@ -111,19 +162,19 @@ public class CommandLineController implements GameEventListener {
         System.out.println(outcomeMessage);
     }
 
-    private void showRemovedPlayers(ArrayList<Player> removedPlayers){
+    private void showRemovedPlayers(ArrayList<Player> removedPlayers) {
         String removedPlayersString = "";
-        if(removedPlayers.size()==1){
+        if (removedPlayers.size() == 1) {
             removedPlayersString += removedPlayers.get(0).getName() + " has been removed from the game";
-        }else{
-            Player lastPlayerInList = removedPlayers.get(removedPlayers.size()-1);
-            Player secondLastPlayerInList = removedPlayers.get(removedPlayers.size()-2);
-            for(Player player: removedPlayers){
-                if(player == lastPlayerInList){
+        } else {
+            Player lastPlayerInList = removedPlayers.get(removedPlayers.size() - 1);
+            Player secondLastPlayerInList = removedPlayers.get(removedPlayers.size() - 2);
+            for (Player player : removedPlayers) {
+                if (player == lastPlayerInList) {
                     removedPlayersString += " and " + player.getName() + " have been removed from the game";
-                }else if(player == secondLastPlayerInList){
+                } else if (player == secondLastPlayerInList) {
                     removedPlayersString += player.getName();
-                }else{
+                } else {
                     removedPlayersString += player.getName() + ", ";
                 }
             }
@@ -142,25 +193,7 @@ public class CommandLineController implements GameEventListener {
         System.out.println(message);
     }
 
-    private int requestNumberOfPlayers() {
-        try {
-            System.out.println("How many players do you want to play against?");
-            System.out.println("Please select " + MIN_PLAYERS + " - " + MAX_PLAYERS);
 
-            int numberOfPlayers = scanner.nextInt();
-            while (numberOfPlayers < MIN_PLAYERS || numberOfPlayers > MAX_PLAYERS) {
-                System.out.println("Invalid number of players selected. Please select " + MIN_PLAYERS + "-" + MAX_PLAYERS + ".");
-                numberOfPlayers = scanner.nextInt();
-            }
-
-            return numberOfPlayers;
-
-        } catch (InputMismatchException e) {
-            scanner.nextLine();
-            System.out.println("You didn't enter a number!");
-            return requestNumberOfPlayers();
-        }
-    }
 
     private void showPlayerCard(Card humanPlayerCard) {
         System.out.println("You drew \'" + humanPlayerCard.getName() + "\':");

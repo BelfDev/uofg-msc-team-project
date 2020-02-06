@@ -6,7 +6,7 @@ import com.toptrumps.core.player.Player;
 
 import java.util.ArrayList;
 
-public interface GameEventListener {
+public interface GameLifeCycle {
 
     void onRoundStart(final Player activePlayer, final Card humanPlayerCard, final int roundNumber);
     Attribute onRequestSelection(final Card card);
