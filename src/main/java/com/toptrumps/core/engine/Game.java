@@ -66,7 +66,8 @@ public class Game {
             rounderNumber++;
 
             Card humanPlayerCard = getHumanPlayer().getTopCard();
-            listener.onRoundStart(activePlayer, humanPlayerCard, rounderNumber);
+            int cardsRemaining = getHumanPlayer().getDeck().size();
+            listener.onRoundStart(activePlayer, humanPlayerCard, rounderNumber, cardsRemaining);
 
             // Attribute Selection
             Attribute selectedAttribute;

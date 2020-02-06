@@ -62,10 +62,11 @@ public class CommandLineController implements GameEventListener {
     }
 
     @Override
-    public void onRoundStart(Player activePlayer, Card humanPlayerCard, int roundNumber) {
+    public void onRoundStart(Player activePlayer, Card humanPlayerCard, int roundNumber, int cardsRemaining) {
         showRound(roundNumber);
         showPlayerCard(humanPlayerCard);
         showActivePlayer(activePlayer);
+        numberOfHumanPlayerCards(cardsRemaining);
     }
 
     @Override
@@ -139,6 +140,11 @@ public class CommandLineController implements GameEventListener {
         System.out.println(message);
         scanner.nextLine(); //clear the scanner ready for new game selection
         newGameHandler();
+    }
+
+    private void numberOfHumanPlayerCards(int cardsRemaining ) {
+        String message = String.format("You have %d cards in your hand", cardsRemaining);
+        System.out.println(message);
     }
 
     private void showRound(int roundNumber) {
