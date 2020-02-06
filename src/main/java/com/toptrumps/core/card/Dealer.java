@@ -17,9 +17,14 @@ public class Dealer {
     private final ArrayList<Card> deck;
     private ArrayList<Card> communalPile;
 
-    public Dealer() {
-        this.deck = DeckParser.parseDeck(DECK_RESOURCE);
+    public Dealer(String deckFile) {
+        this.deck = DeckParser.parseDeck(deckFile);
+        // TODO: Move the communal pile out of here
         this.communalPile = new ArrayList<>();
+    }
+
+    public Dealer() {
+        this(DECK_RESOURCE);
     }
 
     public ArrayList<Card> getCommunalPile() {
