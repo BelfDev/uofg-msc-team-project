@@ -5,35 +5,29 @@ import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class NewGameState {
+public class InitialGameState {
 
-    int numberOfPlayers;
-    int roundNumber;
+    int numberOfOpponents;
     int activePlayerId;
     Player humanPlayer;
-    ArrayList<AIPlayer> aiPlayers;
+    List<Player> aiPlayers;
 
-    public NewGameState() {
+    public InitialGameState() {
         // Jackson deserialization
     }
 
-    public NewGameState(int numberOfPlayers, int roundNumber, int activePlayerId, Player humanPlayer, ArrayList<AIPlayer> aiPlayers) {
-        this.numberOfPlayers = numberOfPlayers;
-        this.roundNumber = roundNumber;
+    public InitialGameState(int numberOfOpponents, int activePlayerId, Player humanPlayer, List<Player> aiPlayers) {
+        this.numberOfOpponents = numberOfOpponents;
         this.activePlayerId = activePlayerId;
         this.humanPlayer = humanPlayer;
         this.aiPlayers = aiPlayers;
     }
 
     @JsonProperty
-    public int getNumberOfPlayers() {
-        return numberOfPlayers;
-    }
-
-    @JsonProperty
-    public int getRoundNumber() {
-        return roundNumber;
+    public int getNumberOfOpponents() {
+        return numberOfOpponents;
     }
 
     @JsonProperty
@@ -47,7 +41,7 @@ public class NewGameState {
     }
 
     @JsonProperty
-    public ArrayList<AIPlayer> getAiPlayers() {
+    public List<Player> getAiPlayers() {
         return aiPlayers;
     }
 

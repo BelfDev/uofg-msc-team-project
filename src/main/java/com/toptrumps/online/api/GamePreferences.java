@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GamePreferences {
 
-    private int numberOfPlayers;
+    private int numberOfOpponents;
 
     public GamePreferences() {
         // Jackson deserialization
     }
 
-    public GamePreferences(int numberOfPlayers) {
-        this.numberOfPlayers = numberOfPlayers;
+    public GamePreferences(int numberOfOpponents) {
+        this.numberOfOpponents = numberOfOpponents;
     }
 
     @JsonProperty
-    public int getNumberOfPlayers() {
-        return numberOfPlayers;
+    public int getNumberOfOpponents() {
+        return numberOfOpponents;
     }
 
 }

@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.toptrumps.core.card.Card;
 import com.toptrumps.core.engine.Game;
+import com.toptrumps.core.player.AIPlayer;
+import com.toptrumps.core.player.Player;
 import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
 
 import javax.ws.rs.*;
@@ -53,17 +56,22 @@ public class TopTrumpsRESTAPI {
     @POST
     @Path("/api/game")
     @Produces(MediaType.APPLICATION_JSON)
-    public void startNewGame(GamePreferences gamePreferences) {
+    public InitialGameState startNewGame(GamePreferences gamePreferences) {
+        int numberOfOpponents = gamePreferences.getNumberOfOpponents();
+        List<Player> players = gameEngine.startUp(numberOfOpponents);
+        Player activePlayer = gameEngine.assignActivePlayer(players);
+        // TODO: Double check if we are going to rely on this convention
+        Player humanPlayer = players.get(0);
+        List<Player> aiPlayers = players.subList(1, numberOfOpponents);
 
-
-
+        return new InitialGameState(numberOfOpponents, activePlayer.getId(), humanPlayer, aiPlayers);
     }
 
     @GET
     @Path("/getTopCard")
     /**
      * Handler for a GET request to get the top card
-     * 
+     *
      * @param playerID - ID of a player 
      * @return - card data as JSON (name and attributes)
      * @throws IOException
@@ -92,7 +100,7 @@ public class TopTrumpsRESTAPI {
     @Path("/getActivePlayer")
     /**
      * Handler to get active player id
-     * 
+     *
      * @return - player id as JSON
      * @throws IOException
      */
@@ -106,12 +114,12 @@ public class TopTrumpsRESTAPI {
 
         return playerID;
     }
-    
+
     @GET
     @Path("/getChosenAttribute")
     /**
      * Handler to get chosen attribute
-     * 
+     *
      * @return chosen category as JSON
      * @throws IOException
      */
@@ -130,7 +138,7 @@ public class TopTrumpsRESTAPI {
     @Path("/getOpponentsCards")
     /**
      * Handler to get all opponents' cards
-     * 
+     *
      * @return array of players and corresponding cards as JSON
      * @throws IOException
      */
@@ -151,7 +159,7 @@ public class TopTrumpsRESTAPI {
             playerNode.put("name", "Card name");
             playerNode.put("attributes", attributesNode);
 
-            String playerID = i+"";
+            String playerID = i + "";
 
             rootNode.put(playerID, playerNode);
         }
@@ -165,7 +173,7 @@ public class TopTrumpsRESTAPI {
     @Path("/getPlayersCardsCount")
     /**
      * Handler to get all players' cards count
-     * 
+     *
      * @return array of players and corresponding cards count as JSON
      * @throws IOException
      */
@@ -178,7 +186,7 @@ public class TopTrumpsRESTAPI {
             ObjectNode playerNode = factory.objectNode();
             playerNode.put("count", 15);
 
-            String playerID = i+"";
+            String playerID = i + "";
 
             rootNode.put(playerID, playerNode);
         }
@@ -192,7 +200,7 @@ public class TopTrumpsRESTAPI {
     @Path("/getRoundOutcome")
     /**
      * Handler to get game round outcome
-     * 
+     *
      * @return game outcome (0 if draw, 1 if any player won) and winner ID (if it is a win)
      * @throws IOException
      */
@@ -213,7 +221,7 @@ public class TopTrumpsRESTAPI {
     @Path("/getCommonPileCount")
     /**
      * Handler to get common pile count
-     * 
+     *
      * @return common pile count as JSON
      * @throws IOException
      */
