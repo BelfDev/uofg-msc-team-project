@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.toptrumps.core.engine.Game;
 import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
 
 import javax.ws.rs.*;
@@ -32,6 +33,7 @@ public class TopTrumpsRESTAPI {
      * into JSON strings easily.
      */
     ObjectWriter oWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    Game gameEngine;
 
     /**
      * Contructor method for the REST API. This is called first. It provides
@@ -41,14 +43,21 @@ public class TopTrumpsRESTAPI {
      * @param conf
      */
     public TopTrumpsRESTAPI(TopTrumpsJSONConfiguration conf) {
-        // ----------------------------------------------------
-        // Add relevant initalization here
-        // ----------------------------------------------------
+        this.gameEngine = new Game(conf.getDeckFile());
     }
 
     // ----------------------------------------------------
     // Add relevant API methods here
     // ----------------------------------------------------
+
+    @POST
+    @Path("/api/game")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void startNewGame(GamePreferences gamePreferences) {
+
+
+
+    }
 
     @GET
     @Path("/getTopCard")

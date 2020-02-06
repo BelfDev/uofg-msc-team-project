@@ -22,22 +22,25 @@ public class Game {
     private final ArrayList<Player> players;
     private int numberOfPlayers;
     private final Dealer dealer;
+
+    // TODO: Remove the Game Event Listener
     private final GameEventListener listener;
 
     private Player activePlayer;
     private int rounderNumber;
-    private RoundOutcome lastRoundOutcome;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
      * Starts the game
      */
-    public Game(int numberOfPlayers, GameEventListener listener) {
+    public Game(String deckFile) {
         this.numberOfPlayers = numberOfPlayers;
-        this.listener = listener;
+
+        // TODO: Remove the listener later
+        this.listener = null;
+
         this.rounderNumber = 0;
         this.dealer = new Dealer();
-        this.lastRoundOutcome = null;
 
         this.players = new ArrayList<Player>() {{
             add(new Player(0, DEFAULT_USER_NAME));
