@@ -15,19 +15,18 @@ public class RoundOutcome {
     private ArrayList<Player> draws;
     private ArrayList<Player> removedPlayers;
 
-    private RoundOutcome(Result result, Player winner, ArrayList<Player> draws, ArrayList<Player> removedPlayers) {
+    private RoundOutcome(Result result, Player winner, ArrayList<Player> draws) {
         this.result = result;
         this.winner = winner;
         this.draws = draws;
-        this.removedPlayers = removedPlayers;
     }
 
-    public RoundOutcome(Result result, Player winner, ArrayList<Player> removedPlayers) {
-        this(result, winner, null, removedPlayers);
+    public RoundOutcome(Result result, Player winner) {
+        this(result, winner, null);
     }
 
-    public RoundOutcome(Result result, ArrayList<Player> draws, ArrayList<Player> removedPlayers) {
-        this(result, null, draws, removedPlayers);
+    public RoundOutcome(Result result, ArrayList<Player> draws) {
+        this(result, null, draws);
     }
 
     public Result getResult() {
@@ -44,6 +43,10 @@ public class RoundOutcome {
 
     public ArrayList<Player> getRemovedPlayers(){
         return removedPlayers;
+    }
+
+    public void setRemovedPlayers(ArrayList<Player> removedPlayers){
+        this.removedPlayers = removedPlayers;
     }
 
 }

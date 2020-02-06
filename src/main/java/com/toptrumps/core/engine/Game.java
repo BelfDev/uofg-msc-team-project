@@ -101,17 +101,12 @@ public class Game {
             // TODO: Revisit this to avoid another loop
             players.forEach(Player::removeTopCard);
 
-            //collect any defeated players and remove them from the game
-            ArrayList<Player> removedPlayers = (ArrayList<Player>) players.stream().filter(p -> p.getDeck().isEmpty()).collect(toList());
-            players.removeAll(removedPlayers);
-            numberOfPlayers = players.size();
-
             if (winners.size() == 1) {
                 // There's a winner
                 activePlayer.setActive(false);
                 Player winner = winners.get(0);
                 winner.setActive(true);
-                outcome = new RoundOutcome(VICTORY, winner, removedPlayers);
+                outcome = new RoundOutcome(VICTORY, winner);
                 // Collect all player's cards
                 List<Card> communalPile = dealer.dealCommunalPile();
                 roundCards.addAll(communalPile);
@@ -119,9 +114,15 @@ public class Game {
                 activePlayer = winner;
             } else {
                 // Draw
-                outcome = new RoundOutcome(DRAW, winners, removedPlayers);
+                outcome = new RoundOutcome(DRAW, winners);
                 dealer.putCardsOnCommunalPile(roundCards);
             }
+
+            //collect any defeated players and remove them from the game
+            ArrayList<Player> removedPlayers = (ArrayList<Player>) players.stream().filter(p -> p.getDeck().isEmpty()).collect(toList());
+            outcome.setRemovedPlayers(removedPlayers);
+            players.removeAll(removedPlayers);
+            numberOfPlayers = players.size();
 
             listener.onRoundEnd(outcome);
         }
