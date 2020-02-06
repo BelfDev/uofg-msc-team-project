@@ -6,26 +6,28 @@ import java.util.ArrayList;
 
 public class RoundOutcome {
 
-    enum Result {
+    public enum Result {
         VICTORY, DRAW
     }
 
     private Result result;
     private Player winner;
     private ArrayList<Player> draws;
+    private ArrayList<Player> removedPlayers;
 
-    private RoundOutcome(Result result, Player winner, ArrayList<Player> draws) {
+    private RoundOutcome(Result result, Player winner, ArrayList<Player> draws, ArrayList<Player> removedPlayers) {
         this.result = result;
         this.winner = winner;
         this.draws = draws;
+        this.removedPlayers = removedPlayers;
     }
 
-    public RoundOutcome(Result result, Player winner) {
-        this(result, winner, null);
+    public RoundOutcome(Result result, Player winner, ArrayList<Player> removedPlayers) {
+        this(result, winner, null, removedPlayers);
     }
 
-    public RoundOutcome(Result result, ArrayList<Player> draws) {
-        this(result, null, draws);
+    public RoundOutcome(Result result, ArrayList<Player> draws, ArrayList<Player> removedPlayers) {
+        this(result, null, draws, removedPlayers);
     }
 
     public Result getResult() {
@@ -38,6 +40,10 @@ public class RoundOutcome {
 
     public ArrayList<Player> getDraws() {
         return draws;
+    }
+
+    public ArrayList<Player> getRemovedPlayers(){
+        return removedPlayers;
     }
 
 }
