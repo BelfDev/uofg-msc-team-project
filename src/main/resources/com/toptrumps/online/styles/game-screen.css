@@ -298,3 +298,56 @@
     opacity: 1;
     pointer-events: initial;
 }
+
+.opponents-quantity {
+    position: relative;
+}
+
+.opponents-quantity__input::-webkit-inner-spin-button,
+.opponents-quantity__input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.opponents-quantity__input {
+    width: 45px;
+    height: 42px;
+    line-height: 1.65;
+    float: left;
+    display: block;
+    padding: 0;
+    margin: 0;
+    padding-left: 20px;
+    border: 1px solid #eee;
+}
+
+.opponents-quantity__input:focus {
+    outline: 0;
+}
+
+.opponents-quantity__nav {
+    position: relative;
+}
+
+.opponents-quantity__button {
+    position: absolute;
+    cursor: pointer;
+    border-left: 1px solid #eee;
+    width: 20px;
+    top: 0;
+    background: white;
+    text-align: center;
+    color: #333;
+    font-size: 13px;
+    line-height: 1.7;
+    transform: translateX(-100%);
+    user-select: none;
+}
+
+.opponents-quantity__button--up {
+    left: 0;
+}
+
+.opponents-quantity__button--down {
+    right: 0;
+}

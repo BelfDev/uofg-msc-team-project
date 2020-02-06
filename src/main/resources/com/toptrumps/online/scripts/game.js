@@ -6,9 +6,10 @@ const Game = (function() {
     let activePlayerID = null;
 
     const init = function() {
-        setTimeout(function() {
-            runStartPhase();
-        }, 2000);
+        askForNumberOfOpponents();
+        // setTimeout(function() {
+        //     runStartPhase();
+        // }, 2000);
         bindEvents();
     };
 
@@ -48,6 +49,12 @@ const Game = (function() {
 
             e.preventDefault();
         });
+    };
+
+    const askForNumberOfOpponents = function() {
+        let targetModalSelector = ".js-new-game-modal";
+
+        Modal.openModal(targetModalSelector);
     };
 
     const runStartPhase = function() {
