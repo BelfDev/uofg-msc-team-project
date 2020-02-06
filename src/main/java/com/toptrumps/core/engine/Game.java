@@ -19,57 +19,90 @@ public class Game {
     private static final String DEFAULT_USER_NAME = "Human_Player";
     private static final int DEFAULT_NUMBER_OF_HUMAN_PLAYERS = 1;
 
-    private final ArrayList<Player> players;
-    private int numberOfPlayers;
+    //    private final ArrayList<Player> players;
+//    private int numberOfPlayers;
     private final Dealer dealer;
 
     // TODO: Remove the Game Event Listener
-    private final GameEventListener listener;
+    private final GameLifeCycle listener;
 
-    private Player activePlayer;
-    private int rounderNumber;
+    //    private Player activePlayer;
+//    private int rounderNumber;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
      * Starts the game
      */
     public Game(String deckFile) {
-        this.numberOfPlayers = numberOfPlayers;
+//        this.numberOfPlayers = numberOfPlayers;
 
         // TODO: Remove the listener later
         this.listener = null;
 
-        this.rounderNumber = 0;
-        this.dealer = new Dealer();
+//        this.rounderNumber = 0;
+        this.dealer = new Dealer(deckFile);
 
-        this.players = new ArrayList<Player>() {{
-            add(new Player(0, DEFAULT_USER_NAME));
-        }};
+//        this.players = new ArrayList<Player>() {{
+//            add(new Player(0, DEFAULT_USER_NAME));
+//        }};
 
-        createAIPlayers(numberOfPlayers - DEFAULT_NUMBER_OF_HUMAN_PLAYERS);
-
-//        chooseStartingPlayer();
+//        createAIPlayers(numberOfPlayers - DEFAULT_NUMBER_OF_HUMAN_PLAYERS);
     }
 
-    private void createAIPlayers(int numberOfAIPlayers) {
-        for (int i = 1; i <= numberOfAIPlayers; i++) {
+    private List<Player> createPlayers(int numberOfOpponents) {
+        List<AIPlayer> aiPlayers = createAIPlayers(numberOfOpponents);
+        return new ArrayList<Player>() {{
+            add(new Player(0, DEFAULT_USER_NAME));
+            addAll(aiPlayers);
+        }};
+    }
+
+    private List<AIPlayer> createAIPlayers(int numberOfOpponents) {
+        List<AIPlayer> aiPlayers = new ArrayList<>();
+        for (int i = 1; i <= numberOfOpponents; i++) {
             AIPlayer aiPlayer = new AIPlayer(i);
-            players.add(aiPlayer);
+            aiPlayers.add(aiPlayer);
+        }
+        return aiPlayers;
+    }
+
+    public void assignDecks(List<Player> players) {
+        final int numberOfPlayers = players.size();
+        final List<List<Card>> decks = dealer.dealCards(numberOfPlayers);
+
+        // Distribute the split decks to the game players
+        for (int i = 0; i < numberOfPlayers; i++) {
+            players.get(i).setDeck(decks.get(i));
         }
     }
 
+    public Player assignActivePlayer(List<Player> players) {
+        final int numberOfPlayers = players.size();
+        int randomIndex = getRandomInteger(0, numberOfPlayers - 1);
+        Player activePlayer = players.get(randomIndex);
+        activePlayer.setActive(true);
+        return activePlayer;
+    }
+
+    public List<Player> startUp(int numberOfOpponents) {
+        List<Player> players = createPlayers(numberOfOpponents);
+        assignDecks(players);
+        return players;
+    }
+
+    /*
     public void start() {
 
         // Start Up
 
-        dealer.dealCards(players);
-        assignRandomActivePlayer();
+        dealer.dealCards(players); // OK
+        assignRandomActivePlayer(); // OK
 
-        while (numberOfPlayers > 1) {
-            rounderNumber++;
+        while (numberOfPlayers > 1) { // OK
+            rounderNumber++; // OK
 
-            Card humanPlayerCard = getHumanPlayer().getTopCard();
-            listener.onRoundStart(activePlayer, humanPlayerCard, rounderNumber);
+            Card humanPlayerCard = getHumanPlayer().getTopCard(); // OK
+            listener.onRoundStart(activePlayer, humanPlayerCard, rounderNumber); // OK
 
             // Attribute Selection
             Attribute selectedAttribute;
@@ -138,17 +171,21 @@ public class Game {
         this.activePlayer = activePlayer;
     }
 
-    private int getRandomInteger(int min, int max) {
-        Random randomGenerator = new Random();
-        return randomGenerator.nextInt((max - min) + 1) + min;
-    }
-
-    public ArrayList<Card> getRoundCards() {
+     public ArrayList<Card> getRoundCards() {
         return (ArrayList<Card>) players.stream().map(Player::getTopCard).collect(toList());
     }
 
     private Player getHumanPlayer() {
         return players.get(0);
     }
+
+     */
+
+
+    private int getRandomInteger(int min, int max) {
+        Random randomGenerator = new Random();
+        return randomGenerator.nextInt((max - min) + 1) + min;
+    }
+
 
 }
