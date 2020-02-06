@@ -33,7 +33,7 @@ public class Game {
      * Starts the game
      */
     public Game(int numberOfPlayers, GameEventListener listener) {
-        this.numberOfPlayers = numberOfPlayers;
+        this.numberOfPlayers = numberOfPlayers + DEFAULT_NUMBER_OF_HUMAN_PLAYERS;
         this.listener = listener;
         this.rounderNumber = 0;
         this.dealer = new Dealer();
@@ -43,7 +43,7 @@ public class Game {
             add(new Player(0, DEFAULT_USER_NAME));
         }};
 
-        createAIPlayers(numberOfPlayers - DEFAULT_NUMBER_OF_HUMAN_PLAYERS);
+        createAIPlayers(numberOfPlayers);
 
 //        chooseStartingPlayer();
     }
