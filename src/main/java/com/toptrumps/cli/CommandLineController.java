@@ -123,6 +123,7 @@ public class CommandLineController {
         showRound(roundNumber);
         showPlayerCard(humanPlayerCard);
         showActivePlayer(activePlayer);
+        numberOfHumanPlayerCards(cardsRemaining);
     }
 
     private Attribute onRequestSelection(Card card) {
