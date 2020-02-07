@@ -32,7 +32,7 @@ public class Outcome {
     }
 
     public Outcome(RoundOutcome roundOutcome, Attribute selectedAttribute) {
-        List<Integer> defeatedPlayerIds = roundOutcome.getRemovedPlayers().stream().map(Player::getId).collect(toList());
+        List<Integer> defeatedPlayerIds = roundOutcome.getRemovedPlayerIds();
         Winner winner = new Winner(roundOutcome.getWinner());
         this.result = roundOutcome.getResult();
         this.winner = winner;

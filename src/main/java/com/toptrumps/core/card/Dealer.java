@@ -2,11 +2,10 @@ package com.toptrumps.core.card;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toCollection;
 
 public class Dealer {
 
@@ -16,9 +15,9 @@ public class Dealer {
         this.deck = DeckParser.parseDeck(deckFile);
     }
 
-    public List<List<Card>> dealCards(int numberOfPlayers) {
+    public ArrayList<ArrayList<Card>> dealCards(int numberOfPlayers) {
         shuffleCards();
-        List<List<Card>> splitDecks = splitDeck(numberOfPlayers);
+        ArrayList<ArrayList<Card>> splitDecks = splitDeck(numberOfPlayers);
         return splitDecks;
     }
 
@@ -27,7 +26,7 @@ public class Dealer {
         Collections.shuffle(deck, new Random());
     }
 
-    private List<List<Card>> splitDeck(int numberOfSplits) {
+    private ArrayList<ArrayList<Card>> splitDeck(int numberOfSplits) {
         int size = this.deck.size();
 
         // Check if the provided numberOfSplits is plausible
@@ -42,9 +41,9 @@ public class Dealer {
                 {
                     int fromIndex = n * chunkSize;
                     int toIndex = n == (numberOfSplits - 1) ? size : (n + 1) * chunkSize;
-                    return this.deck.subList(fromIndex, toIndex);
+                    return new ArrayList<Card>(this.deck.subList(fromIndex, toIndex));
                 })
-                .collect(toList());
+                .collect(toCollection(ArrayList::new));
     }
 
 }

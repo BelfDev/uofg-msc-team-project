@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toCollection;
 
 public class CommandLineController {
 
@@ -61,7 +61,7 @@ public class CommandLineController {
         List<Card> communalPile = new ArrayList<>();
         boolean isGameOver = false;
         int rounderNumber = 0;
-        List<Player> players;
+        ArrayList<Player> players;
         Player activePlayer = null;
 
 
@@ -70,7 +70,7 @@ public class CommandLineController {
             System.out.println("Game Start");
             rounderNumber++;
 
-            players = gameEngine.startUp(numberOfOpponents);
+            players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
             activePlayer = gameEngine.assignActivePlayer(players);
             // TODO: Double check if we are going to rely on this convention
             Card humanPlayerCard = players.get(0).getTopCard();
@@ -91,10 +91,8 @@ public class CommandLineController {
             // == ATTRIBUTE COMPARISON ==
 
             List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
-            List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toList());
-
-            // TODO: Fix concurrent exception
-//            players.forEach(Player::removeTopCard);
+            List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
+            players.forEach(Player::removeTopCard);
 
             // == ROUND OUTCOME ==
 

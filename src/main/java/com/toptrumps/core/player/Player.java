@@ -15,7 +15,7 @@ public class Player implements Comparable<Player> {
     final protected int id;
     final protected String name;
     private boolean isActive;
-    protected List<Card> deck;
+    protected ArrayList<Card> deck;
 
     private Attribute selectedAttribute;
 
@@ -46,7 +46,7 @@ public class Player implements Comparable<Player> {
         return deck;
     }
 
-    public void setDeck(List<Card> deck) {
+    public void setDeck(ArrayList<Card> deck) {
         this.deck = deck;
     }
 
@@ -72,13 +72,6 @@ public class Player implements Comparable<Player> {
     public void setSelectedAttribute(Attribute attribute) {
         this.selectedAttribute = attribute;
     }
-
-//    public int compareCardTo(Card opponentCard) {
-//        if (selectedAttribute == null) throw new NoSelectionException();
-//        Attribute opponentAttribute = opponentCard.getAttributeByName(selectedAttribute.getName());
-//        if (opponentAttribute == null) throw new IncompatibleComparisonException();
-//        return selectedAttribute.compareTo(opponentAttribute);
-//    }
 
     public boolean isAIPlayer() {
         return this instanceof AIPlayer;

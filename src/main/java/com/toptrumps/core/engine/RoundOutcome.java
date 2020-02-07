@@ -2,8 +2,11 @@ package com.toptrumps.core.engine;
 
 import com.toptrumps.core.player.Player;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 public class RoundOutcome {
 
@@ -45,6 +48,14 @@ public class RoundOutcome {
 
     public List<Player> getRemovedPlayers() {
         return removedPlayers;
+    }
+
+    public List<Integer> getRemovedPlayerIds() {
+        return Optional.ofNullable(removedPlayers)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(Player::getId)
+                .collect(toList());
     }
 
 }

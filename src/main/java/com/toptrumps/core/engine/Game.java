@@ -12,7 +12,7 @@ import java.util.Random;
 
 import static com.toptrumps.core.engine.RoundOutcome.Result.DRAW;
 import static com.toptrumps.core.engine.RoundOutcome.Result.VICTORY;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toCollection;
 
 public class Game {
 
@@ -28,7 +28,7 @@ public class Game {
         this.dealer = new Dealer(deckFile);
     }
 
-    private List<Player> createPlayers(int numberOfOpponents) {
+    private ArrayList<Player> createPlayers(int numberOfOpponents) {
         List<AIPlayer> aiPlayers = createAIPlayers(numberOfOpponents);
         return new ArrayList<Player>() {{
             add(new Player(0, DEFAULT_USER_NAME));
@@ -45,9 +45,9 @@ public class Game {
         return aiPlayers;
     }
 
-    public void assignDecks(List<Player> players) {
+    public void assignDecks(ArrayList<Player> players) {
         final int numberOfPlayers = players.size();
-        final List<List<Card>> decks = dealer.dealCards(numberOfPlayers);
+        final ArrayList<ArrayList<Card>> decks = dealer.dealCards(numberOfPlayers);
 
         // Distribute the split decks to the game players
         for (int i = 0; i < numberOfPlayers; i++) {
@@ -64,7 +64,7 @@ public class Game {
     }
 
     public List<Player> startUp(int numberOfOpponents) {
-        List<Player> players = createPlayers(numberOfOpponents);
+        ArrayList<Player> players = createPlayers(numberOfOpponents);
         assignDecks(players);
         return players;
     }
@@ -80,11 +80,9 @@ public class Game {
                 .get().getValue();
 
         // Find playersWithMaxValue
-        ArrayList<Player> winners = (ArrayList<Player>) players.stream()
+        return (ArrayList<Player>) players.stream()
                 .filter(p -> p.getTopCard().getAttributeByName(attributeName).getValue() == maxValue)
-                .collect(toList());
-
-        return winners;
+                .collect(toCollection(ArrayList::new));
     }
 
     public RoundOutcome processRoundOutcome(List<Player> winners, List<Player> players) {
@@ -95,7 +93,7 @@ public class Game {
         List<Player> removedPlayers = players
                 .stream()
                 .filter(p -> p.getDeck().isEmpty())
-                .collect(toList());
+                .collect(toCollection(ArrayList::new));
 
         if (winners.size() == 1) {
             Player winner = winners.get(0);

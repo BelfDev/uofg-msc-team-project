@@ -20,6 +20,10 @@ public class PlayerMove {
         this.activePlayerState = activePlayerState;
     }
 
+    public PlayerMove(List<PlayerState> playerStates) {
+        this(playerStates, null);
+    }
+
     @JsonProperty("players")
     public List<PlayerState> getPlayerStates() {
         return playerStates;
