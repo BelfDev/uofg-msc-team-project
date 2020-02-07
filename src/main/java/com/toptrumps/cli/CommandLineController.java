@@ -120,9 +120,7 @@ public class CommandLineController {
     // === START OF LIFE CYCLE METHODS ===
 
     private void onRoundStart(Player activePlayer, Player humanPlayer, int roundNumber) {
-        showRound(roundNumber);
-        showPlayerCard(humanPlayer.getTopCard());
-        showActivePlayer(activePlayer);
+        view.showRoundStart(activePlayer, humanPlayer, roundNumber);
 
         String message = String.format("You have %d cards in your hand", humanPlayer.getDeckCount());
         System.out.println(message);
