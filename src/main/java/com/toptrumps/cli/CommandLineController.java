@@ -25,7 +25,6 @@ public class CommandLineController {
     private static final String WELCOME_BANNER_RESOURCE = "assets/banners/welcome.txt";
 
     private Scanner scanner;
-    private OutputLogger logger;
 
     // TODO: Refactor the controller to use CommandLineView
     private CommandLineView view;
@@ -39,7 +38,7 @@ public class CommandLineController {
         this.gameEngine = new Game(DECK_RESOURCE);
         this.view = new CommandLineView();
         this.scanner = new Scanner(System.in);
-        this.logger = new OutputLogger();
+
     }
 
     public void start() {
@@ -193,8 +192,7 @@ public class CommandLineController {
         printWelcomeBanner();
         // TODO: Move this to the view
         System.out.println("To start a new game, press f \n To see game statistics, press s");
-        logger.printToLog("Game started");
-        logger.printToLog("New line \n new line too.");
+
     }
 
     private int requestNumberOfOpponents() {
