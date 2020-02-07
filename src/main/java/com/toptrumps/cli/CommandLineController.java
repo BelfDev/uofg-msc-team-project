@@ -155,7 +155,7 @@ public class CommandLineController {
         view.showRoundResult(outcome);
         List<Player> removedPlayers = outcome.getRemovedPlayers();
         if (!removedPlayers.isEmpty()) {
-            showRemovedPlayers(removedPlayers);
+            view.showRemovedPlayers(removedPlayers);
         }
     }
 
@@ -163,53 +163,6 @@ public class CommandLineController {
         view.showGameResult(winner);
         scanner.nextLine(); //clear the scanner ready for new game selection
         start();
-    }
-
-    // === END OF LIFE CYCLE METHODS ===
-
-    private void showRemovedPlayers(List<Player> removedPlayers) {
-        String removedPlayersString = "";
-        if (removedPlayers.size() == 1) {
-            removedPlayersString += removedPlayers.get(0).getName() + " has been removed from the game";
-        } else {
-            Player lastPlayerInList = removedPlayers.get(removedPlayers.size() - 1);
-            Player secondLastPlayerInList = removedPlayers.get(removedPlayers.size() - 2);
-            for (Player player : removedPlayers) {
-                if (player == lastPlayerInList) {
-                    removedPlayersString += " and " + player.getName() + " have been removed from the game";
-                } else if (player == secondLastPlayerInList) {
-                    removedPlayersString += player.getName();
-                } else {
-                    removedPlayersString += player.getName() + ", ";
-                }
-            }
-        }
-        System.out.println(removedPlayersString);
-    }
-
-    private void showRound(int roundNumber) {
-        String message = String.format("\n\nRound %d: Players have drawn their cards", roundNumber);
-        System.out.println(message);
-    }
-
-
-    private void showPlayerCard(Card humanPlayerCard) {
-        System.out.println("You drew \'" + humanPlayerCard.getName() + "\':");
-        printCardAttributes(humanPlayerCard);
-    }
-
-    private void printCardAttributes(Card card) {
-        List<Attribute> attributes = card.getAttributes();
-        for (int i = 0; i < attributes.size(); i++) {
-            String attributeName = attributes.get(i).getName();
-            int attributeValue = attributes.get(i).getValue();
-            String message = String.format("  %d:    %-12s%d\n", i + 1, attributeName, attributeValue);
-            System.out.println(message);
-        }
-    }
-
-    private void showActivePlayer(Player activePlayer) {
-        System.out.println("The active player is: " + activePlayer.getName());
     }
 
 }

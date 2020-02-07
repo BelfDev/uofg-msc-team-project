@@ -150,12 +150,18 @@ public class CommandLineView {
             case DRAW:
                 outcomeMessage += "The round ends in a draw!\nThe score was tied between: ";
                 for (Player player : outcome.getDraws()) {
+                    String name;
+                    if(player.isAIPlayer()){
+                        name = player.getName();
+                    }else{
+                        name = "You";
+                    }
                     if (player == outcome.getDraws().get(outcome.getDraws().size() - 1)) {
-                        outcomeMessage += " and " + player.getName();
+                        outcomeMessage += " and " + name;
                     } else if (player == outcome.getDraws().get(outcome.getDraws().size() - 2)) {
-                        outcomeMessage += player.getName();
+                        outcomeMessage += name;
                     } else {
-                        outcomeMessage += player.getName() + ", ";
+                        outcomeMessage += name + ", ";
                     }
                 }
                 break;
@@ -163,11 +169,43 @@ public class CommandLineView {
         typePrint(20, outcomeMessage);
     }
 
+    public void showRemovedPlayers(List<Player> removedPlayers) {
+        String removedPlayersString = "\n";
+        if (removedPlayers.size() == 1) {
+            if(removedPlayers.get(0).isAIPlayer()){
+                removedPlayersString += removedPlayers.get(0).getName() + " has been removed from the game";
+            }else{
+                removedPlayersString += "Oh no - you haven't got any cards left! You have been removed from the game";
+            }
+        } else {
+            Player lastPlayerInList = removedPlayers.get(removedPlayers.size() - 1);
+            Player secondLastPlayerInList = removedPlayers.get(removedPlayers.size() - 2);
+            for (Player player : removedPlayers) {
+                String name;
+                if(!player.isAIPlayer()){
+                    name = "You";
+                    typePrint(20, "\nOh no - you haven't got any cards left!");
+                    removedPlayersString = "";//removes new line character
+                }else{
+                    name = player.getName();
+                }
+                if (player == lastPlayerInList) {
+                    removedPlayersString += " and " + name + " have been removed from the game";
+                } else if (player == secondLastPlayerInList) {
+                    removedPlayersString += name;
+                } else {
+                    removedPlayersString += name + ", ";
+                }
+            }
+        }
+        typePrint(20, removedPlayersString);
+    }
+
     public void showGameResult(Player winner){
         pausePrinting(1000);
         String message = "\n\n";
         if(winner.isAIPlayer()){
-            message += winner.getName() + " has one the game!";
+            message += winner.getName() + " has won the game!";
         }else {
             message += "Congratulations - you won the game!";
         }
