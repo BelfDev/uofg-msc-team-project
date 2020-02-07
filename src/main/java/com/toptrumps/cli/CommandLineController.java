@@ -70,9 +70,9 @@ public class CommandLineController {
             rounderNumber++;
 
             // TODO: Double check if we are going to rely on this convention
-            Card humanPlayerCard = players.get(0).getTopCard();
+            Player humanPlayer = players.get(0);
             // TODO: We might want to shift to member variables and drop this parameters
-            onRoundStart(activePlayer, humanPlayerCard, rounderNumber);
+            onRoundStart(activePlayer, humanPlayer, rounderNumber);
 
             // == ATTRIBUTE SELECTION ==
 
@@ -100,11 +100,10 @@ public class CommandLineController {
                 case VICTORY:
                     activePlayer = outcome.getWinner();
                     roundCards.addAll(communalPile);
-                    communalPile = new ArrayList<>();
                     activePlayer.collectCards(roundCards);
                     break;
                 case DRAW:
-                    communalPile.addAll(roundCards);
+                    communalPile = new ArrayList<>(roundCards);
                     break;
                 default:
                     break;
@@ -119,11 +118,13 @@ public class CommandLineController {
 
     // === START OF LIFE CYCLE METHODS ===
 
-    private void onRoundStart(Player activePlayer, Card humanPlayerCard, int roundNumber) {
+    private void onRoundStart(Player activePlayer, Player humanPlayer, int roundNumber) {
         showRound(roundNumber);
-        showPlayerCard(humanPlayerCard);
+        showPlayerCard(humanPlayer.getTopCard());
         showActivePlayer(activePlayer);
-        numberOfHumanPlayerCards(cardsRemaining);
+
+        String message = String.format("You have %d cards in your hand", humanPlayer.getDeckCount());
+        System.out.println(message);
     }
 
     private Attribute onRequestSelection(Card card) {
