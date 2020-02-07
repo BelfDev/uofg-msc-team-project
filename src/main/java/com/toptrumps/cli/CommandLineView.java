@@ -3,15 +3,60 @@ package com.toptrumps.cli;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.core.player.Player;
+import com.toptrumps.core.engine.RoundOutcome;
+import com.toptrumps.core.utils.ResourceLoader;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.util.stream.Collectors;
 import java.lang.Thread;
 import java.lang.InterruptedException;
 
+
+import static java.util.stream.Collectors.toCollection;
+
 public class CommandLineView {
+    private OutputLogger logger;
+    private static final String WELCOME_BANNER_RESOURCE = "assets/banners/welcome.txt";
 
     public CommandLineView() {
+        this.logger = new OutputLogger();
+    }
 
+    public void showWelcomeMessage() {
+        printWelcomeBanner();
+        typePrint(20, "\nTo start a new game, press f \nTo see game statistics, press s");
+        logger.printToLog("Game started");
+        logger.printToLog("New line \n new line too.");
+    }
+
+    private void printWelcomeBanner() {
+        InputStream inputStream = ResourceLoader.getResource(WELCOME_BANNER_RESOURCE);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        String banner = br.lines().collect(Collectors.joining("\n"));
+        typePrint(2, banner);
+    }
+
+    public int requestNumberOfOpponents(int MIN_OPPONENTS, int MAX_OPPONENTS, Scanner scanner) {
+        try {
+            typePrint(20, "How many players do you want to play against?");
+            typePrint(20, "Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
+
+            int numberOfOpponents = scanner.nextInt();
+            while (numberOfOpponents < MIN_OPPONENTS || numberOfOpponents > MAX_OPPONENTS) {
+                typePrint(10, "Invalid number of players selected. Please select " + MIN_OPPONENTS + "-" + MAX_OPPONENTS + ".");
+                numberOfOpponents = scanner.nextInt();
+            }
+            return numberOfOpponents;
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            typePrint(10, "You didn't enter a number!");
+            return requestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS, scanner);
+        }
     }
 
     public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber){
@@ -89,10 +134,46 @@ public class CommandLineView {
         typePrint(20, message);
     }
 
+    public void showRoundResult(RoundOutcome outcome) {
+        pausePrinting(1000);
+        RoundOutcome.Result result = outcome.getResult();
+        String outcomeMessage = "\n";
+        switch (result) {
+            case VICTORY:
+                if(outcome.getWinner().isAIPlayer()){
+                    outcomeMessage += outcome.getWinner().getName() + " is the winner of the round!";
+                }else{
+                    outcomeMessage += "You win the round!";
+                }
+                
+                break;
+            case DRAW:
+                outcomeMessage += "The round ends in a draw!\nThe score was tied between: ";
+                for (Player player : outcome.getDraws()) {
+                    if (player == outcome.getDraws().get(outcome.getDraws().size() - 1)) {
+                        outcomeMessage += " and " + player.getName();
+                    } else if (player == outcome.getDraws().get(outcome.getDraws().size() - 2)) {
+                        outcomeMessage += player.getName();
+                    } else {
+                        outcomeMessage += player.getName() + ", ";
+                    }
+                }
+                break;
+        }
+        typePrint(20, outcomeMessage);
+    }
+
     public void showGameResult(Player winner){
-        typePrint(20, "The winner is...");
-        pausePrinting(500);
-        typePrint(20, winner.getName());
+        pausePrinting(1000);
+        String message = "\n\n";
+        if(winner.isAIPlayer()){
+            message += winner.getName() + " has one the game!";
+        }else {
+            message += "Congratulations - you won the game!";
+        }
+        typePrint(40, message);
+        System.out.println("\n\n\n");
+        pausePrinting(1500);
     }
 
     private void pausePrinting(int pauseTime){

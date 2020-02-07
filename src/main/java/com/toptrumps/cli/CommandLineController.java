@@ -22,10 +22,8 @@ import static java.util.stream.Collectors.toCollection;
 public class CommandLineController {
 
     private final static String DECK_RESOURCE = "assets/StarCitizenDeck.txt";
-    private static final String WELCOME_BANNER_RESOURCE = "assets/banners/welcome.txt";
 
     private Scanner scanner;
-    private OutputLogger logger;
 
     // TODO: Refactor the controller to use CommandLineView
     private CommandLineView view;
@@ -38,17 +36,16 @@ public class CommandLineController {
         this.gameEngine = new Game(DECK_RESOURCE);
         this.view = new CommandLineView();
         this.scanner = new Scanner(System.in);
-        this.logger = new OutputLogger();
     }
 
     public void start() {
-        presentWelcomeMessage();
+        view.showWelcomeMessage();
 
         String input = scanner.nextLine();
         // TODO: Create an Enum to encapsulate the flags
         if (input.equalsIgnoreCase("f")) {
             // Start the game
-            int numberOfOpponents = requestNumberOfOpponents();
+            int numberOfOpponents = view.requestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS, scanner);
             startNewGame(numberOfOpponents);
         } else if (input.equalsIgnoreCase("s")) {
             // TODO: Start statistics mode
@@ -58,8 +55,6 @@ public class CommandLineController {
     }
 
     private void startNewGame(int numberOfOpponents) {
-        System.out.println("Game Start");
-
         List<Card> communalPile = new ArrayList<>();
         int roundNumber = 0;
         ArrayList<Player> players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
@@ -72,7 +67,9 @@ public class CommandLineController {
             // TODO: Double check if we are going to rely on this convention
             Player humanPlayer = players.get(0);
             // TODO: We might want to shift to member variables and drop this parameters
-            onRoundStart(activePlayer, humanPlayer, roundNumber);
+            if(!humanPlayer.isAIPlayer()){
+                onRoundStart(activePlayer, humanPlayer, roundNumber);
+            }
 
             // == ATTRIBUTE SELECTION ==
 
@@ -83,7 +80,10 @@ public class CommandLineController {
                 selectedAttribute = onRequestSelection(activePlayer.getTopCard());
                 activePlayer.setSelectedAttribute(selectedAttribute);
             }
-            onAttributeSelected(activePlayer);
+
+            if(!humanPlayer.isAIPlayer()){
+                onAttributeSelected(activePlayer);
+            }
 
             // == ATTRIBUTE COMPARISON ==
 
@@ -110,7 +110,9 @@ public class CommandLineController {
                     break;
             }
 
-            onRoundEnd(outcome);
+            if(!humanPlayer.isAIPlayer()){
+                onRoundEnd(outcome);
+            }
 
         }
 
@@ -150,7 +152,7 @@ public class CommandLineController {
     }
 
     private void onRoundEnd(RoundOutcome outcome) {
-        showRoundResult(outcome);
+        view.showRoundResult(outcome);
         List<Player> removedPlayers = outcome.getRemovedPlayers();
         if (!removedPlayers.isEmpty()) {
             showRemovedPlayers(removedPlayers);
@@ -164,56 +166,6 @@ public class CommandLineController {
     }
 
     // === END OF LIFE CYCLE METHODS ===
-
-    private void presentWelcomeMessage() {
-        printWelcomeBanner();
-        // TODO: Move this to the view
-        System.out.println("To start a new game, press f \n To see game statistics, press s");
-        logger.printToLog("Game started");
-        logger.printToLog("New line \n new line too.");
-    }
-
-    private int requestNumberOfOpponents() {
-        try {
-            // TODO: Move this to the view class
-            System.out.println("How many players do you want to play against?");
-            System.out.println("Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
-
-            int numberOfOpponents = scanner.nextInt();
-            while (numberOfOpponents < MIN_OPPONENTS || numberOfOpponents > MAX_OPPONENTS) {
-                System.out.println("Invalid number of players selected. Please select " + MIN_OPPONENTS + "-" + MAX_OPPONENTS + ".");
-                numberOfOpponents = scanner.nextInt();
-            }
-            return numberOfOpponents;
-        } catch (InputMismatchException e) {
-            scanner.nextLine();
-            System.out.println("You didn't enter a number!");
-            return requestNumberOfOpponents();
-        }
-    }
-
-    private void showRoundResult(RoundOutcome outcome) {
-        RoundOutcome.Result result = outcome.getResult();
-        String outcomeMessage = "\nThe round resulted in a: ";
-        switch (result) {
-            case VICTORY:
-                outcomeMessage += "Victory!\nThe winner is: " + outcome.getWinner().getName();
-                break;
-            case DRAW:
-                outcomeMessage += "Draw\nThe score was tied between: ";
-                for (Player player : outcome.getDraws()) {
-                    if (player == outcome.getDraws().get(outcome.getDraws().size() - 1)) {
-                        outcomeMessage += " and " + player.getName();
-                    } else if (player == outcome.getDraws().get(outcome.getDraws().size() - 2)) {
-                        outcomeMessage += player.getName();
-                    } else {
-                        outcomeMessage += player.getName() + ", ";
-                    }
-                }
-                break;
-        }
-        System.out.println(outcomeMessage);
-    }
 
     private void showRemovedPlayers(List<Player> removedPlayers) {
         String removedPlayersString = "";
@@ -258,13 +210,6 @@ public class CommandLineController {
 
     private void showActivePlayer(Player activePlayer) {
         System.out.println("The active player is: " + activePlayer.getName());
-    }
-
-    private void printWelcomeBanner() {
-        InputStream inputStream = ResourceLoader.getResource(WELCOME_BANNER_RESOURCE);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        String banner = br.lines().collect(Collectors.joining("\n"));
-        System.out.println(banner);
     }
 
 }
