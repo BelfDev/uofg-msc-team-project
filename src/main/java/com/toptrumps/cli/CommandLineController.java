@@ -121,9 +121,6 @@ public class CommandLineController {
 
     private void onRoundStart(Player activePlayer, Player humanPlayer, int roundNumber) {
         view.showRoundStart(activePlayer, humanPlayer, roundNumber);
-
-        String message = String.format("You have %d cards in your hand", humanPlayer.getDeckCount());
-        System.out.println(message);
     }
 
     private Attribute onRequestSelection(Card card) {

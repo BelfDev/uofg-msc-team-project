@@ -15,7 +15,10 @@ public class CommandLineView {
     public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber){
         showRoundNumber(roundNumber);
         showActivePlayer(activePlayer, humanPlayer);
-        showCard(humanPlayer.getTopCard());
+        if(!humanPlayer.isAIPlayer()){
+            showNumberOfHumanCards(humanPlayer);
+            showCard(humanPlayer.getTopCard());
+        }
     }
 
     private void showRoundNumber(int roundNumber){
@@ -31,6 +34,16 @@ public class CommandLineView {
         }else {
             message += activePlayer.getName() + " is the active player";
         }
+        System.out.println(message);
+    }
+
+    private void showNumberOfHumanCards(Player humanPlayer){
+        int numberOfHumanCards = humanPlayer.getDeckCount();
+        String cardOrCards = "cards";
+        if(numberOfHumanCards == 1){
+            cardOrCards = "card";
+        }
+        String message = String.format("You have %d %s in your hand", numberOfHumanCards, cardOrCards);
         System.out.println(message);
     }
 
