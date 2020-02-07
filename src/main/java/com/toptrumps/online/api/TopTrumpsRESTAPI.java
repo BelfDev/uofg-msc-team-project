@@ -2,15 +2,27 @@ package com.toptrumps.online.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.toptrumps.core.card.Attribute;
+import com.toptrumps.core.engine.Game;
+import com.toptrumps.core.engine.RoundOutcome;
+import com.toptrumps.core.player.AIPlayer;
+import com.toptrumps.core.player.Player;
+import com.toptrumps.online.api.request.GamePreferences;
+import com.toptrumps.online.api.request.HumanPlayerMove;
+import com.toptrumps.online.api.request.PlayerMove;
+import com.toptrumps.online.api.request.PlayerState;
+import com.toptrumps.online.api.response.InitialGameState;
+import com.toptrumps.online.api.response.Outcome;
 import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Path("/toptrumps") // Resources specified here should be hosted at http://localhost:7777/toptrumps
 @Produces(MediaType.APPLICATION_JSON) // This resource returns JSON content
@@ -32,6 +44,7 @@ public class TopTrumpsRESTAPI {
      * into JSON strings easily.
      */
     ObjectWriter oWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    Game gameEngine;
 
     /**
      * Contructor method for the REST API. This is called first. It provides
@@ -41,181 +54,49 @@ public class TopTrumpsRESTAPI {
      * @param conf
      */
     public TopTrumpsRESTAPI(TopTrumpsJSONConfiguration conf) {
-        // ----------------------------------------------------
-        // Add relevant initalization here
-        // ----------------------------------------------------
+        this.gameEngine = new Game(conf.getDeckFile());
     }
 
     // ----------------------------------------------------
     // Add relevant API methods here
     // ----------------------------------------------------
 
-    @GET
-    @Path("/getTopCard")
-    /**
-     * Handler for a GET request to get the top card
-     * 
-     * @param playerID - ID of a player 
-     * @return - card data as JSON (name and attributes)
-     * @throws IOException
-     */
-    public String getTopCard(@QueryParam("playerID") int playerID) throws IOException {
+    @POST
+    @Path("/api/game")
+    @Produces(MediaType.APPLICATION_JSON)
+    public InitialGameState startNewGame(GamePreferences gamePreferences) {
+        int numberOfOpponents = gamePreferences.getNumberOfOpponents();
+        List<Player> players = gameEngine.startUp(numberOfOpponents);
+        Player activePlayer = gameEngine.assignActivePlayer(players);
+        // TODO: Double check if we are going to rely on this convention
+        Player humanPlayer = players.get(0);
+        List<Player> aiPlayers = players.subList(1, numberOfOpponents);
 
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-
-        ObjectNode attributesNode = factory.objectNode();
-        attributesNode.put("Strength", 10);
-        attributesNode.put("Dexterity", 9);
-        attributesNode.put("Constitution", 8);
-        attributesNode.put("Intelligence", 7);
-        attributesNode.put("Charisma", 6);
-
-        ObjectNode rootNode = factory.objectNode();
-        rootNode.put("name", "Card name");
-        rootNode.put("attributes", attributesNode);
-
-        String cardData = rootNode.toString();
-
-        return cardData;
+        return new InitialGameState(numberOfOpponents, activePlayer.getId(), humanPlayer, aiPlayers);
     }
 
-    @GET
-    @Path("/getActivePlayer")
-    /**
-     * Handler to get active player id
-     * 
-     * @return - player id as JSON
-     * @throws IOException
-     */
-    public String getActivePlayer() throws IOException {
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-
-        ObjectNode node = factory.objectNode();
-        node.put("playerID", 2);
-
-        String playerID = node.toString();
-
-        return playerID;
-    }
-    
-    @GET
-    @Path("/getChosenAttribute")
-    /**
-     * Handler to get chosen attribute
-     * 
-     * @return chosen category as JSON
-     * @throws IOException
-     */
-    public String getChosenAttribute() throws IOException {
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-
-        ObjectNode node = factory.objectNode();
-        node.put("attribute", "Dexterity");
-
-        String attribute = node.toString();
-
-        return attribute;
+    @POST
+    @Path("/api/outcome/human")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Outcome getRoundOutcome(HumanPlayerMove humanPlayerMove) {
+        List<Player> players = humanPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
+        List<Player> winners = gameEngine.getWinners(humanPlayerMove.getSelectedAttribute(), players);
+        RoundOutcome roundOutcome = gameEngine.processRoundOutcome(winners, players);
+        return new Outcome(roundOutcome);
     }
 
-    @GET
-    @Path("/getOpponentsCards")
-    /**
-     * Handler to get all opponents' cards
-     * 
-     * @return array of players and corresponding cards as JSON
-     * @throws IOException
-     */
-    public String getOpponentsCards() throws IOException {
-        JsonNodeFactory factory = JsonNodeFactory.instance;
+    @POST
+    @Path("/api/outcome/ai")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Outcome getRoundOutcome(PlayerMove aiPlayerMove) {
+        Player aiPlayer = aiPlayerMove.getActivePlayerState().toPlayer();
+        List<Player> players = aiPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
 
-        ObjectNode rootNode = factory.objectNode();
+        Attribute selectedAttribute = ((AIPlayer) aiPlayer).selectAttribute();
+        List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
+        RoundOutcome roundOutcome = gameEngine.processRoundOutcome(winners, players);
 
-        for (int i = 1; i < 5; i++) {
-            ObjectNode attributesNode = factory.objectNode();
-            attributesNode.put("Strength", 10);
-            attributesNode.put("Dexterity", 9);
-            attributesNode.put("Constitution", 8);
-            attributesNode.put("Intelligence", 7);
-            attributesNode.put("Charisma", 6);
-
-            ObjectNode playerNode = factory.objectNode();
-            playerNode.put("name", "Card name");
-            playerNode.put("attributes", attributesNode);
-
-            String playerID = i+"";
-
-            rootNode.put(playerID, playerNode);
-        }
-
-        String cardData = rootNode.toString();
-
-        return cardData;
+        return new Outcome(roundOutcome, selectedAttribute);
     }
 
-    @GET
-    @Path("/getPlayersCardsCount")
-    /**
-     * Handler to get all players' cards count
-     * 
-     * @return array of players and corresponding cards count as JSON
-     * @throws IOException
-     */
-    public String getPlayersCardsCount() throws IOException {
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-
-        ObjectNode rootNode = factory.objectNode();
-
-        for (int i = 0; i < 5; i++) {
-            ObjectNode playerNode = factory.objectNode();
-            playerNode.put("count", 15);
-
-            String playerID = i+"";
-
-            rootNode.put(playerID, playerNode);
-        }
-
-        String cardCount = rootNode.toString();
-
-        return cardCount;
-    }
-
-    @GET
-    @Path("/getRoundOutcome")
-    /**
-     * Handler to get game round outcome
-     * 
-     * @return game outcome (0 if draw, 1 if any player won) and winner ID (if it is a win)
-     * @throws IOException
-     */
-    public String getRoundOutcome() throws IOException {
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-
-        ObjectNode rootNode = factory.objectNode();
-
-        rootNode.put("outcome", 1);
-        rootNode.put("playerID", 2);
-
-        String outcome = rootNode.toString();
-
-        return outcome;
-    }
-
-    @GET
-    @Path("/getCommonPileCount")
-    /**
-     * Handler to get common pile count
-     * 
-     * @return common pile count as JSON
-     * @throws IOException
-     */
-    public String getCommonPileCount() throws IOException {
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-
-        ObjectNode node = factory.objectNode();
-        node.put("count", 10);
-
-        String count = node.toString();
-
-        return count;
-    }
 }

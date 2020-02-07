@@ -3,29 +3,32 @@ package com.toptrumps.core.engine;
 import com.toptrumps.core.player.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RoundOutcome {
 
-    enum Result {
-        VICTORY, DRAW
+    public enum Result {
+        VICTORY, DRAW, GAME_OVER
     }
 
     private Result result;
     private Player winner;
-    private ArrayList<Player> draws;
+    private List<Player> draws;
+    private List<Player> removedPlayers;
 
-    private RoundOutcome(Result result, Player winner, ArrayList<Player> draws) {
+    private RoundOutcome(Result result, Player winner, List<Player> draws, List<Player> removedPlayers) {
         this.result = result;
         this.winner = winner;
         this.draws = draws;
+        this.removedPlayers = removedPlayers;
     }
 
-    public RoundOutcome(Result result, Player winner) {
-        this(result, winner, null);
+    public RoundOutcome(Result result, Player winner, List<Player> removedPlayers) {
+        this(result, winner, null, removedPlayers);
     }
 
-    public RoundOutcome(Result result, ArrayList<Player> draws) {
-        this(result, null, draws);
+    public RoundOutcome(Result result, List<Player> draws, List<Player> removedPlayers) {
+        this(result, null, draws, removedPlayers);
     }
 
     public Result getResult() {
@@ -36,8 +39,12 @@ public class RoundOutcome {
         return winner;
     }
 
-    public ArrayList<Player> getDraws() {
+    public List<Player> getDraws() {
         return draws;
+    }
+
+    public List<Player> getRemovedPlayers() {
+        return removedPlayers;
     }
 
 }

@@ -15,7 +15,7 @@ public class Player implements Comparable<Player> {
     final protected int id;
     final protected String name;
     private boolean isActive;
-    protected ArrayList<Card> deck;
+    protected List<Card> deck;
 
     private Attribute selectedAttribute;
 
@@ -42,11 +42,11 @@ public class Player implements Comparable<Player> {
         isActive = active;
     }
 
-    public ArrayList<Card> getDeck() {
+    public List<Card> getDeck() {
         return deck;
     }
 
-    public void setDeck(ArrayList<Card> deck) {
+    public void setDeck(List<Card> deck) {
         this.deck = deck;
     }
 

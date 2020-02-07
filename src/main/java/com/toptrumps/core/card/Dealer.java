@@ -1,7 +1,5 @@
 package com.toptrumps.core.card;
 
-import com.toptrumps.core.player.Player;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,41 +10,18 @@ import static java.util.stream.Collectors.toList;
 
 public class Dealer {
 
-    private final static String DECK_RESOURCE = "assets/StarCitizenDeck.txt";
-
     private final ArrayList<Card> deck;
-    private ArrayList<Card> communalPile;
 
-    public Dealer() {
-        this.deck = DeckParser.parseDeck(DECK_RESOURCE);
-        this.communalPile = new ArrayList<>();
+    public Dealer(String deckFile) {
+        this.deck = DeckParser.parseDeck(deckFile);
     }
 
-    public ArrayList<Card> getCommunalPile() {
-        return communalPile;
-    }
-
-    public void dealCards(ArrayList<Player> players) {
-        int numberOfPlayers = players.size();
+    public List<List<Card>> dealCards(int numberOfPlayers) {
         shuffleCards();
         List<List<Card>> splitDecks = splitDeck(numberOfPlayers);
-
-        // Distribute the split decks to the game players
-        for (int i = 0; i < numberOfPlayers; i++) {
-            ArrayList<Card> currentDeck = new ArrayList<>(splitDecks.get(i));
-            players.get(i).setDeck(currentDeck);
-        }
+        return splitDecks;
     }
 
-    public void putCardsOnCommunalPile(List<Card> cards) {
-        communalPile.addAll(cards);
-    }
-
-    public List<Card> dealCommunalPile() {
-        List<Card> pileInTransit = communalPile;
-        communalPile = new ArrayList<>();
-        return pileInTransit;
-    }
 
     private void shuffleCards() {
         Collections.shuffle(deck, new Random());

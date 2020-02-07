@@ -17,134 +17,100 @@ import static java.util.stream.Collectors.toList;
 public class Game {
 
     private static final String DEFAULT_USER_NAME = "Human_Player";
-    private static final int DEFAULT_NUMBER_OF_HUMAN_PLAYERS = 1;
 
-    private final ArrayList<Player> players;
-    private int numberOfPlayers;
     private final Dealer dealer;
-    private final GameEventListener listener;
-
-    private Player activePlayer;
-    private int rounderNumber;
-    private RoundOutcome lastRoundOutcome;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
      * Starts the game
      */
-    public Game(int numberOfPlayers, GameEventListener listener) {
-        this.numberOfPlayers = numberOfPlayers;
-        this.listener = listener;
-        this.rounderNumber = 0;
-        this.dealer = new Dealer();
-        this.lastRoundOutcome = null;
+    public Game(String deckFile) {
+        this.dealer = new Dealer(deckFile);
+    }
 
-        this.players = new ArrayList<Player>() {{
+    private List<Player> createPlayers(int numberOfOpponents) {
+        List<AIPlayer> aiPlayers = createAIPlayers(numberOfOpponents);
+        return new ArrayList<Player>() {{
             add(new Player(0, DEFAULT_USER_NAME));
+            addAll(aiPlayers);
         }};
-
-        createAIPlayers(numberOfPlayers - DEFAULT_NUMBER_OF_HUMAN_PLAYERS);
-
-//        chooseStartingPlayer();
     }
 
-    private void createAIPlayers(int numberOfAIPlayers) {
-        for (int i = 1; i <= numberOfAIPlayers; i++) {
+    private List<AIPlayer> createAIPlayers(int numberOfOpponents) {
+        List<AIPlayer> aiPlayers = new ArrayList<>();
+        for (int i = 1; i <= numberOfOpponents; i++) {
             AIPlayer aiPlayer = new AIPlayer(i);
-            players.add(aiPlayer);
+            aiPlayers.add(aiPlayer);
+        }
+        return aiPlayers;
+    }
+
+    public void assignDecks(List<Player> players) {
+        final int numberOfPlayers = players.size();
+        final List<List<Card>> decks = dealer.dealCards(numberOfPlayers);
+
+        // Distribute the split decks to the game players
+        for (int i = 0; i < numberOfPlayers; i++) {
+            players.get(i).setDeck(decks.get(i));
         }
     }
 
-    public void start() {
-
-        // Start Up
-
-        dealer.dealCards(players);
-        assignRandomActivePlayer();
-
-        while (numberOfPlayers > 1) {
-            rounderNumber++;
-
-            Card humanPlayerCard = getHumanPlayer().getTopCard();
-            listener.onRoundStart(activePlayer, humanPlayerCard, rounderNumber);
-
-            // Attribute Selection
-            Attribute selectedAttribute;
-            if (activePlayer.isAIPlayer()) {
-                selectedAttribute = ((AIPlayer) activePlayer).selectAttribute();
-            } else {
-                selectedAttribute = listener.onRequestSelection(activePlayer.getTopCard());
-                activePlayer.setSelectedAttribute(selectedAttribute);
-            }
-
-            listener.onAttributeSelected(activePlayer);
-            // TODO: Revisit the attribute comparison to increase efficiency
-            // Attribute Comparison
-            String attributeName = selectedAttribute.getName();
-
-            // Find maxValue
-            int maxValue = players.stream()
-                    .map(p -> p.getTopCard().getAttributeByName(attributeName))
-                    .max(Attribute::compareTo)
-                    .get().getValue();
-
-            // Find playersWithMaxValue
-            ArrayList<Player> winners = (ArrayList<Player>) players.stream()
-                    .filter(p -> p.getTopCard().getAttributeByName(attributeName).getValue() == maxValue)
-                    .collect(toList());
-
-            // Round outcome
-            RoundOutcome outcome;
-            // TODO: Revisit round cards to avoid new stream
-            List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toList());
-            // TODO: Revisit this to avoid another loop
-            players.forEach(Player::removeTopCard);
-
-            if (winners.size() == 1) {
-                // There's a winner
-                activePlayer.setActive(false);
-                Player winner = winners.get(0);
-                winner.setActive(true);
-                outcome = new RoundOutcome(VICTORY, winner);
-                // Collect all player's cards
-                List<Card> communalPile = dealer.dealCommunalPile();
-                roundCards.addAll(communalPile);
-                winner.collectCards(roundCards);
-                activePlayer = winner;
-            } else {
-                // Draw
-                outcome = new RoundOutcome(DRAW, winners);
-                dealer.putCardsOnCommunalPile(roundCards);
-            }
-            listener.onRoundEnd(outcome);
-
-            // Round clean-up
-            // Removes players without cards
-            players.removeIf(player -> player.getDeck().isEmpty());
-            numberOfPlayers = players.size();
-        }
-
-        listener.onGameOver(activePlayer);
-    }
-
-    private void assignRandomActivePlayer() {
+    public Player assignActivePlayer(List<Player> players) {
+        final int numberOfPlayers = players.size();
         int randomIndex = getRandomInteger(0, numberOfPlayers - 1);
         Player activePlayer = players.get(randomIndex);
         activePlayer.setActive(true);
-        this.activePlayer = activePlayer;
+        return activePlayer;
+    }
+
+    public List<Player> startUp(int numberOfOpponents) {
+        List<Player> players = createPlayers(numberOfOpponents);
+        assignDecks(players);
+        return players;
+    }
+
+    public List<Player> getWinners(Attribute selectedAttribute, List<Player> players) {
+        // Attribute Comparison
+        // TODO: Optimize this process -> try to loop only once and retrieve the player with max selected attribute value
+        String attributeName = selectedAttribute.getName();
+        // Find maxValue
+        int maxValue = players.stream()
+                .map(p -> p.getTopCard().getAttributeByName(attributeName))
+                .max(Attribute::compareTo)
+                .get().getValue();
+
+        // Find playersWithMaxValue
+        ArrayList<Player> winners = (ArrayList<Player>) players.stream()
+                .filter(p -> p.getTopCard().getAttributeByName(attributeName).getValue() == maxValue)
+                .collect(toList());
+
+        return winners;
+    }
+
+    public RoundOutcome processRoundOutcome(List<Player> winners, List<Player> players) {
+        // Round outcome
+        RoundOutcome outcome;
+
+        //collect any defeated players and remove them from the game
+        List<Player> removedPlayers = players
+                .stream()
+                .filter(p -> p.getDeck().isEmpty())
+                .collect(toList());
+
+        if (winners.size() == 1) {
+            Player winner = winners.get(0);
+            winner.setActive(true);
+            outcome = new RoundOutcome(VICTORY, winner, removedPlayers);
+        } else {
+            outcome = new RoundOutcome(DRAW, winners, removedPlayers);
+        }
+
+        return outcome;
     }
 
     private int getRandomInteger(int min, int max) {
         Random randomGenerator = new Random();
         return randomGenerator.nextInt((max - min) + 1) + min;
-    }
-
-    public ArrayList<Card> getRoundCards() {
-        return (ArrayList<Card>) players.stream().map(Player::getTopCard).collect(toList());
-    }
-
-    private Player getHumanPlayer() {
-        return players.get(0);
     }
 
 }
