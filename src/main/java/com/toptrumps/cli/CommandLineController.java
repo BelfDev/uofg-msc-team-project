@@ -34,6 +34,7 @@ public class CommandLineController {
     private static final int MIN_OPPONENTS = 1;
     private static final int MAX_OPPONENTS = 4;
 
+
     public CommandLineController() {
         this.gameEngine = new Game(DECK_RESOURCE);
         this.view = new CommandLineView();
@@ -76,14 +77,17 @@ public class CommandLineController {
 
             // == ATTRIBUTE SELECTION ==
 
+
             Attribute selectedAttribute;
             if (activePlayer.isAIPlayer()) {
                 selectedAttribute = ((AIPlayer) activePlayer).selectAttribute();
             } else {
                 selectedAttribute = onRequestSelection(activePlayer.getTopCard());
                 activePlayer.setSelectedAttribute(selectedAttribute);
+
             }
             onAttributeSelected(activePlayer);
+            boolean humanTurn = activePlayer.isAIPlayer();
 
             // == ATTRIBUTE COMPARISON ==
 
@@ -108,6 +112,11 @@ public class CommandLineController {
                 default:
                     break;
             }
+
+            if (humanTurn && !gameEngine.getHumanRemoved()){
+                roundAdvance();
+            }
+
 
             onRoundEnd(outcome);
 
@@ -135,6 +144,7 @@ public class CommandLineController {
             System.out.println("Please select 1 - " + numberOfAttributes);
 
             int selectedAttributeIndex = scanner.nextInt();
+            scanner.nextLine();
             while (selectedAttributeIndex < 1 || selectedAttributeIndex > numberOfAttributes) {
                 System.out.println("Invalid attribute selected. Please select 1 -" + numberOfAttributes + ".");
                 selectedAttributeIndex = scanner.nextInt();
@@ -153,6 +163,12 @@ public class CommandLineController {
         String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
         String message = String.format("%s selected the attribute %s", playerName, selectedAttributeName);
         System.out.println(message);
+    }
+
+    private void roundAdvance(){
+        String message = "Press enter to start the next round.";
+        System.out.println(message);
+        scanner.nextLine();
     }
 
     private void onRoundEnd(RoundOutcome outcome) {

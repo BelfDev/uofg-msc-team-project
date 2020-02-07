@@ -18,6 +18,7 @@ public class Game {
     private static final String DEFAULT_USER_NAME = "Human_Player";
 
     private final Dealer dealer;
+    private boolean humanRemoved;
 
     /**
      * Constructor to initialise the number of players and the ArrayList of players
@@ -94,6 +95,12 @@ public class Game {
                 .filter(p -> p.getDeckCount() == 0)
                 .collect(toCollection(ArrayList::new));
 
+        for (Player p : removedPlayers) {
+            if (p instanceof Player) {
+                humanRemoved = true;
+            }
+        }
+
         if (players.size() == 1) {
             outcome = new RoundOutcome(GAME_OVER);
         } else if (winners.size() == 1) {
@@ -110,6 +117,10 @@ public class Game {
     private int getRandomInteger(int min, int max) {
         Random randomGenerator = new Random();
         return randomGenerator.nextInt((max - min) + 1) + min;
+    }
+
+    public boolean getHumanRemoved() {
+        return humanRemoved;
     }
 
 }
