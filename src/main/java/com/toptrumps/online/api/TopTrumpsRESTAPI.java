@@ -63,7 +63,7 @@ public class TopTrumpsRESTAPI {
         Player activePlayer = gameEngine.assignActivePlayer(players);
         // TODO: Double check if we are going to rely on this convention
         Player humanPlayer = players.get(0);
-        List<Player> aiPlayers = players.subList(1, numberOfOpponents);
+        List<Player> aiPlayers = players.subList(1, numberOfOpponents + 1);
 
         return new InitialGameState(numberOfOpponents, activePlayer.getId(), humanPlayer, aiPlayers);
     }
