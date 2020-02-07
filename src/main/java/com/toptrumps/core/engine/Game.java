@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.toptrumps.core.engine.RoundOutcome.Result.DRAW;
-import static com.toptrumps.core.engine.RoundOutcome.Result.VICTORY;
+import static com.toptrumps.core.engine.RoundOutcome.Result.*;
 import static java.util.stream.Collectors.toCollection;
 
 public class Game {
@@ -92,10 +91,12 @@ public class Game {
         //collect any defeated players and remove them from the game
         List<Player> removedPlayers = players
                 .stream()
-                .filter(p -> p.getDeck().isEmpty())
+                .filter(p -> p.getDeckCount() == 0)
                 .collect(toCollection(ArrayList::new));
 
-        if (winners.size() == 1) {
+        if (players.size() == 1) {
+            outcome = new RoundOutcome(GAME_OVER);
+        } else if (winners.size() == 1) {
             Player winner = winners.get(0);
             winner.setActive(true);
             outcome = new RoundOutcome(VICTORY, winner, removedPlayers);
