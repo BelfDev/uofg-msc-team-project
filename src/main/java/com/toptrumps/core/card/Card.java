@@ -1,18 +1,25 @@
 package com.toptrumps.core.card;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Supplier;
 
 public class Card {
 
-    final private String name;
+    private String name;
     private ArrayList<Attribute> attributes;
 
     /**
      * Lazily filter the highest attribute and store it as a final member variable
      */
     final private Supplier<Attribute> highestAttribute = () -> Collections.max(attributes);
+
+    public Card() {
+        // Jackson deserialization
+    }
 
     public Card(String name, ArrayList<Attribute> attributes) {
         this.name = name;
@@ -35,6 +42,7 @@ public class Card {
         return attributes;
     }
 
+    @JsonIgnore
     public Attribute getHighestAttribute() {
         return this.highestAttribute.get();
     }
