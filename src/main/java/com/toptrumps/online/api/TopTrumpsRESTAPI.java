@@ -1,7 +1,5 @@
 package com.toptrumps.online.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.engine.Game;
 import com.toptrumps.core.engine.RoundOutcome;
@@ -87,13 +85,10 @@ public class TopTrumpsRESTAPI {
     public Outcome getRoundOutcome(PlayerMove aiPlayerMove) {
         Player aiPlayer = aiPlayerMove.getPlayerState().toPlayer();
         List<Player> players = aiPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
-
         Attribute selectedAttribute = ((AIPlayer) aiPlayer).selectAttribute();
         List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
-
         players.forEach(Player::removeTopCard);
         RoundOutcome roundOutcome = gameEngine.processRoundOutcome(winners, players);
-
         return new Outcome(roundOutcome, selectedAttribute);
     }
 
