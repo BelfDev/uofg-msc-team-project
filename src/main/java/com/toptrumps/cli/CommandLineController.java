@@ -58,20 +58,17 @@ public class CommandLineController {
     }
 
     private void startNewGame(int numberOfOpponents) {
+        System.out.println("Game Start");
+
         List<Card> communalPile = new ArrayList<>();
-        boolean isGameOver = false;
         int rounderNumber = 0;
-        ArrayList<Player> players;
-        Player activePlayer = null;
+        ArrayList<Player> players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
+        Player activePlayer = gameEngine.assignActivePlayer(players);
 
-
-        while (!isGameOver) {
+        while (players.size() != 1) {
             // === GAME START UP ===
-            System.out.println("Game Start");
             rounderNumber++;
 
-            players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
-            activePlayer = gameEngine.assignActivePlayer(players);
             // TODO: Double check if we are going to rely on this convention
             Card humanPlayerCard = players.get(0).getTopCard();
             // TODO: We might want to shift to member variables and drop this parameters
@@ -103,14 +100,13 @@ public class CommandLineController {
                 case VICTORY:
                     activePlayer = outcome.getWinner();
                     roundCards.addAll(communalPile);
+                    communalPile = new ArrayList<>();
                     activePlayer.collectCards(roundCards);
                     break;
                 case DRAW:
                     communalPile.addAll(roundCards);
                     break;
-                case GAME_OVER:
-                    isGameOver = true;
-                    onGameOver(activePlayer);
+                default:
                     break;
             }
 
