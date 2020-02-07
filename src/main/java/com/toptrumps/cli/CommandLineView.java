@@ -84,6 +84,17 @@ public class CommandLineView {
         typePrint(10, "You didn't enter a number!");
     }
 
+    public void showSelectedAttribute(String playerName, String selectedAttribute){
+        String message = String.format("%s selected the attribute %s", playerName, selectedAttribute);
+        typePrint(20, message);
+    }
+
+    public void showGameResult(Player winner){
+        typePrint(20, "The winner is...");
+        pausePrinting(500);
+        typePrint(20, winner.getName());
+    }
+
     private void pausePrinting(int pauseTime){
         try {
             Thread.sleep(pauseTime);

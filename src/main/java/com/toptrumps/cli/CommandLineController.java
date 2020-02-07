@@ -146,8 +146,7 @@ public class CommandLineController {
     private void onAttributeSelected(Player activePlayer) {
         String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
         String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
-        String message = String.format("%s selected the attribute %s", playerName, selectedAttributeName);
-        System.out.println(message);
+        view.showSelectedAttribute(playerName, selectedAttributeName);
     }
 
     private void onRoundEnd(RoundOutcome outcome) {
@@ -159,8 +158,7 @@ public class CommandLineController {
     }
 
     private void onGameOver(Player winner) {
-        String message = String.format("\nGAME OVER, %s won\n\n", winner.getName());
-        System.out.println(message);
+        view.showGameResult(winner);
         scanner.nextLine(); //clear the scanner ready for new game selection
         start();
     }
