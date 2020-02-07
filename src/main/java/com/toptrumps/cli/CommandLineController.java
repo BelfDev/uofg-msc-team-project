@@ -127,19 +127,18 @@ public class CommandLineController {
         try {
             final List<Attribute> attributes = card.getAttributes();
             final int numberOfAttributes = attributes.size();
-            System.out.println("Which attribute would you like to choose?");
-            System.out.println("Please select 1 - " + numberOfAttributes);
+            view.requestSelection(numberOfAttributes);
 
             int selectedAttributeIndex = scanner.nextInt();
             while (selectedAttributeIndex < 1 || selectedAttributeIndex > numberOfAttributes) {
-                System.out.println("Invalid attribute selected. Please select 1 -" + numberOfAttributes + ".");
+                view.showInvalidSelection(numberOfAttributes);
                 selectedAttributeIndex = scanner.nextInt();
             }
 
             return attributes.get(selectedAttributeIndex - 1);
         } catch (InputMismatchException e) {
             scanner.nextLine();
-            System.out.println("You didn't enter a number!");
+            view.showNoNumberSelected();
             return onRequestSelection(card);
         }
     }

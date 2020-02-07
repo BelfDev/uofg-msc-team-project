@@ -71,6 +71,19 @@ public class CommandLineView {
         typePrint(5, "\t--------------------");
     }
 
+    public void requestSelection(int numberOfAttributes){
+        typePrint(20, "Which attribute would you like to choose?");
+        typePrint(20, "Please select 1 - " + numberOfAttributes);
+    }
+
+    public void showInvalidSelection(int numberOfAttributes){
+        typePrint(10, "Invalid attribute selected. Please select 1 -" + numberOfAttributes + ".");
+    }
+
+    public void showNoNumberSelected(){
+        typePrint(10, "You didn't enter a number!");
+    }
+
     private void pausePrinting(int pauseTime){
         try {
             Thread.sleep(pauseTime);
@@ -86,4 +99,5 @@ public class CommandLineView {
         }
         System.out.print("\n");
     }
+
 }
