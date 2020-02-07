@@ -1,4 +1,5 @@
 const Player = (function() {
+    const playerBoxTemplateSelector = $("#template-player-box");
     const anyPlayerSelector = ".js-player";
 
     const getTopCard = function(playerID) {
@@ -35,15 +36,26 @@ const Player = (function() {
     };
 
     const getPlayerSelectorByID = function(playerID) {
-        return $(anyPlayerSelector).filter(
-            `[data-player-id="Player ${playerID}"]`
-        );
+        return $(anyPlayerSelector).filter(function() {
+            return $(this).data("playerId") === playerID
+        });
+    };
+
+    const renderPlayer = function(player) {
+        const playerTpl = $(playerBoxTemplateSelector).html();
+        const playerNode = $(playerTpl).clone();
+        playerNode.data("player-id", player.id);
+        playerNode.find(".js-player-name").text(player.name);
+        playerNode.find(".js-player-hand-size").text(player.deck.length);
+
+        $(".js-opponents-box").append(playerNode);
     };
 
     return {
+        renderPlayer,
         getTopCard,
         getPlayerSelectorByID,
         getOpponentsCards,
-        getPlayersCardsCount
+        updateCardsCount
     };
 })();

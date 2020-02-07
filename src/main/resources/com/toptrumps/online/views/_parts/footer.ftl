@@ -6,6 +6,7 @@
 	<script src="/assets/scripts/message.js"></script>
 	<script src="/assets/scripts/modal.js"></script>
 	<script src="/assets/scripts/countdown.js"></script>
+	<script src="/assets/scripts/dealer.js"></script>
 	<script src="/assets/scripts/card.js"></script>
 	<script src="/assets/scripts/player.js"></script>
 	<script src="/assets/scripts/game.js"></script>

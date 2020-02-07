@@ -253,14 +253,15 @@
 }
 
 .modal {
-    display: grid;
-    align-content: space-between;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
     box-sizing: border-box;
     position: absolute;
     z-index: 2;
     top: 50%;
     left: 50%;
-    width: 70rem;
+    width: 100rem;
     min-height: 50rem;
     padding: 12rem;
     transform: translate(-50%, -50%);
@@ -271,6 +272,10 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
+}
+
+.modal__button {
+    margin-top: 14rem;
 }
 
 .modal:after {
@@ -288,7 +293,10 @@
 }
 
 .modal__title {
-    font-size: 5rem;
+    color: #dbdbdb;
+    font-size: 3.6rem;
+    font-weight: normal;
+    margin-bottom: 4rem;
 }
 
 .modal__hint {
@@ -301,6 +309,7 @@
 
 .opponents-quantity {
     position: relative;
+    width: 5.6rem;
 }
 
 .opponents-quantity__input::-webkit-inner-spin-button,
@@ -310,44 +319,46 @@
 }
 
 .opponents-quantity__input {
-    width: 45px;
-    height: 42px;
-    line-height: 1.65;
-    float: left;
+    width: 5.6rem;
+    height: 4.8rem;
+    line-height: 4.8rem;
     display: block;
     padding: 0;
     margin: 0;
-    padding-left: 20px;
-    border: 1px solid #eee;
+    text-align: center;
+    background: none;
+    font-size: 3.6rem;
+    font-weight: bold;
+    border: 0;
+    color: #dbdbdb;
 }
 
 .opponents-quantity__input:focus {
     outline: 0;
 }
 
-.opponents-quantity__nav {
-    position: relative;
-}
-
 .opponents-quantity__button {
     position: absolute;
     cursor: pointer;
-    border-left: 1px solid #eee;
-    width: 20px;
+    width: 5.6rem;
+    height: 4.8rem;
     top: 0;
-    background: white;
+    background: #dbdbdb;
+    border-radius: 1rem;
     text-align: center;
-    color: #333;
-    font-size: 13px;
-    line-height: 1.7;
-    transform: translateX(-100%);
+    color: #454545;
+    font-weight: bold;
+    font-size: 3.6rem;
+    line-height: 4.8rem;
     user-select: none;
 }
 
 .opponents-quantity__button--up {
-    left: 0;
+    left: -5.6rem;
 }
 
 .opponents-quantity__button--down {
-    right: 0;
+    right: -5.6rem;
+    font-size: 4.8rem;
+    line-height: 4.5rem;
 }

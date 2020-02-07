@@ -1,7 +1,1 @@
-<div class="opponents">
-    <#list players>
-        <#items as player>
-            <#include "ai-player.ftl">
-        </#items>
-    </#list>
-</div>
+<div class="opponents js-opponents-box"></div>

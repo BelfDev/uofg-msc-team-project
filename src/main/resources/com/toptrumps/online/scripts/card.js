@@ -42,11 +42,11 @@ const Card = (function() {
         let attrNodeCollection = [];
         const attrTpl = $(cardAttributeTemplateSelector).html();
 
-        $.each(attributesData, function(name, value) {
+        $.each(attributesData, function(i, data) {
             const attrNode = $(attrTpl).clone();
-            attrNode.data("attribute", name);
-            attrNode.prepend(name);
-            attrNode.find(cardAttributeValueSelector).html(value);
+            attrNode.data("attribute", data.name);
+            attrNode.prepend(data.name);
+            attrNode.find(cardAttributeValueSelector).html(data.value);
             attrNodeCollection.push(attrNode);
         });
 
@@ -124,9 +124,7 @@ const Card = (function() {
     };
 
     const animateCard = function($card, playerID) {
-        var card = document.querySelector(
-            `.js-player[data-player-id="Player ${playerID}"] .js-card`
-        );
+        var card = Player.getPlayerSelectorByID(playerID).find(".js-card")[0];
 
         const options = {
             targets: card,
