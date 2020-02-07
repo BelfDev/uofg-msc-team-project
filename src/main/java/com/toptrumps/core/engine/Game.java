@@ -94,10 +94,11 @@ public class Game {
                 .stream()
                 .filter(p -> p.getDeckCount() == 0)
                 .collect(toCollection(ArrayList::new));
-
-        for (Player p : removedPlayers) {
-            if (p instanceof Player) {
-                humanRemoved = true;
+        if (!getHumanRemoved()) {
+            for (Player p : removedPlayers) {
+                if (p instanceof Player) {
+                    humanRemoved = true;
+                }
             }
         }
 
