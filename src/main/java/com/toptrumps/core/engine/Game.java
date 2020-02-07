@@ -97,12 +97,13 @@ public class Game {
         if (players.size() == 1) {
             outcome = new RoundOutcome(GAME_OVER);
         } else if (winners.size() == 1) {
-            if(removedPlayers.contains(winners.get(0))){
-                removedPlayers.remove(winners.get(0));
-            }
-
             Player winner = winners.get(0);
             winner.setActive(true);
+
+            if(removedPlayers.contains(winner)){
+                removedPlayers.remove(winner);
+            }
+            
             outcome = new RoundOutcome(VICTORY, winner, removedPlayers);
         } else {
             outcome = new RoundOutcome(DRAW, winners, removedPlayers);
