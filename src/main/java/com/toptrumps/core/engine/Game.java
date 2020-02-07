@@ -96,7 +96,7 @@ public class Game {
                 .collect(toCollection(ArrayList::new));
         if (!getHumanRemoved()) {
             for (Player p : removedPlayers) {
-                if (p instanceof Player) {
+                if (p.isAIPlayer()) {
                     humanRemoved = true;
                 }
             }
