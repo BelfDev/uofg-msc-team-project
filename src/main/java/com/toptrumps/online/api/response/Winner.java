@@ -33,7 +33,7 @@ public class Winner {
         return name;
     }
 
-    @JsonProperty
+    @JsonProperty("isAIPlayer")
     public boolean isAIPlayer() {
         return isAIPlayer;
     }

@@ -6,37 +6,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.engine.RoundOutcome.Result;
-import com.toptrumps.core.player.Player;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @JsonInclude(Include.NON_NULL)
 public class Outcome {
 
     private Result result;
     private Winner winner;
-    private List<Integer> defeatedPlayerIds;
+    private List<Integer> removedPlayerIds;
     private Attribute selectedAttribute;
 
     public Outcome() {
         // Jackson deserialization
     }
 
-    public Outcome(Result result, Winner winner, List<Integer> defeatedPlayerIds, Attribute selectedAttribute) {
+    public Outcome(Result result, Winner winner, List<Integer> removedPlayerIds, Attribute selectedAttribute) {
         this.result = result;
         this.winner = winner;
-        this.defeatedPlayerIds = defeatedPlayerIds;
+        this.removedPlayerIds = removedPlayerIds;
         this.selectedAttribute = selectedAttribute;
     }
 
     public Outcome(RoundOutcome roundOutcome, Attribute selectedAttribute) {
+        Winner winner = null;
+        if (roundOutcome.getWinner() != null) {
+            winner = new Winner(roundOutcome.getWinner());
+        }
         List<Integer> defeatedPlayerIds = roundOutcome.getRemovedPlayerIds();
-        Winner winner = new Winner(roundOutcome.getWinner());
+
         this.result = roundOutcome.getResult();
         this.winner = winner;
-        this.defeatedPlayerIds = defeatedPlayerIds;
+        this.removedPlayerIds = defeatedPlayerIds;
         this.selectedAttribute = selectedAttribute;
     }
 
@@ -55,8 +56,8 @@ public class Outcome {
     }
 
     @JsonProperty
-    public List<Integer> getDefeatedPlayerIds() {
-        return defeatedPlayerIds;
+    public List<Integer> getRemovedPlayerIds() {
+        return removedPlayerIds;
     }
 
     @JsonProperty

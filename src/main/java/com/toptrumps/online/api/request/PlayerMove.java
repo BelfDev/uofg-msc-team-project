@@ -8,20 +8,16 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlayerMove {
 
-    private PlayerState activePlayerState;
+    private int activePlayerId;
     private List<PlayerState> playerStates;
 
     public PlayerMove() {
         // Jackson deserialization
     }
 
-    public PlayerMove(List<PlayerState> playerStates, PlayerState activePlayerState) {
+    public PlayerMove(int activePlayerId, List<PlayerState> playerStates) {
+        this.activePlayerId = activePlayerId;
         this.playerStates = playerStates;
-        this.activePlayerState = activePlayerState;
-    }
-
-    public PlayerMove(List<PlayerState> playerStates) {
-        this(playerStates, null);
     }
 
     @JsonProperty("players")
@@ -29,8 +25,13 @@ public class PlayerMove {
         return playerStates;
     }
 
-    @JsonProperty("activePlayer")
-    public PlayerState getActivePlayerState() {
-        return activePlayerState;
+    @JsonProperty
+    public int getActivePlayerId() {
+        return activePlayerId;
     }
+
+    public PlayerState getPlayerState() {
+        return playerStates.get(activePlayerId);
+    }
+
 }

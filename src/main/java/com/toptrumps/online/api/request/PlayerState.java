@@ -51,7 +51,7 @@ public class PlayerState {
     }
 
     public Player toPlayer() {
-        return isAIPlayer ? new AIPlayer(id) : new Player(id, name);
+        return isAIPlayer ? new AIPlayer(this) : new Player(this);
     }
 
 }

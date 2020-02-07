@@ -34,6 +34,11 @@ public class RoundOutcome {
         this(result, null, draws, removedPlayers);
     }
 
+    public RoundOutcome(Result result) {
+        this(result, null, null, null);
+    }
+
+
     public Result getResult() {
         return result;
     }

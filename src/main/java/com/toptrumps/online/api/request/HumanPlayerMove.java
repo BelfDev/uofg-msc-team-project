@@ -14,7 +14,7 @@ public class HumanPlayerMove extends PlayerMove {
     }
 
     public HumanPlayerMove(Attribute selectedAttribute, List<PlayerState> playerStates) {
-        super(playerStates);
+        super(0, playerStates);
         this.selectedAttribute = selectedAttribute;
     }
 
