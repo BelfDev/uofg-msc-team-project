@@ -39,11 +39,6 @@ import static java.util.stream.Collectors.toList;
  */
 public class TopTrumpsRESTAPI {
 
-    /**
-     * A Jackson Object writer. It allows us to turn Java objects
-     * into JSON strings easily.
-     */
-    ObjectWriter oWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
     Game gameEngine;
 
     /**
@@ -81,6 +76,7 @@ public class TopTrumpsRESTAPI {
     public Outcome getRoundOutcome(HumanPlayerMove humanPlayerMove) {
         List<Player> players = humanPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
         List<Player> winners = gameEngine.getWinners(humanPlayerMove.getSelectedAttribute(), players);
+        players.forEach(Player::removeTopCard);
         RoundOutcome roundOutcome = gameEngine.processRoundOutcome(winners, players);
         return new Outcome(roundOutcome);
     }
@@ -89,11 +85,13 @@ public class TopTrumpsRESTAPI {
     @Path("/api/outcome/ai")
     @Produces(MediaType.APPLICATION_JSON)
     public Outcome getRoundOutcome(PlayerMove aiPlayerMove) {
-        Player aiPlayer = aiPlayerMove.getActivePlayerState().toPlayer();
+        Player aiPlayer = aiPlayerMove.getPlayerState().toPlayer();
         List<Player> players = aiPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
 
         Attribute selectedAttribute = ((AIPlayer) aiPlayer).selectAttribute();
         List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
+
+        players.forEach(Player::removeTopCard);
         RoundOutcome roundOutcome = gameEngine.processRoundOutcome(winners, players);
 
         return new Outcome(roundOutcome, selectedAttribute);
