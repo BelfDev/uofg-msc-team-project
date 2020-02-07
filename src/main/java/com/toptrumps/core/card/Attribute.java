@@ -1,9 +1,15 @@
 package com.toptrumps.core.card;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Attribute implements Comparable<Attribute> {
 
-    private final String name;
-    private final int value;
+    private String name;
+    private int value;
+
+    public Attribute() {
+        // Jackson deserialization
+    }
 
     public Attribute(String name, int value) {
         this.name = name;

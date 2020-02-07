@@ -2,6 +2,7 @@ package com.toptrumps.core.player;
 
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
+import com.toptrumps.online.api.request.PlayerState;
 
 /**
  * Represents an AI player in the game.
@@ -14,6 +15,10 @@ public class AIPlayer extends Player {
 
     public AIPlayer(int id) {
         super(id, String.format("%s_%d", DEFAULT_AI_NAME, id));
+    }
+
+    public AIPlayer(PlayerState playerState) {
+        super(playerState);
     }
 
     public Attribute selectAttribute() {
