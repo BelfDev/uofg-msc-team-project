@@ -3,21 +3,23 @@ package com.toptrumps.cli;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.core.engine.Game;
-import com.toptrumps.core.engine.GameLifeCycle;
 import com.toptrumps.core.engine.RoundOutcome;
+import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.utils.ResourceLoader;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class CommandLineController implements GameLifeCycle {
+import static java.util.stream.Collectors.toList;
+
+public class CommandLineController {
 
     private final static String DECK_RESOURCE = "assets/StarCitizenDeck.txt";
     private static final String WELCOME_BANNER_RESOURCE = "assets/banners/welcome.txt";
@@ -56,12 +58,14 @@ public class CommandLineController implements GameLifeCycle {
     }
 
     private void startNewGame(int numberOfOpponents) {
+        List<Card> communalPile = new ArrayList<>();
         boolean isGameOver = false;
         int rounderNumber = 0;
         List<Player> players;
-        Player activePlayer;
+        Player activePlayer = null;
 
-        while (isGameOver) {
+
+        while (!isGameOver) {
             // === GAME START UP ===
             System.out.println("Game Start");
             rounderNumber++;
@@ -75,16 +79,103 @@ public class CommandLineController implements GameLifeCycle {
 
             // == ATTRIBUTE SELECTION ==
 
+            Attribute selectedAttribute;
+            if (activePlayer.isAIPlayer()) {
+                selectedAttribute = ((AIPlayer) activePlayer).selectAttribute();
+            } else {
+                selectedAttribute = onRequestSelection(activePlayer.getTopCard());
+                activePlayer.setSelectedAttribute(selectedAttribute);
+            }
+            onAttributeSelected(activePlayer);
 
+            // == ATTRIBUTE COMPARISON ==
 
+            List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
+            List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toList());
+
+            // TODO: Fix concurrent exception
+//            players.forEach(Player::removeTopCard);
+
+            // == ROUND OUTCOME ==
+
+            RoundOutcome outcome = gameEngine.processRoundOutcome(winners, players);
+            players.removeAll(outcome.getRemovedPlayers());
+
+            switch (outcome.getResult()) {
+                case VICTORY:
+                    activePlayer = outcome.getWinner();
+                    roundCards.addAll(communalPile);
+                    activePlayer.collectCards(roundCards);
+                    break;
+                case DRAW:
+                    communalPile.addAll(roundCards);
+                    break;
+                case GAME_OVER:
+                    isGameOver = true;
+                    onGameOver(activePlayer);
+                    break;
+            }
+
+            onRoundEnd(outcome);
 
         }
 
+        onGameOver(activePlayer);
     }
+
+    // === START OF LIFE CYCLE METHODS ===
+
+    private void onRoundStart(Player activePlayer, Card humanPlayerCard, int roundNumber) {
+        showRound(roundNumber);
+        showPlayerCard(humanPlayerCard);
+        showActivePlayer(activePlayer);
+    }
+
+    private Attribute onRequestSelection(Card card) {
+        try {
+            final List<Attribute> attributes = card.getAttributes();
+            final int numberOfAttributes = attributes.size();
+            System.out.println("Which attribute would you like to choose?");
+            System.out.println("Please select 1 - " + numberOfAttributes);
+
+            int selectedAttributeIndex = scanner.nextInt();
+            while (selectedAttributeIndex < 1 || selectedAttributeIndex > numberOfAttributes) {
+                System.out.println("Invalid attribute selected. Please select 1 -" + numberOfAttributes + ".");
+                selectedAttributeIndex = scanner.nextInt();
+            }
+
+            return attributes.get(selectedAttributeIndex - 1);
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("You didn't enter a number!");
+            return onRequestSelection(card);
+        }
+    }
+
+    private void onAttributeSelected(Player activePlayer) {
+        String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
+        String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
+        String message = String.format("%s selected the attribute %s", playerName, selectedAttributeName);
+        System.out.println(message);
+    }
+
+    private void onRoundEnd(RoundOutcome outcome) {
+        showRoundResult(outcome);
+        List<Player> removedPlayers = outcome.getRemovedPlayers();
+        if (!removedPlayers.isEmpty()) {
+            showRemovedPlayers(removedPlayers);
+        }
+    }
+
+    private void onGameOver(Player winner) {
+        String message = String.format("\nGAME OVER, %s won", winner.getName());
+        System.out.println(message);
+    }
+
+    // === END OF LIFE CYCLE METHODS ===
 
     private void presentWelcomeMessage() {
         printWelcomeBanner();
-
         // TODO: Move this to the view
         System.out.println("To start a new game, press f \n To see game statistics, press s");
         logger.printToLog("Game started");
@@ -107,35 +198,6 @@ public class CommandLineController implements GameLifeCycle {
             scanner.nextLine();
             System.out.println("You didn't enter a number!");
             return requestNumberOfOpponents();
-        }
-    }
-
-    @Override
-    public void onRoundStart(Player activePlayer, Card humanPlayerCard, int roundNumber) {
-        showRound(roundNumber);
-        showPlayerCard(humanPlayerCard);
-        showActivePlayer(activePlayer);
-    }
-
-    @Override
-    public Attribute onRequestSelection(Card card) {
-        return requestAttribute(card);
-    }
-
-    @Override
-    public void onAttributeSelected(Player activePlayer) {
-        String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
-        String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
-        String message = String.format("%s selected the attribute %s", playerName, selectedAttributeName);
-        System.out.println(message);
-    }
-
-    @Override
-    public void onRoundEnd(RoundOutcome outcome) {
-        showRoundResult(outcome);
-        ArrayList<Player> removedPlayers = outcome.getRemovedPlayers();
-        if (!removedPlayers.isEmpty()) {
-            showRemovedPlayers(removedPlayers);
         }
     }
 
@@ -162,7 +224,7 @@ public class CommandLineController implements GameLifeCycle {
         System.out.println(outcomeMessage);
     }
 
-    private void showRemovedPlayers(ArrayList<Player> removedPlayers) {
+    private void showRemovedPlayers(List<Player> removedPlayers) {
         String removedPlayersString = "";
         if (removedPlayers.size() == 1) {
             removedPlayersString += removedPlayers.get(0).getName() + " has been removed from the game";
@@ -182,17 +244,10 @@ public class CommandLineController implements GameLifeCycle {
         System.out.println(removedPlayersString);
     }
 
-    @Override
-    public void onGameOver(Player winner) {
-        String message = String.format("\nGAME OVER, %s won", winner.getName());
-        System.out.println(message);
-    }
-
     private void showRound(int roundNumber) {
         String message = String.format("\n\nRound %d: Players have drawn their cards", roundNumber);
         System.out.println(message);
     }
-
 
 
     private void showPlayerCard(Card humanPlayerCard) {
@@ -212,27 +267,6 @@ public class CommandLineController implements GameLifeCycle {
 
     private void showActivePlayer(Player activePlayer) {
         System.out.println("The active player is: " + activePlayer.getName());
-    }
-
-    private Attribute requestAttribute(Card card) {
-        try {
-            final List<Attribute> attributes = card.getAttributes();
-            final int numberOfAttributes = attributes.size();
-            System.out.println("Which attribute would you like to choose?");
-            System.out.println("Please select 1 - " + numberOfAttributes);
-
-            int selectedAttributeIndex = scanner.nextInt();
-            while (selectedAttributeIndex < 1 || selectedAttributeIndex > numberOfAttributes) {
-                System.out.println("Invalid attribute selected. Please select 1 -" + numberOfAttributes + ".");
-                selectedAttributeIndex = scanner.nextInt();
-            }
-
-            return attributes.get(selectedAttributeIndex - 1);
-        } catch (InputMismatchException e) {
-            scanner.nextLine();
-            System.out.println("You didn't enter a number!");
-            return requestAttribute(card);
-        }
     }
 
     private void printWelcomeBanner() {
