@@ -1,4 +1,4 @@
-<div class="human-player js-player"  data-player-id="0">
+<div class="human-player js-player js-human-player">
     <div class="pcard js-card">
         <div class="pcard__front">
             <div class="pcard__image-box">
@@ -16,5 +16,5 @@
         <div class="pcard__back"></div>
     </div>
 
-    <div class="human-player__hand"><span class="js-player-hand-size">?</span> cards left</div>
+    <div class="human-player__hand js-player-hand"></div>
 </div>

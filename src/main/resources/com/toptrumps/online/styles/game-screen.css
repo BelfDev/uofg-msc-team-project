@@ -139,6 +139,9 @@
     padding: 0.8rem;
     color: #383029;
     margin: -3.4rem 0.5rem 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .pcard__content {

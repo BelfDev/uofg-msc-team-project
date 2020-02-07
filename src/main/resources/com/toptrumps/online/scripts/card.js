@@ -25,9 +25,26 @@ const Card = (function() {
         });
     };
 
-    const getImagePath = function(cardName) {
-        const imageName = cardName.replace(" ", "_").toLowerCase();
-        return `/assets/images/${imageName}.png`;
+    const checkImage = function(path) {
+        return $.ajax({
+            url: path,
+            type: 'HEAD'
+        }).then(function() {
+            return true;
+        }).catch(function() {
+            return false;
+        })
+    }
+
+    const getImagePath = async function(cardName) {
+        const imageName = cardName.replace(" ", "_");
+        const imageUrl = `/assets/images/cards/${imageName}.png`;
+        const result = await checkImage(imageUrl);
+        let finalUrl = `/assets/images/cards/Default.png`
+
+        if (result) finalUrl = imageUrl;
+
+        return finalUrl;
     };
 
     const highlightAttribute = function(attribute) {
@@ -99,14 +116,16 @@ const Card = (function() {
         $($attributes).off("click");
     };
 
-    const update = function(playerID, data) {
+    const update = async function(playerID, data) {
         console.log("Method: update card");
         let playerSelector = Player.getPlayerSelectorByID(playerID);
 
         // Set image src and title
+        const imagePath = await getImagePath(data.name);
+
         $(playerSelector)
             .find(cardImageSelector)
-            .attr("src", getImagePath(data.name))
+            .attr("src", imagePath)
             .attr("title", data.name);
 
         // Set card title

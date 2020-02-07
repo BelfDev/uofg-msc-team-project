@@ -31,7 +31,7 @@
 
 		<div class="ai-player__details">
 			<div class="ai-player__name js-player-name"></div>
-			<div class="ai-player__hand"><span class="js-player-hand-size">?</span> cards left</div>
+			<div class="ai-player__hand js-player-hand"></div>
 		</div>
 	</div>
 </script>

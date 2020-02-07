@@ -7,7 +7,7 @@ const Game = (function() {
     let activePlayerID = null;
     let humanPlayerID = null;
     let cardsShown = [];
-    let commonPileCount = 0;
+    let commonPile = [];
     const players = [];
 
     const init = function() {
@@ -57,7 +57,6 @@ const Game = (function() {
 
         $(document).on("game:cardsShown", function(event, data) {
             console.log("Event: game:cardsShown");
-            console.log($(".js-card-char"));
             // cardsShown = data.cardsShown;
 
             setTimeout(function() {
@@ -83,7 +82,9 @@ const Game = (function() {
         Modal.closeActiveModal();
         players.forEach(function(player) {
             Card.reset(player.id);
+            Player.updateCardsCount(player.id, player.deck.length);
         });
+        Player.updateCardsCount(players[humanPlayerID].id, players[humanPlayerID].deck.length);
         resetPayLoad();
     };
 
@@ -96,26 +97,27 @@ const Game = (function() {
         $(".js-modal-new-game-button").on("click", function() {
             const numberOfOpponents = $(".js-opponents-count").val();
 
-            // TODO: change to POST
-            $.get(
-                // `${restAPIurl}/api/game`,
-                `https://api.myjson.com/bins/1dnak2`,
-                { numberOfOpponents },
-                function(response) {
-                    $(document).trigger("game:newGameStarted", response);
-                    Modal.closeActiveModal();
-                }
-            );
+            $.ajax({
+                url: `${restAPIurl}/api/game`,
+                type: "POST",
+                data: JSON.stringify({ numberOfOpponents }),
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            }).done(function(response) {
+                $(document).trigger("game:newGameStarted", response);
+                Modal.closeActiveModal();
+            });
         });
     };
 
     const startNewGame = function(data) {
         console.log("Method: startNewGame");
-        numberOfOpponents = 3;
-        // numberOfOpponents = data.numberOfOpponents;
+        // numberOfOpponents = 3;
+        numberOfOpponents = data.numberOfOpponents;
         // activePlayerID = data.activePlayerId;
         roundNumber = data.roundNumber;
-        activePlayerID = 1;
+        activePlayerID = 0;
         humanPlayerID = data.humanPlayer.id;
 
         createPlayers(data.humanPlayer, data.aiPlayers);
@@ -132,9 +134,7 @@ const Game = (function() {
             name: human.name,
             deck: human.deck
         };
-
-
-        ais.pop();
+        Player.updateCardsCount(players[humanPlayerID].id, players[humanPlayerID].deck.length);
 
         ais.forEach((ai, i) => {
             players[i + 1] = {
@@ -146,15 +146,12 @@ const Game = (function() {
         });
     };
 
-    const runStartPhase = function() {
+    const runStartPhase = async function() {
         console.log("Method: runStartPhase");
         // Player.getPlayersCardsCount();
-        players.forEach(player => {
-            Player.updateCardsCount(player.id, player.deck.length);
-        });
 
         const topCard = Dealer.getPlayerTopCard(humanPlayerID, players[humanPlayerID].deck);
-        Card.update(humanPlayerID, topCard);
+        await Card.update(humanPlayerID, topCard);
         preparePayLoad(humanPlayerID, topCard);
         // Player.getTopCard(0);
         // getCommonPileCount();
@@ -168,10 +165,14 @@ const Game = (function() {
 
     const preparePayLoad = function(playerID, topCard) {
         console.log("Method: preparePayLoad");
-        let payload = players[playerID];
+        let payload = {};
+        const player = players[playerID]
+        payload.id = player.id;
+        payload.name = player.name
         payload.topCard = topCard;
-        payload.deckCount = payload.deck.length;
-        cardsShown[playerID] = payload;
+        payload.deckCount = player.deck.length;
+        payload.isAIPlayer = playerID === 0 ? false: true;
+        cardsShown.push(payload);
     };
 
     const runAttributeSelectionPhase = function() {
@@ -207,7 +208,6 @@ const Game = (function() {
             getChosenAttribute();
         }
 
-        console.log($(".js-card-char"));
         setTimeout(function() {
             Card.highlightAttribute(activeAttribute);
         }, 2000);
@@ -245,91 +245,106 @@ const Game = (function() {
     //     });
     // };
 
-    const showRoundOutcome = function(data) {
-        console.log($(".js-card-char"));
-        if (data.result === "DRAW") {
-            updateCommonPile(data.communalPileAddition);
+    const getCardsFromStack = function() {
+        const cards = [];
 
-            Modal.openModal(".js-round-draw-modal", "It's a draw", `There are ${commonPileCount} cards in common pile`);
+        cardsShown.forEach(function(card) {
+           cards.push(card)
+        });
+
+        return cards;
+    };
+
+    const moveCardsToWinner = function(playerID) {
+        console.log(players[playerID].deck);
+        console.log(cardsShown);
+        console.log(commonPile);
+
+        const cards = getCardsFromStack();
+
+        cards.forEach(function (card) {
+            players[playerID].deck.push(card);
+        })
+
+        if (commonPile.length > 0) {
+            commonPile.forEach(function (card) {
+                players[playerID].deck.push(card);
+            })
+        }
+
+        resetCommonPile();
+        // let add = 0;
+        // if (commonPileCount > 0) {
+        //     add += commonPileCount;
+        //     updateCommonPile(0);
+        //     add += cardsShown
+        // }
+    };
+
+    const showRoundOutcome = function(data) {
+        if (data.result === "DRAW") {
+            updateCommonPile();
+
+            Modal.openModal(".js-round-draw-modal", "It's a draw", `There are ${commonPile.length} cards in common pile`);
         } else if (data.result === "VICTORY") {
             activePlayerID = data.winner.id;
 
             let hint;
-            const title = data.winner.isAIPlayer === false ? `${data.winner.name} has won!` : "You won the round!";
-            if (data.defeatedPlayerIds.length > 0) {
+            const title = data.winner.isAIPlayer === true ? `${data.winner.name} has won!` : "You won the round!";
+            if (data.defeatedPlayerIds && data.defeatedPlayerIds.length > 0) {
                 hint = `These players were defeated: ${data.defeatedPlayerIds}`;
             }
+            moveCardsToWinner(data.winner.id);
             Modal.openModal(".js-round-win-modal", title, hint)
 
         } else if (data.result === "END GAME") {
-            const title = data.winner.isAIPlayer === false ? `Game over!` : "You won the game!";
-            const hint = data.winner.isAIPlayer === false ? `${data.winner.name} has won!` : "You won!";
+            const title = data.winner.isAIPlayer === true ? `Game over!` : "You won the game!";
+            const hint = data.winner.isAIPlayer === true ? `${data.winner.name} has won!` : "You won!";
             Modal.openModal(".js-end-game-modal", title, hint);
         } else {
             console.log("Something wrong...");
         }
-        console.log($(".js-card-char"));
-        console.log(data);
     }
 
     const setChosenAttribute = function(attribute, cardsShown) {
         console.log("Method: setChosenAttribute");
         const passedData = {
             selectedAttribute: {
-                attribute: attribute.name,
+                name: attribute.name,
                 value: attribute.value
             },
             players: cardsShown
         };
 
-        // $.post(`https://api.myjson.com/bins/18z334`, passedData, function(response) {
-        const response = {
-            "result": "VICTORY",
-            "winner":   {
-                "id": 1,
-                "name": "AI Player 1",
-                "isAIPlayer": false
-            },
-            "communalPileAddition": 5,
-            "defeatedPlayerIds": [
-                1,
-                2
-            ]
-        };
+        $.ajax({
+            url: `${restAPIurl}/api/outcome/human`,
+            type: "POST",
+            data: JSON.stringify(passedData),
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function(response) {
             $(document).trigger("game:cardsShown", response);
-        // });
+        });
     };
 
     const getChosenAttribute = function() {
         console.log("Method: getChosenAttribute");
 
-        // $.get(`${restAPIurl}/outcome/ai`, function(response) {
-            const passedData = {
+        $.ajax({
+            url: `${restAPIurl}/api/outcome/ai`,
+            type: "POST",
+            data: JSON.stringify({
+                activePlayerId: activePlayerID,
                 players: cardsShown
-            };
-            console.log(passedData);
-            const response = {
-                "result": "VICTORY",
-                "winner":   {
-                    "id": 1,
-                    "name": "AI Player 1",
-                    "isAIPlayer": false
-                },
-                "defeatedPlayerIds": [
-                    1,
-                    2
-                ],
-                "selectedAttribute": {
-                    "name": "Some Attribute",
-                    "value": 8
-                }
-            };
+            }),
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function(response) {
             $(document).trigger("game:attributeSelect", response.selectedAttribute);
-        $(document).trigger("game:cardsShown", response);
-            // $(document).trigger("game:cardsShown", passedData);
-
-            // runRoundConclusionPhase();
-        // });
+            $(document).trigger("game:cardsShown", response);
+        });
     };
 
     // const getCommonPileCount = function() {
@@ -347,14 +362,29 @@ const Game = (function() {
     //     });
     // };
 
-    const updateCommonPile = function(count) {
+    const resetCommonPile = function() {
+        commonPile = [];
+
+        $(".js-common-pile-value").text(0);
+
+        $(".js-common-pile").removeClass(
+            "game-status__common-pile--active"
+        );
+    };
+
+    const updateCommonPile = function() {
         console.log("Method: updateCommonPile");
 
-        commonPileCount = commonPileCount + count;
+        const cards = getCardsFromStack();
 
-        if (commonPileCount > 0) {
+        commonPile = $.merge(commonPile, cards);
+
+        // commonPileCount = commonPileCount + count;
+
+        $(".js-common-pile-value").text(commonPile.length);
+
+        if (commonPile.length > 0) {
             $(".js-common-pile").addClass("game-status__common-pile--active");
-            $(".js-common-pile-value").text(commonPileCount);
         } else {
             $(".js-common-pile").removeClass(
                 "game-status__common-pile--active"
