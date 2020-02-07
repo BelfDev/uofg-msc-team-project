@@ -14,14 +14,24 @@ public class CommandLineView {
 
     public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber){
         showRoundNumber(roundNumber);
+        showActivePlayer(activePlayer, humanPlayer);
         showCard(humanPlayer.getTopCard());
-        //TODO: show active player
     }
 
     private void showRoundNumber(int roundNumber){
         System.out.println("--------------------");
         System.out.println("    Round " + roundNumber);
         System.out.println("--------------------");
+    }
+
+    private void showActivePlayer(Player activePlayer, Player humanPlayer){
+        String message = "";
+        if(activePlayer == humanPlayer){
+            message += "You are the active player";
+        }else {
+            message += activePlayer.getName() + " is the active player";
+        }
+        System.out.println(message);
     }
 
     private void showCard(Card card){
