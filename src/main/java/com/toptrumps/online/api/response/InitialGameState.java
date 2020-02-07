@@ -1,18 +1,16 @@
-package com.toptrumps.online.api;
+package com.toptrumps.online.api.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InitialGameState {
 
-    int numberOfOpponents;
-    int activePlayerId;
-    Player humanPlayer;
-    List<Player> aiPlayers;
+    private int numberOfOpponents;
+    private int activePlayerId;
+    private Player humanPlayer;
+    private List<Player> aiPlayers;
 
     public InitialGameState() {
         // Jackson deserialization

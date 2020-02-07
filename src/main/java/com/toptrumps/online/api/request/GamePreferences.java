@@ -1,4 +1,4 @@
-package com.toptrumps.online.api;
+package com.toptrumps.online.api.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
