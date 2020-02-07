@@ -104,10 +104,11 @@ public class CommandLineController {
                 case VICTORY:
                     activePlayer = outcome.getWinner();
                     roundCards.addAll(communalPile);
+                    communalPile = new ArrayList<>();
                     activePlayer.collectCards(roundCards);
                     break;
                 case DRAW:
-                    communalPile = new ArrayList<>(roundCards);
+                    communalPile.addAll(roundCards);
                     break;
                 default:
                     break;
