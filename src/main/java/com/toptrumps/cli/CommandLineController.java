@@ -61,18 +61,18 @@ public class CommandLineController {
         System.out.println("Game Start");
 
         List<Card> communalPile = new ArrayList<>();
-        int roundNumber = 0;
+        int roundernumber = 0;
         ArrayList<Player> players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
 
         while (players.size() != 1) {
             // === GAME START UP ===
-            roundNumber++;
+            roundernumber++;
 
             // TODO: Double check if we are going to rely on this convention
             Player humanPlayer = players.get(0);
             // TODO: We might want to shift to member variables and drop this parameters
-            onRoundStart(activePlayer, humanPlayer, roundNumber);
+            onRoundStart(activePlayer, humanPlayer, roundernumber);
 
             // == ATTRIBUTE SELECTION ==
 
@@ -100,10 +100,11 @@ public class CommandLineController {
                 case VICTORY:
                     activePlayer = outcome.getWinner();
                     roundCards.addAll(communalPile);
+                    communalPile = new ArrayList<>();
                     activePlayer.collectCards(roundCards);
                     break;
                 case DRAW:
-                    communalPile = new ArrayList<>(roundCards);
+                    communalPile.addAll(roundCards);
                     break;
                 default:
                     break;
