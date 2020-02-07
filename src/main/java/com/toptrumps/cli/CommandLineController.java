@@ -181,9 +181,8 @@ public class CommandLineController {
     }
 
     private void onGameOver(Player winner) {
-        String message = String.format("\nGAME OVER, %s won\n\n", winner.getName());
-        System.out.println(message);
-        scanner.nextLine(); //clear the scanner ready for new game selection
+        String winMessage = String.format("\nGAME OVER, %s won\n\n", winner.getName());
+        System.out.println(winMessage);
         start();
     }
 
