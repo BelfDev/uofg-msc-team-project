@@ -68,7 +68,7 @@ public class CommandLineController {
             Player humanPlayer = players.get(0);
             // TODO: We might want to shift to member variables and drop this parameters
             if(!humanPlayer.isAIPlayer()){
-                onRoundStart(activePlayer, humanPlayer, roundNumber);
+                view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
             }
 
             // == ATTRIBUTE SELECTION ==
@@ -120,10 +120,6 @@ public class CommandLineController {
     }
 
     // === START OF LIFE CYCLE METHODS ===
-
-    private void onRoundStart(Player activePlayer, Player humanPlayer, int roundNumber) {
-        view.showRoundStart(activePlayer, humanPlayer, roundNumber);
-    }
 
     private Attribute onRequestSelection(Card card) {
         try {

@@ -59,21 +59,20 @@ public class CommandLineView {
         }
     }
 
-    public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber){
+    public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber, int communalPileSize){
         pausePrinting(1000);
         showRoundNumber(roundNumber);
         showActivePlayer(activePlayer, humanPlayer);
-        if(!humanPlayer.isAIPlayer()){
-            pausePrinting(500);
-            showNumberOfHumanCards(humanPlayer);
-            showCard(humanPlayer.getTopCard());
-        }
+        showCommunalPileSize(communalPileSize);
+        pausePrinting(500);
+        showNumberOfHumanCards(humanPlayer);
+        showCard(humanPlayer.getTopCard());
     }
 
     private void showRoundNumber(int roundNumber){
-        System.out.println("\n\n--------------------");
-        System.out.println("    Round " + roundNumber);
-        System.out.println("--------------------");
+        typePrint(10, "\n\n--------------------");
+        typePrint(10, "    Round " + roundNumber);
+        typePrint(10, "--------------------");
     }
 
     private void showActivePlayer(Player activePlayer, Player humanPlayer){
@@ -83,6 +82,11 @@ public class CommandLineView {
         }else {
             message += activePlayer.getName() + " is the active player";
         }
+        typePrint(20, message);
+    }
+
+    private void showCommunalPileSize(int communalPileSize){
+        String message = String.format("There are %d cards in the communal pile", communalPileSize);
         typePrint(20, message);
     }
 
