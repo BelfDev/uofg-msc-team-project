@@ -10,9 +10,9 @@ const Countdown = (function() {
             opacityIn: [0, 1],
             scaleIn: [0.2, 1],
             scaleOut: 3,
-            durationIn: 800,
-            durationOut: 600,
-            delay: 500
+            durationIn: 500,
+            durationOut: 300,
+            delay: 100
         };
 
         anime
@@ -74,7 +74,7 @@ const Countdown = (function() {
             setTimeout(function() {
                 $(".js-countdown").removeClass("countdown--active");
                 data.callback();
-            }, 6000);
+            }, 3000);
         });
     };
 
