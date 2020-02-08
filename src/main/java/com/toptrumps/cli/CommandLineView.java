@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.stream.Collectors;
@@ -63,6 +64,7 @@ public class CommandLineView {
         showCommunalPileSize(communalPileSize);
         pausePrinting(500);
         showNumberOfHumanCards(humanPlayer);
+        typePrint(20, "\nYour card is:");
         showCard(humanPlayer.getTopCard());
     }
 
@@ -101,7 +103,6 @@ public class CommandLineView {
         String name = card.getName();
         pausePrinting(1000);
 
-        typePrint(20, "\nYour card is:");
         typePrint(5, "\t--------------------");
         typePrint(5, String.format("\t|%18s|", name));
         typePrint(5, String.format("\t|%18s|", ""));
@@ -115,6 +116,32 @@ public class CommandLineView {
         }
 
         typePrint(5, "\t--------------------");
+    }
+
+    private void showCards(List<Card> cards){
+        List<Attribute> attributes = cards.get(0).getAttributes();
+        pausePrinting(1000);
+
+        int linesRequired = 5 + attributes.size();
+        ArrayList<String> printLines = new ArrayList<String>();
+        for(int i=0; i<linesRequired; i++){printLines.add("");}
+
+        for(Card card: cards){
+            attributes = card.getAttributes();
+            String name = card.getName();
+            printLines.set(0, printLines.get(0) + "\t--------------------");
+            printLines.set(1, printLines.get(1) + String.format("\t|%18s|", name));
+            printLines.set(2, printLines.get(2) + String.format("\t|%18s|", ""));
+            printLines.set(3, printLines.get(3) + String.format("\t|%18s|", ""));
+            for (int i = 0; i < attributes.size(); i++) {
+                String attributeName = attributes.get(i).getName();
+                int attributeValue = attributes.get(i).getValue();
+                printLines.set(i+4, printLines.get(i+4) + String.format("\t|%d: %-13s%2d|", i + 1, attributeName, attributeValue));
+            }
+            printLines.set(printLines.size()-1, printLines.get(printLines.size()-1) + "\t--------------------");
+        }
+
+        for(String line: printLines){typePrint(2, line);}
     }
 
     public void requestSelection(int numberOfAttributes){
@@ -135,12 +162,14 @@ public class CommandLineView {
         typePrint(20, message);
     }
 
-    public void showRoundResult(RoundOutcome outcome) {
+    public void showRoundResult(RoundOutcome outcome, List<Card> winningCards) {
         pausePrinting(1000);
         RoundOutcome.Result result = outcome.getResult();
         String outcomeMessage = "\n";
         switch (result) {
             case VICTORY:
+                typePrint(20, "\nThe winning card is...");
+                showCard(winningCards.get(0));
                 if(outcome.getWinner().isAIPlayer()){
                     outcomeMessage += outcome.getWinner().getName() + " is the winner of the round!";
                 }else{
@@ -149,6 +178,8 @@ public class CommandLineView {
                 
                 break;
             case DRAW:
+                typePrint(20, "\nThe winning cards are...");
+                showCards(winningCards);
                 outcomeMessage += "The round ends in a draw!\nThe score was tied between: ";
                 for (Player player : outcome.getDraws()) {
                     String name;
