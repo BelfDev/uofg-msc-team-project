@@ -14,6 +14,7 @@ public class Logger {
 
 
     public Logger(String filePath){
+
         logger = java.util.logging.Logger.getLogger(LOGGER);
 
         this.filePath = filePath;
@@ -35,11 +36,11 @@ public class Logger {
             e.printStackTrace();
         }
         logger.addHandler(loggerHandler);
-        logger.setLevel(java.util.logging.Level.INFO);
+        logger.setLevel(Level.FINE);
     }
 
     public static void logToFile(String logEntry){
-        java.util.logging.Logger.getLogger(LOGGER).info(logEntry);
+        java.util.logging.Logger.getLogger(LOGGER).fine(logEntry);
     }
 
 }
