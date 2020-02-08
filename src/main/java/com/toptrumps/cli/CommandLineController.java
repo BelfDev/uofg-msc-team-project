@@ -88,7 +88,7 @@ public class CommandLineController {
             // == ATTRIBUTE COMPARISON ==
 
             List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
-            Card winningCard = winners.get(0).getTopCard();
+            List<Card> winningCards = winners.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
             List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
             players.forEach(Player::removeTopCard);
 
@@ -112,7 +112,7 @@ public class CommandLineController {
             }
 
             if(!humanPlayer.isAIPlayer()){
-                onRoundEnd(outcome, winningCard);
+                onRoundEnd(outcome, winningCards);
             }
 
         }
@@ -148,8 +148,8 @@ public class CommandLineController {
         view.showSelectedAttribute(playerName, selectedAttributeName);
     }
 
-    private void onRoundEnd(RoundOutcome outcome, Card winningCard) {
-        view.showRoundResult(outcome, winningCard);
+    private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards) {
+        view.showRoundResult(outcome, winningCards);
         List<Player> removedPlayers = outcome.getRemovedPlayers();
         if (!removedPlayers.isEmpty()) {
             view.showRemovedPlayers(removedPlayers);
