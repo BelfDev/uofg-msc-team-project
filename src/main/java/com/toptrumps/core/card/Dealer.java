@@ -55,7 +55,7 @@ public class Dealer {
     public String printDeck(){
         String deckString = "";
         for (Card c : deck){
-            deckString += c.toString() + "\n";
+            deckString += c.toString();
         }
         return deckString;
     }

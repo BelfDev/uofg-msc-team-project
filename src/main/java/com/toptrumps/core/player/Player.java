@@ -120,7 +120,7 @@ public class Player implements Comparable<Player> {
     public String toString() {
         String deckString = "Player => " + name + "\nDeck:\n";
         for (Card c : deck) {
-            deckString += c.toString() + "\n"; // Mangling the exisiting toString was the only way I could find to print it out nicely.
+            deckString += c.toString(); // Mangling the exisiting toString was the only way I could find to print it out nicely.
         }
         return deckString;
     }

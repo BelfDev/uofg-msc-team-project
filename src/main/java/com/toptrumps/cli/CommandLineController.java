@@ -6,16 +6,11 @@ import com.toptrumps.core.engine.Game;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
-import com.toptrumps.core.utils.ResourceLoader;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+
 
 import static java.util.stream.Collectors.toCollection;
 
@@ -106,6 +101,7 @@ public class CommandLineController {
                     break;
                 case DRAW:
                     communalPile.addAll(roundCards);
+                    Logger.logToFile("Communal cards: \n" +communalPile.toString());
                     break;
                 default:
                     break;
@@ -157,6 +153,7 @@ public class CommandLineController {
     }
 
     private void onGameOver(Player winner) {
+        Logger.logToFile(winner.getName() + " won the game! \nGAME OVER!");
         view.showGameResult(winner);
         scanner.nextLine(); //clear the scanner ready for new game selection
         start();
