@@ -20,18 +20,15 @@ import java.lang.InterruptedException;
 import static java.util.stream.Collectors.toCollection;
 
 public class CommandLineView {
-    private OutputLogger logger;
+
     private static final String WELCOME_BANNER_RESOURCE = "assets/banners/welcome.txt";
 
-    public CommandLineView() {
-        this.logger = new OutputLogger();
-    }
+
 
     public void showWelcomeMessage() {
         printWelcomeBanner();
         typePrint(20, "\nTo start a new game, press f \nTo see game statistics, press s");
-        logger.printToLog("Game started");
-        logger.printToLog("New line \n new line too.");
+        Logger.logToFile("Game started");
     }
 
     private void printWelcomeBanner() {
