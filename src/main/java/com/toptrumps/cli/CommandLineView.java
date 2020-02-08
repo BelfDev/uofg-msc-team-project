@@ -66,6 +66,7 @@ public class CommandLineView {
         showCommunalPileSize(communalPileSize);
         pausePrinting(500);
         showNumberOfHumanCards(humanPlayer);
+        typePrint(20, "\nYour card is:");
         showCard(humanPlayer.getTopCard());
     }
 
@@ -104,7 +105,6 @@ public class CommandLineView {
         String name = card.getName();
         pausePrinting(1000);
 
-        typePrint(20, "\nYour card is:");
         typePrint(5, "\t--------------------");
         typePrint(5, String.format("\t|%18s|", name));
         typePrint(5, String.format("\t|%18s|", ""));
@@ -138,12 +138,14 @@ public class CommandLineView {
         typePrint(20, message);
     }
 
-    public void showRoundResult(RoundOutcome outcome) {
+    public void showRoundResult(RoundOutcome outcome, Card winningCard) {
         pausePrinting(1000);
         RoundOutcome.Result result = outcome.getResult();
         String outcomeMessage = "\n";
         switch (result) {
             case VICTORY:
+                typePrint(20, "\nThe winning card is...");
+                showCard(winningCard);
                 if(outcome.getWinner().isAIPlayer()){
                     outcomeMessage += outcome.getWinner().getName() + " is the winner of the round!";
                 }else{
