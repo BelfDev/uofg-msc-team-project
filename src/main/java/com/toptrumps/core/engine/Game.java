@@ -1,5 +1,6 @@
 package com.toptrumps.core.engine;
 
+import com.toptrumps.cli.Logger;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.core.card.Dealer;
@@ -72,6 +73,12 @@ public class Game {
         // Attribute Comparison
         // TODO: Optimize this process -> try to loop only once and retrieve the player with max selected attribute value
         String attributeName = selectedAttribute.getName();
+
+        for (Player p : players){ // TODO Maybe integrate this for loop with something else to prevent looping.
+            Logger.logToFile(p.getName() + "'s top card:  "+ p.getTopCard().toString() + "\n\n"
+                    + p.getName() + "'s deck: \n" + p.toString());
+        }
+
         // Find maxValue
         int maxValue = players.stream()
                 .map(p -> p.getTopCard().getAttributeByName(attributeName))
@@ -87,6 +94,7 @@ public class Game {
     public RoundOutcome processRoundOutcome(List<Player> winners, List<Player> players) {
         // Round outcome
         RoundOutcome outcome;
+
 
         //collect any defeated players and remove them from the game
         List<Player> removedPlayers = players
@@ -116,5 +124,6 @@ public class Game {
         Random randomGenerator = new Random();
         return randomGenerator.nextInt((max - min) + 1) + min;
     }
+
 
 }
