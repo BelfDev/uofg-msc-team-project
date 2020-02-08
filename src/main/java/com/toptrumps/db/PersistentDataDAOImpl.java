@@ -103,7 +103,8 @@ public class PersistentDataDAOImpl implements PersistentDataDAO{
                results.close();
                if(con != null){con.close();}
             }catch(SQLException e){
-               e.printStackTrace();}
+               e.printStackTrace();
+              }
             }
         return statistics;
     }
