@@ -4,6 +4,9 @@ import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.online.api.request.PlayerState;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  * Represents an AI player in the game.
  * There can be up to 4 AI players.
@@ -23,9 +26,11 @@ public class AIPlayer extends Player {
 
     public Attribute selectAttribute() {
         Card topCard = getTopCard();
-        Attribute highestAttribute = topCard.getHighestAttribute();
-        this.setSelectedAttribute(highestAttribute);
-        return highestAttribute;
+        ArrayList<Attribute> highestAttributes = topCard.getHighestAttributes();
+        Random rand = new Random();
+        Attribute selectedHighestAttribute = highestAttributes.get(rand.nextInt((highestAttributes.size())));
+        this.setSelectedAttribute(selectedHighestAttribute);
+        return  selectedHighestAttribute;
     }
 
 }

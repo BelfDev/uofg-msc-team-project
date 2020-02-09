@@ -11,11 +11,11 @@ public class Card {
 
     private String name;
     private ArrayList<Attribute> attributes;
+    private ArrayList<Attribute> highestAttributes;
 
     /**
      * Lazily filter the highest attribute and store it as a final member variable
      */
-    final private Supplier<Attribute> highestAttribute = () -> Collections.max(attributes);
 
     public Card() {
         // Jackson deserialization
@@ -24,6 +24,8 @@ public class Card {
     public Card(String name, ArrayList<Attribute> attributes) {
         this.name = name;
         this.attributes = attributes;
+        highestAttributes = new ArrayList<>();
+        findHighestAttributes();
     }
 
     public String getName() {
@@ -37,14 +39,23 @@ public class Card {
                 .findFirst()
                 .orElse(null);
     }
+    private void findHighestAttributes() {
+        Supplier<Attribute> highestAttribute = () -> Collections.max(attributes);
+
+        for (Attribute a : attributes){
+            if (a.getValue() == highestAttribute.get().getValue()){
+                highestAttributes.add(a);
+            }
+        }
+    }
 
     public ArrayList<Attribute> getAttributes() {
         return attributes;
     }
 
     @JsonIgnore
-    public Attribute getHighestAttribute() {
-        return this.highestAttribute.get();
+    public ArrayList<Attribute> getHighestAttributes() {
+        return highestAttributes;
     }
 
     @Override
