@@ -49,6 +49,7 @@ public class CommandLineView {
                 typePrint(10, "Invalid number of players selected. Please select " + MIN_OPPONENTS + "-" + MAX_OPPONENTS + ".");
                 numberOfOpponents = scanner.nextInt();
             }
+            scanner.nextLine();
             return numberOfOpponents;
         } catch (InputMismatchException e) {
             scanner.nextLine();
@@ -58,7 +59,6 @@ public class CommandLineView {
     }
 
     public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber, int communalPileSize){
-        pausePrinting(1000);
         showRoundNumber(roundNumber);
         showActivePlayer(activePlayer, humanPlayer);
         showCommunalPileSize(communalPileSize);
@@ -199,6 +199,12 @@ public class CommandLineView {
                 break;
         }
         typePrint(20, outcomeMessage);
+    }
+
+    public void selectNextRound(Scanner scanner){
+        String message = "\nPress ENTER to start the next round";
+        typePrint(20, message);
+        scanner.nextLine();
     }
 
     public void showRemovedPlayers(List<Player> removedPlayers) {

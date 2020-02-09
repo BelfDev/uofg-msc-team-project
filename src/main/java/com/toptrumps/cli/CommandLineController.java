@@ -154,6 +154,7 @@ public class CommandLineController {
         if (!removedPlayers.isEmpty()) {
             view.showRemovedPlayers(removedPlayers);
         }
+        view.selectNextRound(scanner);
     }
 
     private void onGameOver(Player winner) {
