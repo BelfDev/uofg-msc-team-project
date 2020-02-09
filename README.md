@@ -12,7 +12,7 @@ The application itself is broken down into two parts: the online mode; and comma
 ```cd uofg-msc-team-project```<br><br>
 3. Make sure you have ```Maven``` properly installed in your environment. Then, simply generate the ```.jar``` as illustrated below<br> 
 ```mvn package```<br><br>
-1. To get the game running correctly in the online mode, the TopTrumps.json file (in the project root) must be moved (or copied) to the same directory as the ```.jar file```. Maven generates the ```TopTrumps.jar``` in the ```target``` directory (you can move the ```.jar``` file elsewhere if you wish). <br>
+1. To get the game running correctly in the online mode, the ```TopTrumps.json``` file (in the project root) must be moved (or copied) to the same directory as the ```.jar``` file. Maven generates the ```TopTrumps.jar``` in the ```target``` directory (you can move the ```.jar``` file elsewhere if you wish). <br>
 2. Now ```cd``` into the ```target``` directory and execute the JAR<br>
 ```java -jar TopTrumps.jar -c``` for the **CLI** mode<br>
 or<br>
