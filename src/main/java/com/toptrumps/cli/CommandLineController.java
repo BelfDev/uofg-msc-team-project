@@ -133,6 +133,7 @@ public class CommandLineController {
                 view.showInvalidSelection(numberOfAttributes);
                 selectedAttributeIndex = scanner.nextInt();
             }
+            scanner.nextLine();
 
             return attributes.get(selectedAttributeIndex - 1);
         } catch (InputMismatchException e) {
