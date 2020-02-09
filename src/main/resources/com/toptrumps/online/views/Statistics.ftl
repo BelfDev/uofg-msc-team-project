@@ -6,7 +6,7 @@
 
 	<!-- Import JQuery, as it provides functions you will probably find useful (see https://jquery.com/) -->
 	<script src="/assets/scripts/jquery-3.4.1.min.js"></script>
-	<script src="/assets/scripts/screen.js"></script>
+	<script src="/assets/scripts/plugins/screen.js"></script>
 	<script>
 		$(function() {
 			Screen.init()
