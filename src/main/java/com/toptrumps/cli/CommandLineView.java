@@ -238,7 +238,6 @@ public class CommandLineView {
         String message = "\n\n";
         if(winner.isAIPlayer()){
             message += winner.getName() + " has won the game!";
-            Logger.logToFile(message);
         }else {
             message += "Congratulations - you won the game!";
         }
