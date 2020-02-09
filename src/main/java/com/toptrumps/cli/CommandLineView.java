@@ -241,8 +241,8 @@ public class CommandLineView {
             Logger.logToFile(message);
         }else {
             message += "Congratulations - you won the game!";
-            Logger.logToFile(message);
         }
+        Logger.logToFile(message);
         typePrint(40, message);
         System.out.println("\n\n\n");
         pausePrinting(1500);
