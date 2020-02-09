@@ -30,7 +30,6 @@ public class TopTrumpsCLIApp {
             logger.enable();
         }
         Logger.logToFile("MAD STAX FTW.");
-        Logger.logToFile("Doesn't log");
         // TODO remove this.
 
         CommandLineController commandLineUI = new CommandLineController();
