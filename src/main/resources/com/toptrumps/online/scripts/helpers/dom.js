@@ -238,6 +238,10 @@ const DOMHelper = (($) => {
         $($attributes).off("click");
     };
 
+    const unBindEndTurnEvent = () => {
+        $(endTurnButtonSelector).off("click");
+    };
+
     const bindEndTurnEvent = callback => {
         $(endTurnButtonSelector).on("click", function(e) {
             callback();
@@ -325,6 +329,7 @@ const DOMHelper = (($) => {
         enableAttributeSelection,
         disableAttributeSelection,
         bindEndTurnEvent,
+        unBindEndTurnEvent,
         bindNextRoundEvent,
         setPlayerStateToDefeated,
         updateCommonPileIndicator,

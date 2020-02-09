@@ -41,7 +41,6 @@ const Game = (($) => {
             });
         });
 
-        DOMHelper.bindEndTurnEvent(onEndTurn);
         DOMHelper.bindNextRoundEvent(onNextRound);
     };
 
@@ -55,6 +54,7 @@ const Game = (($) => {
     const onEndTurn = () => {
         if (activeAttribute) {
             setChosenAttribute().then(response => {
+                DOMHelper.unBindEndTurnEvent(onEndTurn);
                 Countdown.run(() => {
                     startRoundConclusion(response)
                 });
@@ -151,6 +151,7 @@ const Game = (($) => {
     const startAttributeSelection = () => {
         if (activePlayerID === 0) {
             DOMHelper.showMessage("It is your turn. Choose an attribute");
+            DOMHelper.bindEndTurnEvent(onEndTurn);
             DOMHelper.enableAttributeSelection(onAttributeSelected, humanPlayerID);
         } else {
             DOMHelper.showMessage(`It is AI turn. Active player - ${PlayerModel.getPlayerName(activePlayerID)}`);
