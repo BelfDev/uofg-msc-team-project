@@ -16,5 +16,5 @@
         <div class="pcard__back"></div>
     </div>
 
-    <div class="human-player__hand js-player-hand"></div>
+    <div class="human-player__hand js-player-deck-count"></div>
 </div>

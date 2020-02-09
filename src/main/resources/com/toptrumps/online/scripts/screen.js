@@ -1,40 +1,64 @@
-const Screen = (function() {
-    let $html;
-    let $window;
-    const baseWidth = 1920;
-    const minWidth = 800;
-    const baseSize = 10;
+/**
+ * Module makes adjustments to enable UI dynamic resizing
+ *
+ * This module primary function is to calculate root font-size
+ * after window resize. When this font-size is calculated, it
+ * is applied to html root element and used in REM measurements
+ * in CSS. That approach provides the ability to scale UI
+ * according to the device screen size
+ */
 
-    const init = function() {
-        $html = $(document.documentElement);
-        $window = $(window);
+const Screen = (($) => {
+    /** VARIABLES AND CONSTANTS */
+    // Constants
+    const BASE_WIDTH = 1920;
+    const MIN_WIDTH = 800;
+    const BASE_SIZE = 10;
 
+    /** METHODS */
+
+    /* Bind variables to the DOM elements and events */
+    const init = () => {
         bindEvents();
-        changeBaseFontSize();
     };
 
-    const bindEvents = function() {
-        $window.on("resize", function() {
-            changeBaseFontSize();
+    const bindEvents = () => {
+        $(window).on("resize load", () => {
+            if ($(window).innerWidth() > MIN_WIDTH) {
+                changeBaseFontSize();
+            }
         });
     };
 
-    const changeBaseFontSize = function() {
-        if ($window.innerWidth() < minWidth) return false;
-
-        const size = calcFontSize();
-        setFontSize(size);
+    const changeBaseFontSize = () => {
+        const size = calculateFontSize();
+        setPageFontSize(size);
     };
 
-    const calcFontSize = function() {
-        const targetWidth = Math.min($window.innerWidth(), baseWidth);
-        const size = (targetWidth / baseWidth) * baseSize + "px";
-        return size;
+    /**
+     *  and tweaks font size accordingly
+     * @returns {string} Font-size string in px
+     */
+    const calculateFontSize = () => {
+        const targetWidth = getTargetWidth();
+
+        return (targetWidth / BASE_WIDTH) * BASE_SIZE + "px"
     };
 
-    const setFontSize = function(size) {
-        $html.css("font-size", size);
+    /**
+     * Compares constants and current window width and
+     * returns the lowest
+     * @returns {number}
+     */
+    const getTargetWidth = () => {
+        return Math.min($(window).innerWidth(), BASE_WIDTH)
     };
 
-    init();
-})();
+    const setPageFontSize = (size) => {
+        $(document.documentElement).css("font-size", size);
+    };
+
+    return {
+        init
+    }
+})(jQuery);

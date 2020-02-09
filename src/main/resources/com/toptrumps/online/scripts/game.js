@@ -1,419 +1,338 @@
-const Game = (function() {
-    const endTurnButtonSelector = ".js-end-turn-button";
-
-    let numberOfOpponents = null;
-    let roundNumber = 0;
-    let activeAttribute = null;
-    let activePlayerID = null;
-    let humanPlayerID = null;
-    let cardsShown = [];
-    let commonPile = [];
-    const players = [];
-
-    const init = function() {
-        askForNumberOfOpponents();
-        bindEvents();
+const Game = (($) => {
+    /** VARIABLES AND CONSTANTS */
+    const newGameButtonSelector = ".js-modal-new-game-button";
+    const opponentsCountSelector = ".js-opponents-count";
+    const modalIDs = {
+        requestOpponents: "ASK_FOR_NUMBER_OF_OPPONENTS",
+        draw: "DRAW",
+        victory: "VICTORY",
+        gameOver: "GAME_OVER"
     };
 
-    const bindEvents = function() {
-        // $(document).on("game:setActivePlayer", function(event, data) {
-        //     activePlayerID = data.playerID;
-        //     runAttributeSelectionPhase(data.playerID);
-        // });
+    // Game state variables
+    let numberOfOpponents;
+    let activePlayerID;
+    let humanPlayerID;
+    let cardsOnTable = [];
+    let activeAttribute;
+    let commonPile = [];
+    let removedPlayerIDs = [];
+    let isHumanPlayerDefeated = false;
 
-        $(document).on("game:newGameStarted", function(event, data) {
-            console.log("Event: game:newGameStarted");
-            $(document).trigger("message:log", {
-                content: `New game started. Good luck!`
+    /** METHODS */
+
+    const init = () => {
+        /* After the interface is loaded and adjusted - show ui */
+        DOMHelper.showUI();
+
+        bindEvents();
+
+        requestNumberOfOpponents();
+    };
+
+    const bindEvents = () => {
+        $(newGameButtonSelector).on("click", () => {
+            const numberOfOpponents = $(opponentsCountSelector).val();
+
+            const request = NetworkHelper.makeRequest("api/game", { numberOfOpponents });
+            request.then(response => {
+                Modal.closeActiveModal();
+                startNewGame(response);
             });
-            startNewGame(data);
         });
 
-        $(document).on("game:newRoundStarted", function() {
-            $(document).trigger("message:log", {
-                content: `New round started`
+        DOMHelper.bindEndTurnEvent(onEndTurn);
+        DOMHelper.bindNextRoundEvent(onNextRound);
+    };
+
+    const onNextRound = () => {
+        resetRoundData();
+        setTimeout(() => {
+            startNewRound();
+        }, 2000);
+    };
+
+    const onEndTurn = () => {
+        if (activeAttribute) {
+            setChosenAttribute().then(response => {
+                Countdown.run(() => {
+                    startRoundConclusion(response)
+                });
             });
-            prepareNewRound();
-            setTimeout(function() {
-                runStartPhase();
+        }
+    };
+
+    const resetRoundData = () => {
+        const players = PlayerModel.getPlayersList();
+        $.each(players, (i, player) => {
+            DOMHelper.resetCard(player.id);
+        });
+
+        DOMHelper.resetAttributeHighlight();
+        DOMHelper.clearPlayerStates();
+        Modal.closeActiveModal();
+
+        cardsOnTable = [];
+    };
+
+    const requestNumberOfOpponents = () => {
+        DOMHelper.showModal(modalIDs.requestOpponents, false, false)
+    };
+
+    const startNewGame = gameData => {
+        // Set game data
+        numberOfOpponents = gameData.numberOfOpponents;
+        activePlayerID = gameData.activePlayerId;
+        humanPlayerID = gameData.humanPlayer.id;
+
+        createPlayers(gameData.humanPlayer, gameData.aiPlayers);
+        const players = assignDecks(gameData.humanPlayer, gameData.aiPlayers);
+        PlayerModel.init(players);
+        StatsHelper.init(PlayerModel.getPlayersList());
+
+        startNewRound();
+    };
+
+    const createPlayers = (humanPlayer, aiPlayers) => {
+        DOMHelper.updateDeckCount(humanPlayer.id, humanPlayer.deck.length);
+
+        aiPlayers.forEach(player => {
+            DOMHelper.renderPlayer(player);
+        });
+    };
+
+    const assignDecks = (humanPlayer, aiPlayers) => {
+        const players = [];
+
+        players[humanPlayerID] = {
+            id: humanPlayer.id,
+            name: humanPlayer.name,
+            deck: humanPlayer.deck
+        };
+
+        aiPlayers.forEach((player, i) => {
+            players[i + 1] = {
+                id: player.id,
+                name: player.name,
+                deck: player.deck
+            };
+        });
+
+        return players;
+    };
+
+    const startNewRound = () => {
+        StatsHelper.incrementRoundNumber();
+
+        if (!isHumanPlayerDefeated) {
+            const topCard = PlayerModel.getTopCard(humanPlayerID);
+            DOMHelper.showCard(humanPlayerID, topCard);
+            layCardOnTable(humanPlayerID, topCard);
+        }
+
+        const aiPlayers = PlayerModel.getAiPlayersTopCards();
+
+        $.each(aiPlayers, (playerID, card) => {
+            layCardOnTable(playerID, card);
+        });
+
+
+        setTimeout(() => {
+            DOMHelper.displayActivePlayer(activePlayerID);
+        }, 1000);
+
+        startAttributeSelection();
+    };
+
+    const layCardOnTable = (playerID, card) => {
+        cardsOnTable.push({ playerID, card });
+    };
+
+    const startAttributeSelection = () => {
+        if (activePlayerID === 0) {
+            DOMHelper.showMessage("It is your turn. Choose an attribute");
+            DOMHelper.enableAttributeSelection(onAttributeSelected, humanPlayerID);
+        } else {
+            DOMHelper.showMessage(`It is AI turn. Active player - ${PlayerModel.getPlayerName(activePlayerID)}`);
+            DOMHelper.disableAttributeSelection(humanPlayerID);
+            setTimeout(() => {
+                getChosenAttribute().then(response => {
+                    onAttributeSelected(response.selectedAttribute.name, response.selectedAttribute.value);
+                    Countdown.run(() => { startRoundConclusion(response) });
+                });
             }, 2000);
-        });
+        }
+    };
 
-        $(document).on("game:attributeSelect", function(event, attrData) {
-            console.log("Event: game:attributeSelect");
-            // console.log(data);
-            if (activePlayerID === 0) {
-                $(document).trigger("message:log", {
-                    content: `You selected the "${attrData.name}" attribute`
-                });
-            } else {
-                $(document).trigger("message:log", {
-                    content: `Player ${activePlayerID} selected the "${attrData.name}" attribute`
-                });
+    const onAttributeSelected = (name, value) => {
+        activeAttribute = { name, value };
+    };
+
+    const startRoundConclusion = async response => {
+        DOMHelper.showOpponentsCards(cardsOnTable);
+
+        setTimeout(() => {
+            DOMHelper.showMessage(`Attribute ${activeAttribute.name} selected`);
+            DOMHelper.highlightAttribute(activeAttribute);
+
+            if (response.result === "VICTORY") {
+                DOMHelper.clearPlayerStates();
+                DOMHelper.displayWinnerPlayer(response.winner.id);
+                StatsHelper.addRoundToPlayerByID(response.winner.id);
             }
 
-            activeAttribute = attrData;
-        });
+            setTimeout(() => {
+                startRoundOutcome(response);
+            }, 3000);
+        }, 3000);
 
-        $(document).on("game:cardsShown", function(event, data) {
-            console.log("Event: game:cardsShown");
-            // cardsShown = data.cardsShown;
-
-            setTimeout(function() {
-                showRoundOutcome(data);
-            }, 5000);
-        });
-
-        $('.js-modal-next-round-button').on("click", function() {
-           $(document).trigger("game:newRoundStarted")
-        });
-
-        $(endTurnButtonSelector).on("click", function(e) {
-            console.log("end turn button clicked");
-            // if (activeAttribute !== null) {
-                runRoundConclusionPhase();
-            // }
-
-            e.preventDefault();
-        });
     };
 
-    const prepareNewRound = function() {
-        Modal.closeActiveModal();
-        players.forEach(function(player) {
-            Card.reset(player.id);
-            Player.updateCardsCount(player.id, player.deck.length);
+    const startRoundOutcome = response => {
+        if (response.result === "DRAW") {
+            updateCommonPile();
+        } else if (response.result === "VICTORY") {
+            distributeCards(response.winner.id, cardsOnTable);
+        }
+
+        // const playersCardCount = PlayerModel.getPlayersCardCount();
+
+        const players = PlayerModel.getPlayers();
+        $.each(players, (i, player) => {
+            DOMHelper.updateDeckCount(player.id, player.deck.length);
         });
-        Player.updateCardsCount(players[humanPlayerID].id, players[humanPlayerID].deck.length);
-        resetPayLoad();
-    };
 
-    const askForNumberOfOpponents = function() {
-        console.log("Method: askForNumberOfOpponents");
-        let targetModalSelector = ".js-new-game-modal";
+        if (response.removedPlayerIds.length > 0) {
+            updateRemovedPlayers(response.removedPlayerIds);
+            displayRemovedPlayers();
+        }
 
-        Modal.openModal(targetModalSelector);
-
-        $(".js-modal-new-game-button").on("click", function() {
-            const numberOfOpponents = $(".js-opponents-count").val();
-
-            $.ajax({
-                url: `${restAPIurl}/api/game`,
-                type: "POST",
-                data: JSON.stringify({ numberOfOpponents }),
-                processData: false,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json"
-            }).done(function(response) {
-                $(document).trigger("game:newGameStarted", response);
-                Modal.closeActiveModal();
-            });
-        });
-    };
-
-    const startNewGame = function(data) {
-        console.log("Method: startNewGame");
-        // numberOfOpponents = 3;
-        numberOfOpponents = data.numberOfOpponents;
-        // activePlayerID = data.activePlayerId;
-        roundNumber = data.roundNumber;
-        activePlayerID = 0;
-        humanPlayerID = data.humanPlayer.id;
-
-        createPlayers(data.humanPlayer, data.aiPlayers);
-
-        setTimeout(function() {
-            runStartPhase();
-        }, 2000);
-    };
-
-    const createPlayers = function(human, ais) {
-        console.log("Method: createPlayers");
-        players[0] = {
-            id: human.id,
-            name: human.name,
-            deck: human.deck
-        };
-        Player.updateCardsCount(players[humanPlayerID].id, players[humanPlayerID].deck.length);
-
-        ais.forEach((ai, i) => {
-            players[i + 1] = {
-                id: ai.id,
-                name: ai.name,
-                deck: ai.deck
-            };
-            Player.renderPlayer(ai);
-        });
-    };
-
-    const runStartPhase = async function() {
-        console.log("Method: runStartPhase");
-        // Player.getPlayersCardsCount();
-
-        const topCard = Dealer.getPlayerTopCard(humanPlayerID, players[humanPlayerID].deck);
-        await Card.update(humanPlayerID, topCard);
-        preparePayLoad(humanPlayerID, topCard);
-        // Player.getTopCard(0);
-        // getCommonPileCount();
-        runAttributeSelectionPhase();
-        // getActivePlayer();
-    };
-
-    const resetPayLoad = function() {
-        cardsShown = [];
-    }
-
-    const preparePayLoad = function(playerID, topCard) {
-        console.log("Method: preparePayLoad");
-        let payload = {};
-        const player = players[playerID]
-        payload.id = player.id;
-        payload.name = player.name
-        payload.topCard = topCard;
-        payload.deckCount = player.deck.length;
-        payload.isAIPlayer = playerID === 0 ? false: true;
-        cardsShown.push(payload);
-    };
-
-    const runAttributeSelectionPhase = function() {
-        console.log("Method: runAttributeSelectionPhase");
-        // Human player has id 0
-        if (activePlayerID === 0) {
-            $(document).trigger("message:log", {
-                content: "You are an active player. Choose an attribute"
-            });
-
-            $(document).trigger("card:attributeSelection", { active: true });
+        if (!isEndGame()) {
+            showRoundOutcome(response);
         } else {
-            $(document).trigger("message:log", {
-                content: `Player ${activePlayerID} is an active player. Click End Turn to see the selected attribute`
-            });
-
-            $(document).trigger("card:attributeSelection", { active: false });
+            showGameOutcome(response);
         }
     };
 
-    const doConclusion = function() {
-        const playersData = Dealer.getOpponentsCards(players.slice(1));
-        playersData.forEach(function(player, i) {
-            setTimeout(function() {
-                Card.update(player.id, player.topCard);
-            }, 500 * i);
-            preparePayLoad(player.id, player.topCard);
-        });
-
-        if (activePlayerID === 0) {
-            setChosenAttribute(activeAttribute, cardsShown);
-        } else {
-            getChosenAttribute();
-        }
-
-        setTimeout(function() {
-            Card.highlightAttribute(activeAttribute);
-        }, 2000);
-    };
-
-    const runRoundConclusionPhase = function() {
-        console.log("Method: runRoundConclusionPhase");
-
-        $(document).trigger("countdown:run", {
-            callback: doConclusion
-        });
-        // $(document).trigger("game:cardsShown", { cardsShown });
-    };
-
-    // const getRoundOutcome = function() {
-    //     console.log("Method: getRoundOutcome");
-    //     $.get(`${restAPIurl}/getRoundOutcome`, function(response) {
-    //         let targetModalSelector;
-    //         let modalTitle = null;
-    //         let modalHint = null;
-    //
-    //         if (response.outcome === 0) {
-    //             targetModalSelector = ".js-round-draw-modal";
-    //             modalTitle = "It's a draw";
-    //             modalHint = `Common pile is now - ${response.commonPile} cards`;
-    //         } else {
-    //             targetModalSelector = ".js-round-win-modal";
-    //             modalTitle =
-    //                 response.playerID === 0
-    //                     ? "You won!"
-    //                     : `Player ${response.playerID} won!`;
-    //         }
-    //
-    //         Modal.openModal(targetModalSelector, modalTitle, modalHint);
-    //     });
-    // };
-
-    const getCardsFromStack = function() {
-        const cards = [];
-
-        cardsShown.forEach(function(card) {
-           cards.push(card)
-        });
-
-        return cards;
-    };
-
-    const moveCardsToWinner = function(playerID) {
-        console.log(players[playerID].deck);
-        console.log(cardsShown);
-        console.log(commonPile);
-
-        const cards = getCardsFromStack();
-
-        cards.forEach(function (card) {
-            players[playerID].deck.push(card);
+    const updateRemovedPlayers = playerIDs => {
+        playerIDs.forEach(playerID => {
+            if (removedPlayerIDs.indexOf(playerID) === -1)
+                removedPlayerIDs.push(playerID);
         })
 
-        if (commonPile.length > 0) {
-            commonPile.forEach(function (card) {
-                players[playerID].deck.push(card);
-            })
+    };
+
+    const displayRemovedPlayers = () => {
+        removedPlayerIDs.forEach(playerID => {
+            DOMHelper.setPlayerStateToDefeated(playerID);
+            PlayerModel.removePlayer(playerID);
+            if (playerID === 0) isHumanPlayerDefeated = true;
+        });
+    };
+
+    const updateCommonPile = () => {
+        cardsOnTable.forEach(data => {
+            commonPile.push(data.card);
+        });
+        // commonPile = $.merge(commonPile, cardsOnTable);
+        cardsOnTable = [];
+        DOMHelper.updateCommonPileIndicator(commonPile.length);
+    };
+
+    const resetCommonPile = () => {
+        commonPile = [];
+        DOMHelper.updateCommonPileIndicator(0);
+    };
+
+    const isEndGame = () => {
+        if (removedPlayerIDs.length === numberOfOpponents) return true;
+    };
+
+    const setChosenAttribute = () => {
+        const dataset = PlayerModel.prepareDataset(cardsOnTable);
+        return NetworkHelper.makeRequest('api/outcome/human', {
+            selectedAttribute: activeAttribute,
+            activePlayerId: activePlayerID,
+            players: dataset
+        })
+    };
+
+    const getChosenAttribute = () => {
+        const dataset = PlayerModel.prepareDataset(cardsOnTable);
+        return NetworkHelper.makeRequest('api/outcome/ai', {
+            activePlayerId: activePlayerID,
+            players: dataset
+        })
+    };
+
+    const showRoundOutcome = response => {
+        if (response.result === "DRAW") {
+            DOMHelper.showMessage("It's a draw");
+            displayDraw(response);
+        } else if (response.result === "VICTORY") {
+            DOMHelper.showMessage(`${response.winner.name} is a winner`);
+            showWinner(response.winner.id);
+            displayVictory(response);
         }
+    };
+
+    const showWinner = playerID => {
+        activePlayerID = playerID;
+        DOMHelper.displayWinnerPlayer(playerID);
+    };
+
+    const distributeCards = (playerID, cardsOnTable) => {
+        const cards = commonPile;
+        cardsOnTable.forEach(data => {
+            cards.push(data.card);
+        });
+
+        PlayerModel.passCardsToPlayerByID(playerID, cards);
 
         resetCommonPile();
-        // let add = 0;
-        // if (commonPileCount > 0) {
-        //     add += commonPileCount;
-        //     updateCommonPile(0);
-        //     add += cardsShown
-        // }
     };
 
-    const showRoundOutcome = function(data) {
-        if (data.result === "DRAW") {
-            updateCommonPile();
-
-            Modal.openModal(".js-round-draw-modal", "It's a draw", `There are ${commonPile.length} cards in common pile`);
-        } else if (data.result === "VICTORY") {
-            activePlayerID = data.winner.id;
-
-            let hint;
-            const title = data.winner.isAIPlayer === true ? `${data.winner.name} has won!` : "You won the round!";
-            if (data.defeatedPlayerIds && data.defeatedPlayerIds.length > 0) {
-                hint = `These players were defeated: ${data.defeatedPlayerIds}`;
+    const showGameOutcome = response => {
+        const title = "Game over!";
+        let hint;
+        if (response.result === "VICTORY") {
+            hint = StatsHelper.outputStats(response.winner.id);
+        } else {
+            const players = PlayerModel.getPlayers();
+            if (Object.keys(players).length > 0) {
+                hint = StatsHelper.outputStats(Object.keys(players)[0]);
+            } else {
+                hint = StatsHelper.outputStats(null);
             }
-            moveCardsToWinner(data.winner.id);
-            Modal.openModal(".js-round-win-modal", title, hint)
-
-        } else if (data.result === "END GAME") {
-            const title = data.winner.isAIPlayer === true ? `Game over!` : "You won the game!";
-            const hint = data.winner.isAIPlayer === true ? `${data.winner.name} has won!` : "You won!";
-            Modal.openModal(".js-end-game-modal", title, hint);
-        } else {
-            console.log("Something wrong...");
         }
-    }
 
-    const setChosenAttribute = function(attribute, cardsShown) {
-        console.log("Method: setChosenAttribute");
-        const passedData = {
-            selectedAttribute: {
-                name: attribute.name,
-                value: attribute.value
-            },
-            players: cardsShown
-        };
-
-        $.ajax({
-            url: `${restAPIurl}/api/outcome/human`,
-            type: "POST",
-            data: JSON.stringify(passedData),
-            processData: false,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        }).done(function(response) {
-            $(document).trigger("game:cardsShown", response);
-        });
+        DOMHelper.showModal(modalIDs["gameOver"], title, hint);
     };
 
-    const getChosenAttribute = function() {
-        console.log("Method: getChosenAttribute");
-
-        $.ajax({
-            url: `${restAPIurl}/api/outcome/ai`,
-            type: "POST",
-            data: JSON.stringify({
-                activePlayerId: activePlayerID,
-                players: cardsShown
-            }),
-            processData: false,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        }).done(function(response) {
-            $(document).trigger("game:attributeSelect", response.selectedAttribute);
-            $(document).trigger("game:cardsShown", response);
-        });
+    const outputRemovedPlayers = playerIDs => {
+        const playerNames = playerIDs.map(playerID => PlayerModel.getPlayerName(playerID));
+        return `These players were defeated: ${playerNames.join(", ")}`;
     };
 
-    // const getCommonPileCount = function() {
-    //     $.get(`${restAPIurl}/getCommonPileCount`, function(response) {
-    //         if (response.count > 0) {
-    //             $(".js-common-pile").addClass(
-    //                 "game-status__common-pile--active"
-    //             );
-    //             $(".js-common-pile-value").text(response.count);
-    //         } else {
-    //             $(".js-common-pile").removeClass(
-    //                 "game-status__common-pile--active"
-    //             );
-    //         }
-    //     });
-    // };
-
-    const resetCommonPile = function() {
-        commonPile = [];
-
-        $(".js-common-pile-value").text(0);
-
-        $(".js-common-pile").removeClass(
-            "game-status__common-pile--active"
-        );
-    };
-
-    const updateCommonPile = function() {
-        console.log("Method: updateCommonPile");
-
-        const cards = getCardsFromStack();
-
-        commonPile = $.merge(commonPile, cards);
-
-        // commonPileCount = commonPileCount + count;
-
-        $(".js-common-pile-value").text(commonPile.length);
-
-        if (commonPile.length > 0) {
-            $(".js-common-pile").addClass("game-status__common-pile--active");
-        } else {
-            $(".js-common-pile").removeClass(
-                "game-status__common-pile--active"
-            );
+    const displayDraw = response => {
+        let hint = `There are ${commonPile.length} cards in common pile`;
+        if (response.removedPlayerIds.length > 0) {
+            hint = outputRemovedPlayers(response.removedPlayerIds);
         }
+        DOMHelper.showModal(modalIDs["draw"], "It's a draw!", hint);
     };
 
-    // const getActivePlayer = function() {
-    //     $.get(`${restAPIurl}/getActivePlayer`, function(response) {
-    //         if (
-    //             response.playerID < 0 ||
-    //             response.playerID > numberOfOpponents
-    //         ) {
-    //             throw new Error(
-    //                 `Player ID must be between 0 and ${numberOfOpponents}`
-    //             );
-    //             return false;
-    //         }
+    const displayVictory = response => {
+        let hint;
+        if (response.removedPlayerIds.length > 0) {
+            hint = outputRemovedPlayers(response.removedPlayerIds);
+        }
+        const title = response.winner.isAIPlayer === true ? `${response.winner.name} has won!` : "You won the round!";
 
-    //         $(document).trigger("game:setActivePlayer", {
-    //             playerID: response.playerID
-    //         });
-    //     });
-    // };
+        DOMHelper.showModal(modalIDs["victory"], title, hint);
+    };
 
     return {
-        init,
-        numberOfOpponents
-    };
-})();
-
-$(document).ready(Game.init);
+        init
+    }
+})(jQuery);

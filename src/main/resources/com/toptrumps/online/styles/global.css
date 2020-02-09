@@ -10,6 +10,9 @@
     --color-button-light: #ffffff;
     --color-font-button-light: #ffffff;
     --color-button-light-hovered: #d8d8d8;
+
+    --color-animation-active: rgba(36, 142, 255, 0.3);
+    --color-animation-winner: rgb(255, 221, 36);
 }
 
 @font-face {
@@ -30,6 +33,10 @@
 
 main {
     min-height: 100%;
+}
+
+html {
+    font-size: 4.33333px;
 }
 
 body {
