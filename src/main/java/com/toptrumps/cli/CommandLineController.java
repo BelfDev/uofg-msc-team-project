@@ -122,7 +122,7 @@ public class CommandLineController {
         // == STATISTICS ==
 
         GameStateCollector gameState = GameStateCollector.Builder.newInstance()
-                .setGameWinner(activePlayer)
+                .setFinalWinner(activePlayer)
                 .setNumberOfRounds(roundNumber)
                 .setNumberOfDraws(numberOfDraws)
                 .setRoundWinsMap(roundWinsMap)

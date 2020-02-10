@@ -7,7 +7,7 @@ import java.util.Map;
 public final class GameStateCollector {
 
     private final int numberOfDraws;
-    private final Player gameWinner;
+    private final Player finalWinner;
     private final int numberOfRounds;
     private final Map<Player, Integer> roundWinsMap;
 
@@ -16,7 +16,7 @@ public final class GameStateCollector {
     }
 
     public Player getFinalWinner() {
-        return gameWinner;
+        return finalWinner;
     }
 
     public int getNumberOfRounds() {
@@ -29,7 +29,7 @@ public final class GameStateCollector {
 
     public GameStateCollector(Builder builder) {
         this.numberOfDraws = builder.numberOfDraws;
-        this.gameWinner = builder.gameWinner;
+        this.finalWinner = builder.finalWinner;
         this.numberOfRounds = builder.numberOfRounds;
         this.roundWinsMap = builder.roundWinsMap;
     }
@@ -37,7 +37,7 @@ public final class GameStateCollector {
     public static class Builder {
 
         private int numberOfDraws;
-        private Player gameWinner;
+        private Player finalWinner;
         private int numberOfRounds;
         private Map<Player, Integer> roundWinsMap;
 
@@ -53,8 +53,8 @@ public final class GameStateCollector {
             return this;
         }
 
-        public Builder setGameWinner(Player gameWinner) {
-            this.gameWinner = gameWinner;
+        public Builder setFinalWinner(Player finalWinner) {
+            this.finalWinner = finalWinner;
             return this;
         }
 
