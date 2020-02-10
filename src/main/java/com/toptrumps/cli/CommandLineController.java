@@ -59,6 +59,7 @@ public class CommandLineController {
         int roundNumber = 0;
         ArrayList<Player> players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
+        RoundOutcome outcome = null;
 
         while (players.size() != 1) {
             // === GAME START UP ===
@@ -94,7 +95,7 @@ public class CommandLineController {
 
             // == ROUND OUTCOME ==
 
-            RoundOutcome outcome = gameEngine.processRoundOutcome(winners, players);
+            outcome = gameEngine.processRoundOutcome(winners, players);
             players.removeAll(outcome.getRemovedPlayers());
 
             switch (outcome.getResult()) {
@@ -116,7 +117,9 @@ public class CommandLineController {
             }
 
         }
-
+        if(outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()){
+            view.showAutomaticCompletion();
+        }
         onGameOver(activePlayer);
     }
 
@@ -183,7 +186,6 @@ public class CommandLineController {
 
     private void onGameOver(Player winner) {
         view.showGameResult(winner);
-        scanner.nextLine(); //clear the scanner ready for new game selection
         start();
     }
 
