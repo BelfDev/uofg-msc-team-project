@@ -1,5 +1,7 @@
 package com.toptrumps.db;
-import java.sql.*; 
+import com.toptrumps.core.statistics.GameStateCollector;
+
+import java.sql.*;
 import java.sql.Connection; 
 import java.sql.SQLException; 
 import java.sql.Statement; 
@@ -10,7 +12,8 @@ public class IndividualGameDAOImpl implements IndividualGameDAO{
 
     }
 
-    public boolean create(){
+    // TODO: Update the DAO to get data from GameStateCollector
+    public boolean create(GameStateCollector gameState){
         Connection con = ConnectionFactory.getConnection();
         PreparedStatement createRow = null;
         String createRowSQL = "INSERT INTO individual_game_data(winner,rounds_played,draws)" +

@@ -5,10 +5,8 @@ import com.toptrumps.core.engine.Game;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
-import com.toptrumps.online.api.request.GamePreferences;
-import com.toptrumps.online.api.request.HumanPlayerMove;
-import com.toptrumps.online.api.request.PlayerMove;
-import com.toptrumps.online.api.request.PlayerState;
+import com.toptrumps.core.statistics.GameStateCollector;
+import com.toptrumps.online.api.request.*;
 import com.toptrumps.online.api.response.InitialGameState;
 import com.toptrumps.online.api.response.Outcome;
 import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
@@ -90,6 +88,16 @@ public class TopTrumpsRESTAPI {
         players.forEach(Player::removeTopCard);
         RoundOutcome roundOutcome = gameEngine.processRoundOutcome(winners, players);
         return new Outcome(roundOutcome, selectedAttribute);
+    }
+
+    @POST
+    @Path("/api/statistics")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void persistGameData(FinalGameState finalGameState) {
+        GameStateCollector stateCollector = GameStateCollector.Builder.newInstance()
+                .fromFinalGameState(finalGameState)
+                .build();
+        gameEngine.persistGameState(stateCollector);
     }
 
 }

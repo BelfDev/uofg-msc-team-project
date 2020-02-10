@@ -1,5 +1,7 @@
 package com.toptrumps.db;
 
+import com.toptrumps.core.statistics.GameStateCollector;
+
 public interface IndividualGameDAO {
-    public boolean create();
+    boolean create(GameStateCollector gameState);
 }
