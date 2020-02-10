@@ -5,10 +5,10 @@ import com.toptrumps.core.card.Card;
 import com.toptrumps.core.card.Dealer;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
+import com.toptrumps.core.utils.RandomGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static com.toptrumps.core.engine.RoundOutcome.Result.*;
 import static java.util.stream.Collectors.toCollection;
@@ -56,7 +56,7 @@ public class Game {
 
     public Player assignActivePlayer(List<Player> players) {
         final int numberOfPlayers = players.size();
-        int randomIndex = getRandomInteger(0, numberOfPlayers - 1);
+        int randomIndex = RandomGenerator.getInteger(0, numberOfPlayers - 1);
         Player activePlayer = players.get(randomIndex);
         activePlayer.setActive(true);
         return activePlayer;
@@ -100,21 +100,16 @@ public class Game {
             Player winner = winners.get(0);
             winner.setActive(true);
 
-            if(removedPlayers.contains(winner)){
+            if (removedPlayers.contains(winner)) {
                 removedPlayers.remove(winner);
             }
-            
+
             outcome = new RoundOutcome(VICTORY, winner, removedPlayers);
         } else {
             outcome = new RoundOutcome(DRAW, winners, removedPlayers);
         }
 
         return outcome;
-    }
-
-    private int getRandomInteger(int min, int max) {
-        Random randomGenerator = new Random();
-        return randomGenerator.nextInt((max - min) + 1) + min;
     }
 
 }
