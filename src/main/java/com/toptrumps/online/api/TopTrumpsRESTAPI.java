@@ -83,9 +83,9 @@ public class TopTrumpsRESTAPI {
     @Path("/api/outcome/ai")
     @Produces(MediaType.APPLICATION_JSON)
     public Outcome getRoundOutcome(PlayerMove aiPlayerMove) {
-        Player aiPlayer = aiPlayerMove.getPlayerState().toPlayer();
+        Player activeAIPlayer = aiPlayerMove.getActivePlayerState().toPlayer();
         List<Player> players = aiPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
-        Attribute selectedAttribute = ((AIPlayer) aiPlayer).selectAttribute();
+        Attribute selectedAttribute = ((AIPlayer) activeAIPlayer).selectAttribute();
         List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
         players.forEach(Player::removeTopCard);
         RoundOutcome roundOutcome = gameEngine.processRoundOutcome(winners, players);
