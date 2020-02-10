@@ -6,9 +6,7 @@ import com.toptrumps.core.card.Dealer;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.statistics.GameStateCollector;
-import com.toptrumps.db.IndividualGameDAOImpl;
-import com.toptrumps.db.PersistentDataDAOImpl;
-import com.toptrumps.db.RoundWinnersDAOImpl;
+import com.toptrumps.db.Statistics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,15 +115,8 @@ public class Game {
     }
 
     public void persistGameState(GameStateCollector gameState) {
-        // TODO: Update with new DAOs
-        IndividualGameDAOImpl individualGameDAO = new IndividualGameDAOImpl();
-        PersistentDataDAOImpl persistentDataDAO = new PersistentDataDAOImpl();
-        RoundWinnersDAOImpl roundWinnersDAO = new RoundWinnersDAOImpl();
-
-        individualGameDAO.create(gameState);
-        persistentDataDAO.update();
-        // TODO: Merge DAOs and simplify methods
-        roundWinnersDAO.create();
+       Statistics stats = new Statistics();
+       stats.persistData(gameState);
     }
 
     private int getRandomInteger(int min, int max) {
