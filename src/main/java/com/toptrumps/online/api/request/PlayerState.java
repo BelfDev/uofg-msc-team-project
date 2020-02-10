@@ -1,10 +1,12 @@
 package com.toptrumps.online.api.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlayerState {
 
     private int id;
@@ -12,6 +14,7 @@ public class PlayerState {
     private String name;
     private int deckCount;
     private Card topCard;
+    private int numberOfRoundWins;
 
     public PlayerState() {
         // Jackson deserialization
@@ -48,6 +51,11 @@ public class PlayerState {
     @JsonProperty
     public Card getTopCard() {
         return topCard;
+    }
+
+    @JsonProperty("numberOfWins")
+    public int getNumberOfRoundWins() {
+        return numberOfRoundWins;
     }
 
     public Player toPlayer() {
