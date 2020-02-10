@@ -128,6 +128,8 @@ public class CommandLineController {
                 .setRoundWinsMap(roundWinsMap)
                 .build();
 
+        gameEngine.persistGameState(gameState);
+
         onGameOver(activePlayer);
     }
 

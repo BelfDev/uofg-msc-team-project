@@ -15,7 +15,7 @@ public final class GameStateCollector {
         return numberOfDraws;
     }
 
-    public Player getGameWinner() {
+    public Player getFinalWinner() {
         return gameWinner;
     }
 
