@@ -1,30 +1,55 @@
-const Countdown = (function() {
-    const init = function() {
-        bindEvents();
+const Countdown = (($) => {
+    /** VARIABLES AND CONSTANTS */
+    let countdownSelector;
+    let $countdown;
+
+    // Selectors
+    const countdownNumberOneSelector = ".js-countdown-number-1";
+    const countdownNumberTwoSelector = ".js-countdown-number-2";
+    const countdownNumberThreeSelector = ".js-countdown-number-3";
+
+    // CSS classes to represent visual state
+    const countdownActiveClass = "countdown--active";
+
+
+    /** METHODS */
+
+    const init = selector => {
+        countdownSelector = selector;
+        $countdown = $(selector);
     };
 
-    const runCountdown = function() {
-        $(".js-countdown").addClass("countdown--active");
+    const run = callback => {
+        $countdown.addClass(countdownActiveClass);
 
+        animateCountdown(callback);
+    };
+
+    const animateCountdown = (callback) => {
         let countdown = {
             opacityIn: [0, 1],
             scaleIn: [0.2, 1],
             scaleOut: 3,
-            durationIn: 800,
-            durationOut: 600,
-            delay: 500
+            durationIn: 500,
+            durationOut: 300,
+            delay: 100
         };
 
         anime
-            .timeline()
+            .timeline({
+                complete: () => {
+                    $countdown.removeClass("countdown--active");
+                    callback();
+                }
+            })
             .add({
-                targets: ".countdown__numbers--1",
+                targets: countdownNumberOneSelector,
                 opacity: countdown.opacityIn,
                 scale: countdown.scaleIn,
                 duration: countdown.durationIn
             })
             .add({
-                targets: ".countdown__numbers--1",
+                targets: countdownNumberOneSelector,
                 opacity: 0,
                 scale: countdown.scaleOut,
                 duration: countdown.durationOut,
@@ -32,13 +57,13 @@ const Countdown = (function() {
                 delay: countdown.delay
             })
             .add({
-                targets: ".countdown__numbers--2",
+                targets: countdownNumberTwoSelector,
                 opacity: countdown.opacityIn,
                 scale: countdown.scaleIn,
                 duration: countdown.durationIn
             })
             .add({
-                targets: ".countdown__numbers--2",
+                targets: countdownNumberTwoSelector,
                 opacity: 0,
                 scale: countdown.scaleOut,
                 duration: countdown.durationOut,
@@ -46,13 +71,13 @@ const Countdown = (function() {
                 delay: countdown.delay
             })
             .add({
-                targets: ".countdown__numbers--3",
+                targets: countdownNumberThreeSelector,
                 opacity: countdown.opacityIn,
                 scale: countdown.scaleIn,
                 duration: countdown.durationIn
             })
             .add({
-                targets: ".countdown__numbers--3",
+                targets: countdownNumberThreeSelector,
                 opacity: 0,
                 scale: countdown.scaleOut,
                 duration: countdown.durationOut,
@@ -60,25 +85,16 @@ const Countdown = (function() {
                 delay: countdown.delay
             })
             .add({
-                targets: ".countdown",
+                targets: countdownSelector,
                 opacity: 0,
                 duration: 500,
                 delay: 500
             });
     };
 
-    const bindEvents = function() {
-        $(document).on("countdown:run", function(event, data) {
-            runCountdown();
+    return {
+        init,
+        run
+    }
 
-            setTimeout(function() {
-                $(".js-countdown").removeClass("countdown--active");
-                data.callback();
-            }, 6000);
-        });
-    };
-
-    $(document).ready(function() {
-        init();
-    });
-})();
+})(jQuery);

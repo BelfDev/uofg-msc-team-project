@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toCollection;
 
 public class CommandLineController {
 
-    private final static String DECK_RESOURCE = "assets/StarCitizenDeck.txt";
+    private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
 
     private Scanner scanner;
 
@@ -59,6 +59,7 @@ public class CommandLineController {
                 put(player, 0);
             });
         }};
+        RoundOutcome outcome = null;
 
         while (players.size() != 1) {
             // === GAME START UP ===
@@ -94,7 +95,7 @@ public class CommandLineController {
 
             // == ROUND OUTCOME ==
 
-            RoundOutcome outcome = gameEngine.processRoundOutcome(winners, players);
+            outcome = gameEngine.processRoundOutcome(winners, players);
             players.removeAll(outcome.getRemovedPlayers());
 
             switch (outcome.getResult()) {
@@ -130,6 +131,9 @@ public class CommandLineController {
 
         gameEngine.persistGameState(gameState);
 
+        if(outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()){
+            view.showAutomaticCompletion();
+        }
         onGameOver(activePlayer);
     }
 
@@ -196,7 +200,6 @@ public class CommandLineController {
 
     private void onGameOver(Player winner) {
         view.showGameResult(winner);
-        scanner.nextLine(); //clear the scanner ready for new game selection
         start();
     }
 
