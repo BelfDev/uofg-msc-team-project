@@ -45,7 +45,7 @@ public class CommandLineController {
         // TODO: Create an Enum to encapsulate the flags
         if (input.equalsIgnoreCase("f")) {
             // Start the game
-            int numberOfOpponents = view.requestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS, scanner);
+            int numberOfOpponents = requestNumberOfOpponents();
             startNewGame(numberOfOpponents);
         } else if (input.equalsIgnoreCase("s")) {
             // TODO: Start statistics mode
@@ -122,6 +122,24 @@ public class CommandLineController {
 
     // === START OF LIFE CYCLE METHODS ===
 
+    private int requestNumberOfOpponents(){
+        try {
+            view.showRequestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS);
+
+            int numberOfOpponents = scanner.nextInt();
+            while (numberOfOpponents < MIN_OPPONENTS || numberOfOpponents > MAX_OPPONENTS) {
+                view.showInvalidNumberOfPlayers(MIN_OPPONENTS, MAX_OPPONENTS);
+                numberOfOpponents = scanner.nextInt();
+            }
+            scanner.nextLine();
+            return numberOfOpponents;
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            view.showNotANumber();
+            return requestNumberOfOpponents();
+        }
+    }
+
     private Attribute onRequestSelection(Card card) {
         try {
             final List<Attribute> attributes = card.getAttributes();
@@ -155,7 +173,12 @@ public class CommandLineController {
         if (!removedPlayers.isEmpty()) {
             view.showRemovedPlayers(removedPlayers);
         }
-        view.selectNextRound(scanner);
+        selectNextRound();
+    }
+
+    private void selectNextRound(){
+        view.showNextRoundMessage();
+        scanner.nextLine();
     }
 
     private void onGameOver(Player winner) {

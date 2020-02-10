@@ -39,23 +39,17 @@ public class CommandLineView {
         typePrint(2, banner);
     }
 
-    public int requestNumberOfOpponents(int MIN_OPPONENTS, int MAX_OPPONENTS, Scanner scanner) {
-        try {
-            typePrint(20, "How many players do you want to play against?");
-            typePrint(20, "Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
+    public void showRequestNumberOfOpponents(int MIN_OPPONENTS, int MAX_OPPONENTS) {
+        typePrint(20, "How many players do you want to play against?");
+        typePrint(20, "Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
+    }
 
-            int numberOfOpponents = scanner.nextInt();
-            while (numberOfOpponents < MIN_OPPONENTS || numberOfOpponents > MAX_OPPONENTS) {
-                typePrint(10, "Invalid number of players selected. Please select " + MIN_OPPONENTS + "-" + MAX_OPPONENTS + ".");
-                numberOfOpponents = scanner.nextInt();
-            }
-            scanner.nextLine();
-            return numberOfOpponents;
-        } catch (InputMismatchException e) {
-            scanner.nextLine();
-            typePrint(10, "You didn't enter a number!");
-            return requestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS, scanner);
-        }
+    public void showInvalidNumberOfPlayers(int MIN_OPPONENTS, int MAX_OPPONENTS){
+        typePrint(10, "Invalid number of players selected. Please select " + MIN_OPPONENTS + "-" + MAX_OPPONENTS + ".");
+    }
+
+    public void showNotANumber(){
+        typePrint(10, "You didn't enter a number!");
     }
 
     public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber, int communalPileSize){
@@ -201,10 +195,9 @@ public class CommandLineView {
         typePrint(20, outcomeMessage);
     }
 
-    public void selectNextRound(Scanner scanner){
+    public void showNextRoundMessage(){
         String message = "\nPress ENTER to start the next round";
         typePrint(20, message);
-        scanner.nextLine();
     }
 
     public void showRemovedPlayers(List<Player> removedPlayers) {
