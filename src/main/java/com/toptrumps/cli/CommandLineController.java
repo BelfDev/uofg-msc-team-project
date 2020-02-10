@@ -183,7 +183,6 @@ public class CommandLineController {
 
     private void onGameOver(Player winner) {
         view.showGameResult(winner);
-        scanner.nextLine(); //clear the scanner ready for new game selection
         start();
     }
 

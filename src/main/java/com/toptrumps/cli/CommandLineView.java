@@ -56,7 +56,6 @@ public class CommandLineView {
         showRoundNumber(roundNumber);
         showActivePlayer(activePlayer, humanPlayer);
         showCommunalPileSize(communalPileSize);
-        pausePrinting(500);
         showNumberOfHumanCards(humanPlayer);
         typePrint(20, "\nYour card is:");
         showCard(humanPlayer.getTopCard());
@@ -233,7 +232,6 @@ public class CommandLineView {
     }
 
     public void showGameResult(Player winner){
-        pausePrinting(1000);
         String message = "\n\n";
         if(winner.isAIPlayer()){
             message += winner.getName() + " has won the game!";
