@@ -57,6 +57,7 @@ public class CommandLineView {
         showActivePlayer(activePlayer, humanPlayer);
         showCommunalPileSize(communalPileSize);
         showNumberOfHumanCards(humanPlayer);
+        pausePrinting(500);
         typePrint(20, "\nYour card is:");
         showCard(humanPlayer.getTopCard());
     }
@@ -93,18 +94,18 @@ public class CommandLineView {
 
     private void showCard(Card card){
         List<Attribute> attributes = card.getAttributes();
-        String name = card.getName();
+        String name = centreCardName(card.getName());
         pausePrinting(1000);
 
         typePrint(5, "\t-----------------------");
-        typePrint(5, String.format("\t|%21s|", name));
+        typePrint(5, String.format("\t|%-21s|", name));
         typePrint(5, String.format("\t|%21s|", ""));
         typePrint(5, String.format("\t|%21s|", ""));
 
         for (int i = 0; i < attributes.size(); i++) {
             String attributeName = attributes.get(i).getName();
             int attributeValue = attributes.get(i).getValue();
-            String message = String.format("\t|%d:   %-14s%2d|", i + 1, attributeName, attributeValue);
+            String message = String.format("\t|%d: %-16s%2d|", i + 1, attributeName, attributeValue);
             typePrint(5, message);
         }
 
@@ -121,20 +122,37 @@ public class CommandLineView {
 
         for(Card card: cards){
             attributes = card.getAttributes();
-            String name = card.getName();
+            String name = centreCardName(card.getName());
             printLines.set(0, printLines.get(0) + "\t-----------------------");
-            printLines.set(1, printLines.get(1) + String.format("\t|%21s|", name));
+            printLines.set(1, printLines.get(1) + String.format("\t|%-21s|", name));
             printLines.set(2, printLines.get(2) + String.format("\t|%21s|", ""));
             printLines.set(3, printLines.get(3) + String.format("\t|%21s|", ""));
             for (int i = 0; i < attributes.size(); i++) {
                 String attributeName = attributes.get(i).getName();
                 int attributeValue = attributes.get(i).getValue();
-                printLines.set(i+4, printLines.get(i+4) + String.format("\t|%d:   %-14s%2d|", i + 1, attributeName, attributeValue));
+                printLines.set(i+4, printLines.get(i+4) + String.format("\t|%d: %-16s%2d|", i + 1, attributeName, attributeValue));
             }
             printLines.set(printLines.size()-1, printLines.get(printLines.size()-1) + "\t-----------------------");
         }
 
         for(String line: printLines){typePrint(2, line);}
+    }
+
+    private String centreCardName(String name){
+        int totalLength = 21;
+        int blankSpaceAvailable = totalLength-name.length();
+        int blankSpaceRequired;
+
+        if(blankSpaceAvailable%2 != 0){
+            blankSpaceRequired = blankSpaceAvailable/2;
+        }else{
+            blankSpaceRequired = (blankSpaceAvailable/2)-1;
+        }
+        
+        for(int i=0; i<=blankSpaceRequired; i++){
+            name = " " + name;
+        }
+        return name;
     }
 
     public void requestSelection(int numberOfAttributes){
