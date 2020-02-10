@@ -30,8 +30,12 @@ public class PlayerMove {
         return activePlayerId;
     }
 
-    public PlayerState getPlayerState() {
-        return playerStates.get(activePlayerId);
+    // TODO: Optimize all filter operations
+    public PlayerState getActivePlayerState() {
+        return playerStates.stream()
+                .filter(p -> p.getId() == activePlayerId)
+                .findFirst()
+                .orElse(null);
     }
 
 }

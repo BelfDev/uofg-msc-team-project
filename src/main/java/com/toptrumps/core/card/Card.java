@@ -1,11 +1,14 @@
 package com.toptrumps.core.card;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.toptrumps.core.utils.RandomGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
+
+import static java.util.stream.Collectors.toList;
 
 public class Card {
 
@@ -44,7 +47,9 @@ public class Card {
 
     @JsonIgnore
     public Attribute getHighestAttribute() {
-        return this.highestAttribute.get();
+        int maxAttributeValue = highestAttribute.get().getValue();
+        List<Attribute> maxAttributes = attributes.stream().filter(a -> a.getValue() == maxAttributeValue).collect(toList());
+        return maxAttributes.get(RandomGenerator.getInteger(0, maxAttributes.size() - 1));
     }
 
     @Override

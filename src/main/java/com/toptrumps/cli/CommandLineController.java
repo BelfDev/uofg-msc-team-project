@@ -6,17 +6,16 @@ import com.toptrumps.core.engine.Game;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import com.toptrumps.core.statistics.GameStateCollector;
+import com.toptrumps.core.utils.MapUtils;
 
+import java.util.*;
 
 import static java.util.stream.Collectors.toCollection;
 
 public class CommandLineController {
 
-    private final static String DECK_RESOURCE = "assets/StarCitizenDeck.txt";
+    private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
 
     private Scanner scanner;
 
@@ -40,7 +39,7 @@ public class CommandLineController {
         // TODO: Create an Enum to encapsulate the flags
         if (input.equalsIgnoreCase("f")) {
             // Start the game
-            int numberOfOpponents = view.requestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS, scanner);
+            int numberOfOpponents = requestNumberOfOpponents();
             startNewGame(numberOfOpponents);
         } else if (input.equalsIgnoreCase("s")) {
             // TODO: Start statistics mode
@@ -52,8 +51,15 @@ public class CommandLineController {
     private void startNewGame(int numberOfOpponents) {
         List<Card> communalPile = new ArrayList<>();
         int roundNumber = 0;
+        int numberOfDraws = 0;
         ArrayList<Player> players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
+        HashMap<Player, Integer> roundWinsMap = new HashMap<Player, Integer>() {{
+            players.forEach(player -> {
+                put(player, 0);
+            });
+        }};
+        RoundOutcome outcome = null;
 
         while (players.size() != 1) {
             // === GAME START UP ===
@@ -62,7 +68,7 @@ public class CommandLineController {
             // TODO: Double check if we are going to rely on this convention
             Player humanPlayer = players.get(0);
             // TODO: We might want to shift to member variables and drop this parameters
-            if(!humanPlayer.isAIPlayer()){
+            if (!humanPlayer.isAIPlayer()) {
                 view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
             }
 
@@ -76,7 +82,7 @@ public class CommandLineController {
                 activePlayer.setSelectedAttribute(selectedAttribute);
             }
 
-            if(!humanPlayer.isAIPlayer()){
+            if (!humanPlayer.isAIPlayer()) {
                 onAttributeSelected(activePlayer);
             }
 
@@ -89,7 +95,7 @@ public class CommandLineController {
 
             // == ROUND OUTCOME ==
 
-            RoundOutcome outcome = gameEngine.processRoundOutcome(winners, players);
+            outcome = gameEngine.processRoundOutcome(winners, players);
             players.removeAll(outcome.getRemovedPlayers());
 
             switch (outcome.getResult()) {
@@ -98,25 +104,58 @@ public class CommandLineController {
                     roundCards.addAll(communalPile);
                     communalPile = new ArrayList<>();
                     activePlayer.collectCards(roundCards);
+                    MapUtils.increment(roundWinsMap, activePlayer);
                     break;
                 case DRAW:
                     communalPile.addAll(roundCards);
-                    Logger.getInstance().logToFileIfEnabled("Communal cards: \n" +communalPile.toString());
+                    numberOfDraws++;
                     break;
                 default:
                     break;
             }
 
-            if(!humanPlayer.isAIPlayer()){
+            if (!humanPlayer.isAIPlayer()) {
                 onRoundEnd(outcome, winningCards);
             }
 
         }
 
+        // == STATISTICS ==
+
+        GameStateCollector gameState = GameStateCollector.Builder.newInstance()
+                .setFinalWinner(activePlayer)
+                .setNumberOfRounds(roundNumber)
+                .setNumberOfDraws(numberOfDraws)
+                .setRoundWinsMap(roundWinsMap)
+                .build();
+
+        gameEngine.persistGameState(gameState);
+
+        if(outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()){
+            view.showAutomaticCompletion();
+        }
         onGameOver(activePlayer);
     }
 
     // === START OF LIFE CYCLE METHODS ===
+
+    private int requestNumberOfOpponents() {
+        try {
+            view.showRequestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS);
+
+            int numberOfOpponents = scanner.nextInt();
+            while (numberOfOpponents < MIN_OPPONENTS || numberOfOpponents > MAX_OPPONENTS) {
+                view.showInvalidNumberOfPlayers(MIN_OPPONENTS, MAX_OPPONENTS);
+                numberOfOpponents = scanner.nextInt();
+            }
+            scanner.nextLine();
+            return numberOfOpponents;
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            view.showNotANumber();
+            return requestNumberOfOpponents();
+        }
+    }
 
     private Attribute onRequestSelection(Card card) {
         try {
@@ -129,6 +168,7 @@ public class CommandLineController {
                 view.showInvalidSelection(numberOfAttributes);
                 selectedAttributeIndex = scanner.nextInt();
             }
+            scanner.nextLine();
 
             return attributes.get(selectedAttributeIndex - 1);
         } catch (InputMismatchException e) {
@@ -150,12 +190,16 @@ public class CommandLineController {
         if (!removedPlayers.isEmpty()) {
             view.showRemovedPlayers(removedPlayers);
         }
+        selectNextRound();
+    }
+
+    private void selectNextRound() {
+        view.showNextRoundMessage();
+        scanner.nextLine();
     }
 
     private void onGameOver(Player winner) {
-        Logger.getInstance().logToFileIfEnabled(winner.getName() + " won the game! \nGAME OVER!");
         view.showGameResult(winner);
-        scanner.nextLine(); //clear the scanner ready for new game selection
         start();
     }
 

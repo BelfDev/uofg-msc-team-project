@@ -5,14 +5,14 @@
 
 .game-title {
     margin: 0;
-    font-size: 96px;
+    font-size: 9.6rem;
     font-weight: normal;
     color: var(--color-font-light);
 }
 
 .game-subtitle {
-    margin: 4px 0 0;
-    font-size: 56px;
+    margin: 0.4rem 0 0;
+    font-size: 5.6rem;
     font-weight: normal;
     color: var(--color-font-light);
 }
@@ -26,12 +26,12 @@
 }
 
 .button-container {
-    height: 200px;
-    width: 400px;
+    height: 20rem;
+    width: 40rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     align-content: space-between;
-    margin-top: 125px;
+    margin-top: 12.5rem;
 }

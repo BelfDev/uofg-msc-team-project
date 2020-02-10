@@ -1,0 +1,1 @@
+<div class="opponents js-opponents-box"></div>
