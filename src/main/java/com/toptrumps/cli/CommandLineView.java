@@ -29,7 +29,7 @@ public class CommandLineView {
     public void showWelcomeMessage() {
         printWelcomeBanner();
         typePrint(20, "\nTo start a new game, press f \nTo see game statistics, press s");
-        Logger.logToFile("Game started");
+        Logger.getInstance().logToFileIfEnabled("Game started");
     }
 
     private void printWelcomeBanner() {
@@ -241,7 +241,7 @@ public class CommandLineView {
         }else {
             message += "Congratulations - you won the game!";
         }
-        Logger.logToFile(message);
+        Logger.getInstance().logToFileIfEnabled(message);
         typePrint(40, message);
         System.out.println("\n\n\n");
         pausePrinting(1500);

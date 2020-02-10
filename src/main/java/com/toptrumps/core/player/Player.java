@@ -72,7 +72,7 @@ public class Player implements Comparable<Player> {
     public void setDeck(ArrayList<Card> deck) {
         this.deck = deck;
         this.deckCount = deck.size();
-        Logger.logToFile(this.toString());
+        Logger.getInstance().logToFileIfEnabled(this.toString());
     }
 
     @JsonIgnore
@@ -105,7 +105,7 @@ public class Player implements Comparable<Player> {
 
     public void setSelectedAttribute(Attribute attribute) {
         this.selectedAttribute = attribute;
-        Logger.logToFile(name + " selected the attribute " + attribute.getName() + " " + attribute.getValue() + "\n");
+        Logger.getInstance().logToFileIfEnabled(name + " selected the attribute " + attribute.getName() + " " + attribute.getValue() + "\n");
     }
 
     @Override

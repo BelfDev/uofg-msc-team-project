@@ -75,7 +75,7 @@ public class Game {
         String attributeName = selectedAttribute.getName();
 
         for (Player p : players){ // TODO Maybe integrate this for loop with something else to prevent looping.
-            Logger.logToFile(p.getName() + "'s top card:  "+ p.getTopCard().toString() + "\n\n"
+            Logger.getInstance().logToFileIfEnabled(p.getName() + "'s top card:  "+ p.getTopCard().toString() + "\n\n"
                     + p.getName() + "'s deck: \n" + p.toString());
         }
 

@@ -101,7 +101,7 @@ public class CommandLineController {
                     break;
                 case DRAW:
                     communalPile.addAll(roundCards);
-                    Logger.logToFile("Communal cards: \n" +communalPile.toString());
+                    Logger.getInstance().logToFileIfEnabled("Communal cards: \n" +communalPile.toString());
                     break;
                 default:
                     break;
@@ -153,7 +153,7 @@ public class CommandLineController {
     }
 
     private void onGameOver(Player winner) {
-        Logger.logToFile(winner.getName() + " won the game! \nGAME OVER!");
+        Logger.getInstance().logToFileIfEnabled(winner.getName() + " won the game! \nGAME OVER!");
         view.showGameResult(winner);
         scanner.nextLine(); //clear the scanner ready for new game selection
         start();

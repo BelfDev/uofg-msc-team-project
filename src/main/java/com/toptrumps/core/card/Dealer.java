@@ -16,7 +16,7 @@ public class Dealer {
     public Dealer(String deckFile) {
 
         this.deck = DeckParser.parseDeck(deckFile);
-        Logger.logToFile("Deck before shuffling: \n" + printDeck());
+        Logger.getInstance().logToFileIfEnabled("Deck before shuffling: \n" + printDeck());
     }
 
     public ArrayList<ArrayList<Card>> dealCards(int numberOfPlayers) {
@@ -29,7 +29,7 @@ public class Dealer {
     private void shuffleCards() {
 
         Collections.shuffle(deck, new Random());
-        Logger.logToFile("Shuffled cards: \n" + printDeck());
+        Logger.getInstance().logToFileIfEnabled("Shuffled cards: \n" + printDeck());
     }
 
     private ArrayList<ArrayList<Card>> splitDeck(int numberOfSplits) {

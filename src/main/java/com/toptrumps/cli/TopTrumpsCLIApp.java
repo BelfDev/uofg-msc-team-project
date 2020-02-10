@@ -10,8 +10,7 @@ import java.io.File;
  */
 public class TopTrumpsCLIApp {
 
-    private static final String LOG_PATH = "./";
-    private static final String LOG_FILENAME = "TopTrumps.log";
+
 
 
     /**
@@ -26,10 +25,10 @@ public class TopTrumpsCLIApp {
 
 
         if (writeGameLogsToFile) {
-            Logger logger = new Logger(LOG_PATH + LOG_FILENAME);
-            logger.enable();
+            Logger logger = Logger.getInstance();
+
         }
-        Logger.logToFile("MAD STAX FTW.");
+        Logger.getInstance().logToFileIfEnabled("MAD STAX!");
         // TODO remove this.
 
         CommandLineController commandLineUI = new CommandLineController();
