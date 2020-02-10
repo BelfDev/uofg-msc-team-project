@@ -7,7 +7,6 @@ import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.statistics.GameStateCollector;
 import com.toptrumps.db.IndividualGameDAOImpl;
-import com.toptrumps.db.PersistentDataDAO;
 import com.toptrumps.db.PersistentDataDAOImpl;
 import com.toptrumps.db.RoundWinnersDAOImpl;
 
@@ -105,10 +104,10 @@ public class Game {
             Player winner = winners.get(0);
             winner.setActive(true);
 
-            if(removedPlayers.contains(winner)){
+            if (removedPlayers.contains(winner)) {
                 removedPlayers.remove(winner);
             }
-            
+
             outcome = new RoundOutcome(VICTORY, winner, removedPlayers);
         } else {
             outcome = new RoundOutcome(DRAW, winners, removedPlayers);

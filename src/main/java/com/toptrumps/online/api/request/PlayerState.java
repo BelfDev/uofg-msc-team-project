@@ -20,12 +20,13 @@ public class PlayerState {
         // Jackson deserialization
     }
 
-    public PlayerState(int id, boolean isAIPlayer, String name, int deckCount, Card topCard) {
+    public PlayerState(int id, boolean isAIPlayer, String name, int deckCount, Card topCard, int numberOfRoundWins) {
         this.id = id;
         this.isAIPlayer = isAIPlayer;
         this.name = name;
         this.deckCount = deckCount;
         this.topCard = topCard;
+        this.numberOfRoundWins = numberOfRoundWins;
     }
 
     @JsonProperty

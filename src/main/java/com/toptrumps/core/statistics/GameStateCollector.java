@@ -1,6 +1,7 @@
 package com.toptrumps.core.statistics;
 
 import com.toptrumps.core.player.Player;
+import com.toptrumps.online.api.request.FinalGameState;
 
 import java.util.Map;
 
@@ -65,6 +66,14 @@ public final class GameStateCollector {
 
         public Builder setRoundWinsMap(Map<Player, Integer> roundWinsMap) {
             this.roundWinsMap = roundWinsMap;
+            return this;
+        }
+
+        public Builder fromFinalGameState(FinalGameState gameState) {
+            this.finalWinner = gameState.getFinalWinner().toPlayer();
+            this.numberOfDraws = gameState.getNumberOfDraws();
+            this.numberOfRounds = gameState.getNumberOfRounds();
+            this.roundWinsMap = gameState.getRoundWinsMap();
             return this;
         }
 

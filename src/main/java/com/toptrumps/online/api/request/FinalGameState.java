@@ -1,8 +1,12 @@
 package com.toptrumps.online.api.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.toptrumps.core.player.Player;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FinalGameState {
 
@@ -40,6 +44,15 @@ public class FinalGameState {
     @JsonProperty("roundWins")
     public List<PlayerState> getPlayersWinTrack() {
         return playersWinTrack;
+    }
+
+    @JsonIgnore
+    public Map<Player, Integer> getRoundWinsMap() {
+        HashMap<Player, Integer> roundWinsMap = new HashMap<>();
+        playersWinTrack.forEach(playerState -> {
+            roundWinsMap.put(playerState.toPlayer(), playerState.getNumberOfRoundWins());
+        });
+        return roundWinsMap;
     }
 
 }
