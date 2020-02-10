@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toCollection;
 
 public class CommandLineController {
 
-    private final static String DECK_RESOURCE = "assets/StarCitizenDeck.txt";
+    private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
 
     private Scanner scanner;
 
