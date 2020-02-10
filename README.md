@@ -15,8 +15,8 @@ The application itself is broken down into two parts: the online mode; and comma
 4. Now simply execute the JAR<br>
 ```java -jar target/TopTrumps.jar -c``` for the **CLI** mode<br>
 or<br>
-```java -jar target/TopTrumps.jar -o``` for the **online** mode<br>
-5. If you're using the online mode, open your internet browser and connect to http://localhost:7777/toptrumps to play the game!<br>
+```java -jar target/TopTrumps.jar -o``` for the **online** mode<br><br>
+5. If you're using the online mode, open your internet browser and connect to http://localhost:7777/toptrumps to play the game!<br><br>
 6. Enjoy! 
 
 
