@@ -213,7 +213,7 @@ public class CommandLineView {
     }
 
     public void showNextRoundMessage(){
-        String message = "\nPress ENTER to start the next round";
+        String message = "\nPress ENTER to continue";
         typePrint(20, message);
     }
 
