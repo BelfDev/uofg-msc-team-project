@@ -22,7 +22,6 @@ public class CommandLineController {
     // TODO: Refactor the controller to use CommandLineView
     private CommandLineView view;
     private Game gameEngine;
-
     private static final int MIN_OPPONENTS = 1;
     private static final int MAX_OPPONENTS = 4;
 
