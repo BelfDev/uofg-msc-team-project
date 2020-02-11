@@ -24,7 +24,7 @@ public class Statistics{
         concretePerformanceDAO.create();
     }
 
-    public ResultSet retrieveStats(){
+    private ResultSet retrieveStats(){
 
         Connection conn = ConnectionFactory.getConnection();
         PreparedStatement playedStats = null;
@@ -53,7 +53,7 @@ public class Statistics{
         return rs;
     }
 
-    public void buildStatistics(ResultSet resultSet)throws SQLException{
+    private void buildStatistics(ResultSet resultSet)throws SQLException{
 
         while(resultSet.next()){
             this.gamesPlayed = resultSet.getInt(1);
