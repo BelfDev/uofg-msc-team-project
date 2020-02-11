@@ -17,14 +17,14 @@ import java.sql.*;
         private int noDraws;
     
         public boolean create(){
-            Connection con = ConnectionFactory.getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             PreparedStatement createRow = null;
             String createRowSQL = "INSERT INTO _game_data(winner_id,rounds_played,draws)" +
             "VALUES (?,?,?);";
     
             try {
     
-                createRow = con.prepareStatement(createRowSQL);
+                createRow = conn.prepareStatement(createRowSQL);
                 createRow.setInt(1,winnerID);
                 createRow.setInt(2,noRoundsPlayed);
                 createRow.setInt(3,noDraws);
@@ -36,7 +36,7 @@ import java.sql.*;
     
             finally{
                 try{
-                    if(con != null){con.close();}
+                    if(con != null){conn.close();}
                     if(createRow != null){createRow.close();}
                 }catch(SQLException e){
                     e.printStackTrace();
