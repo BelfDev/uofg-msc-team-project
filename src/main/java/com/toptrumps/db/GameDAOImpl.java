@@ -3,9 +3,9 @@ import com.toptrumps.core.statistics.GameStateCollector;
 import com.toptrumps.core.player.Player;
 import java.sql.*;
 
-    public class IndividualGameDAOImpl implements GameDAO{
+    public class GameDAOImpl implements GameDAO{
 
-        public IndividualGameDAOImpl(GameStateCollector gameState){
+        public GameDAOImpl(GameStateCollector gameState){
     
             winnerID = gameState.getFinalWinner().getId();
             noRoundsPlayed = gameState.getNumberOfRounds();
@@ -19,7 +19,7 @@ import java.sql.*;
         public boolean create(){
             Connection con = ConnectionFactory.getConnection();
             PreparedStatement createRow = null;
-            String createRowSQL = "INSERT INTO individual_game_data(winner_id,rounds_played,draws)" +
+            String createRowSQL = "INSERT INTO _game_data(winner_id,rounds_played,draws)" +
             "VALUES (?,?,?);";
     
             try {

@@ -17,11 +17,11 @@ public class Statistics{
     }
 
     public void persistData(GameStateCollector gameState){
-        
-        IndividualGameDAOImpl igdi = new IndividualGameDAOImpl(gameState);
-        igdi.create();
-        PerformanceDAOImpl pdi = new PerformanceDAOImpl(gameState);
-        pdi.create();
+
+        GameDAOImpl concreteGameDAO = new GameDAOImpl(gameState);
+        concreteGameDAO.create();
+        PerformanceDAOImpl concretePerformanceDAO = new PerformanceDAOImpl(gameState);
+        concretePerformanceDAO.create();
     }
 
     public ResultSet retrieveStats(){
