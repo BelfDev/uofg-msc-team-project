@@ -85,6 +85,19 @@ const Game = (($) => {
         activePlayerID = gameData.activePlayerId;
         humanPlayerID = gameData.humanPlayer.id;
 
+        /**
+         *
+         */
+        for (let i = 0; i < 6; i++) {
+            gameData.humanPlayer.deck.pop();
+            gameData.aiPlayers.forEach(player => {
+                player.deck.pop();
+            });
+        }
+        /**incrementRoundNumber
+         *
+         */
+
         createPlayers(gameData.humanPlayer, gameData.aiPlayers);
         const players = assignDecks(gameData.humanPlayer, gameData.aiPlayers);
         PlayerModel.init(players);
@@ -122,8 +135,6 @@ const Game = (($) => {
     };
 
     const startNewRound = () => {
-        StatsHelper.incrementRoundNumber();
-
         if (!isHumanPlayerDefeated) {
             const topCard = PlayerModel.getTopCard(humanPlayerID);
             DOMHelper.showCard(humanPlayerID, topCard);
@@ -179,7 +190,6 @@ const Game = (($) => {
             if (response.result === "VICTORY") {
                 DOMHelper.clearPlayerStates();
                 DOMHelper.displayWinnerPlayer(response.winner.id);
-                StatsHelper.addRoundToPlayerByID(response.winner.id);
             }
 
             setTimeout(() => {
@@ -191,8 +201,10 @@ const Game = (($) => {
 
     const startRoundOutcome = response => {
         if (response.result === "DRAW") {
+            StatsHelper.incrementRoundNumber(null);
             updateCommonPile();
         } else if (response.result === "VICTORY") {
+            StatsHelper.incrementRoundNumber(response.winner);
             distributeCards(response.winner.id, cardsOnTable);
         }
 
@@ -307,7 +319,14 @@ const Game = (($) => {
             }
         }
 
+        saveGameStats();
+
         DOMHelper.showModal(modalIDs["gameOver"], title, hint);
+    };
+
+    const saveGameStats = () => {
+        const gameData = StatsHelper.getGameStats();
+        NetworkHelper.makeRequest(`api/statistics`, gameData);
     };
 
     const outputRemovedPlayers = playerIDs => {

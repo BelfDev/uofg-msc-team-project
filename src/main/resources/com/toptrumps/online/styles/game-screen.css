@@ -188,6 +188,8 @@
 
 .pcard__image {
     width: 100%;
+    position: relative;
+    top: 1.5rem;
 }
 
 .pcard__title {
