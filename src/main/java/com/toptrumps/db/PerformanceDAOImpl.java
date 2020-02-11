@@ -18,16 +18,16 @@ public class PerformanceDAOImpl implements GameDAO{
     public int getGameID(){
 
         Connection conn = ConnectionFactory.getConnection();
-        PreparedStatement stmt = null;
+        PreparedStatement gameIdSTMT = null;
         ResultSet rs = null;
         int id = 0;
 
-        String stmtSQL = "SELECT MAX(game_id) FROM individual_game_data;";
+        String gameIdSTMTSQL = "SELECT MAX(game_id) FROM individual_game_data;";
 
         try{
 
-            stmt = conn.prepareStatement(stmtSQL);
-            rs = stmt.executeQuery();
+            gameIdSTMT = conn.prepareStatement(gameIdSTMTSQL);
+            rs = gameIdSTMT.executeQuery();
             while(rs.next()){ id = rs.getInt(1);}
            
         }catch(SQLException e){e.printStackTrace();}
