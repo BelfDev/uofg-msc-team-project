@@ -1,5 +1,7 @@
 package com.toptrumps.core.card;
 
+import com.toptrumps.cli.Logger;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -12,7 +14,9 @@ public class Dealer {
     private final ArrayList<Card> deck;
 
     public Dealer(String deckFile) {
+
         this.deck = DeckParser.parseDeck(deckFile);
+        Logger.getInstance().logToFileIfEnabled("Deck before shuffling: \n" + printDeck());
     }
 
     public ArrayList<ArrayList<Card>> dealCards(int numberOfPlayers) {
@@ -23,7 +27,9 @@ public class Dealer {
 
 
     private void shuffleCards() {
+
         Collections.shuffle(deck, new Random());
+        Logger.getInstance().logToFileIfEnabled("Shuffled cards: \n" + printDeck());
     }
 
     private ArrayList<ArrayList<Card>> splitDeck(int numberOfSplits) {
@@ -44,6 +50,14 @@ public class Dealer {
                     return new ArrayList<Card>(this.deck.subList(fromIndex, toIndex));
                 })
                 .collect(toCollection(ArrayList::new));
+    }
+
+    public String printDeck(){
+        String deckString = "";
+        for (Card c : deck){
+            deckString += c.toString();
+        }
+        return deckString;
     }
 
 }

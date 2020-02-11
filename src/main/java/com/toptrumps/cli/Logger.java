@@ -7,21 +7,24 @@ public class Logger {
     public static final String LOGGER = "commandLineLogger";
     public static final String DIVIDER = "-------------------";
 
-    private final String filePath;
+
+    private static Logger instance;
+
+    private static final String FILE_PATH = "./TopTrumps.log";
     java.util.logging.Logger logger;
     private Handler loggerHandler;
 
 
+    private Logger() {
 
-    public Logger(String filePath){
         logger = java.util.logging.Logger.getLogger(LOGGER);
+        this.enable();
 
-        this.filePath = filePath;
     }
 
-    public void enable(){
+    public void enable() {
         try {
-            loggerHandler = new FileHandler(filePath);
+            loggerHandler = new FileHandler(FILE_PATH);
 
             loggerHandler.setFormatter(new Formatter() {
                 @Override
@@ -38,7 +41,14 @@ public class Logger {
         logger.setLevel(java.util.logging.Level.INFO);
     }
 
-    public static void logToFile(String logEntry){
+    public static Logger getInstance() {
+        if (instance == null) {
+            instance = new Logger();
+        }
+        return instance;
+    }
+
+    public void logToFileIfEnabled(String logEntry) {
         java.util.logging.Logger.getLogger(LOGGER).info(logEntry);
     }
 

@@ -31,7 +31,8 @@ public class Attribute implements Comparable<Attribute> {
 
     @Override
     public String toString() {
-        return String.format("Attribute => name: %s\tvalue: %d", name, value);
+        return String.format("Attribute => name: %1$-2s value: %2$2s", name, value);
     }
+
 
 }

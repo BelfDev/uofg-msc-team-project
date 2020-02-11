@@ -3,6 +3,7 @@ package com.toptrumps.core.player;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.toptrumps.cli.Logger;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.online.api.request.PlayerState;
@@ -71,6 +72,7 @@ public class Player implements Comparable<Player> {
     public void setDeck(ArrayList<Card> deck) {
         this.deck = deck;
         this.deckCount = deck.size();
+        Logger.getInstance().logToFileIfEnabled(this.toString());
     }
 
     @JsonIgnore
@@ -103,6 +105,7 @@ public class Player implements Comparable<Player> {
 
     public void setSelectedAttribute(Attribute attribute) {
         this.selectedAttribute = attribute;
+        Logger.getInstance().logToFileIfEnabled(name + " selected the attribute " + attribute.getName() + " " + attribute.getValue() + "\n");
     }
 
     @Override
@@ -115,7 +118,11 @@ public class Player implements Comparable<Player> {
     // TODO: Come up with a better format
     @Override
     public String toString() {
-        return String.format("Player => id: %d\tname: %s\tdeck: %s", id, name, deck.toString());
+        String deckString = "Player => " + name + "\nDeck:\n";
+        for (Card c : deck) {
+            deckString += c.toString(); // Mangling the exisiting toString was the only way I could find to print it out nicely.
+        }
+        return deckString;
     }
 
 }
