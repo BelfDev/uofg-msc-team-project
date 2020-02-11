@@ -10,7 +10,7 @@ public class Logger {
 
     private static Logger instance;
 
-    private final String filePath = "./TopTrumps.log";;
+    private static final String FILE_PATH = "./TopTrumps.log";
     java.util.logging.Logger logger;
     private Handler loggerHandler;
 
@@ -24,7 +24,7 @@ public class Logger {
 
     public void enable() {
         try {
-            loggerHandler = new FileHandler(filePath);
+            loggerHandler = new FileHandler(FILE_PATH);
 
             loggerHandler.setFormatter(new Formatter() {
                 @Override
