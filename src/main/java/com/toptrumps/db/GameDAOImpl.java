@@ -36,7 +36,7 @@ import java.sql.*;
     
             finally{
                 try{
-                    if(con != null){conn.close();}
+                    if(conn != null){conn.close();}
                     if(createRow != null){createRow.close();}
                 }catch(SQLException e){
                     e.printStackTrace();
