@@ -23,3 +23,21 @@
         </div>
     </div>
 </script>
+
+<script id="template-game-over" type="text/template">
+    <div class="game-stats-modal">
+        <div class="game-stats-modal__winner js-game-over-winner">
+            <span class="game-stats-modal__winner-icon"></span>
+            <span class="game-stats-modal__winner-name js-game-over-winner-name"></span>
+        </div>
+        <h3 class="game-stats-modal__header">Rounds won:</h3>
+        <div class="game-stats-modal__rounds js-game-over-rounds-wrapper"></div>
+    </div>
+</script>
+
+<script id="template-rounds-box" type="text/template">
+    <div class="game-stats-modal__rounds-box js-game-over-rounds-box">
+        <span class="js-game-over-rounds-name"></span>
+        <span class="game-stats-modal__rounds-number js-game-over-rounds-number"></span>
+    </div>
+</script>

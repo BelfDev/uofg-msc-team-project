@@ -20,6 +20,12 @@ const DOMHelper = (($) => {
     const commonPileValueSelector = ".js-common-pile-value";
     const commonPileSelector = ".js-common-pile";
     const messageLogSelector = ".js-game-log";
+    const gameOverWinnerSelector = ".js-game-over-winner";
+    const gameOverWinnerNameSelector = ".js-game-over-winner-name";
+    const gameOverRoundsWrapperSelector = ".js-game-over-rounds-wrapper";
+    const gameOverRoundsBox = ".js-game-over-rounds-box";
+    const gameOverRoundsName = ".js-game-over-rounds-name";
+    const gameOverRoundsNumber = ".js-game-over-rounds-number";
 
     // Modals
     const modalSelectors = {
@@ -41,6 +47,8 @@ const DOMHelper = (($) => {
     // Templates
     const playerBoxTemplateSelector = "#template-player-box";
     const cardAttributeTemplateSelector = "#template-attribute-item";
+    const gameOverTemplateSelector = "#template-game-over";
+    const roundsBoxTemplateSelector = "#template-rounds-box";
 
     // Timer and duration variables
     const curtainDelay = 1000;
@@ -319,6 +327,36 @@ const DOMHelper = (($) => {
         $(cardAttributeSelector).removeClass(cardAttributeActiveClass);
     };
 
+    const getStatsMarkup = stats => {
+        const gameStatsTpl = $(gameOverTemplateSelector).html()
+        const $gameStats = $(gameStatsTpl).clone();
+
+        if (stats.finalWinner !== null) {
+            $gameStats.find(gameOverWinnerNameSelector).text(stats.finalWinner.name);
+        } else {
+            $gameStats.find(gameOverWinnerSelector).hide();
+        }
+
+        const $roundsWrapper = $gameStats.find(gameOverRoundsWrapperSelector);
+        $roundsWrapper.html(createRoundsBoxNodes(stats.roundWins));
+
+        return $gameStats;
+    };
+
+    const createRoundsBoxNodes = roundWins => {
+        const boxNodeCollection = [];
+        const roundsBoxTpl = $(roundsBoxTemplateSelector).html();
+
+        roundWins.forEach(player => {
+            const $box = $(roundsBoxTpl).clone();
+            $box.find(gameOverRoundsName).text(player.name);
+            $box.find(gameOverRoundsNumber).text(player.numberOfWins);
+            boxNodeCollection.push($box);
+        });
+
+        return boxNodeCollection;
+    }
+
     return {
         showUI,
         showModal,
@@ -339,6 +377,7 @@ const DOMHelper = (($) => {
         clearPlayerStates,
         showOpponentsCards,
         highlightAttribute,
-        resetAttributeHighlight
+        resetAttributeHighlight,
+        getStatsMarkup
     }
 })(jQuery);

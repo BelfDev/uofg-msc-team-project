@@ -16,6 +16,7 @@ const StatsHelper = (($) => {
 
     const incrementRoundNumber = winner => {
         if (winner === null) {
+            finalWinner = null;
             numberOfDraws++;
         } else {
             finalWinner = winner;
@@ -37,28 +38,9 @@ const StatsHelper = (($) => {
         }
     };
 
-    const outputStats = winnerID => {
-        let text = "";
-
-        roundWins.forEach(player => {
-            if (player.id == winnerID) {
-                if (player.id == 0) {
-                    text += `The winner is You!. You won ${player.numberOfWins} rounds<br />`
-                } else {
-                    text += `The winner is ${player.name}. They won ${player.numberOfWins} rounds<br />`;
-                }
-            } else {
-                text += `${player.name} lost overall, but won ${player.numberOfWins} rounds<br />`;
-            }
-        });
-
-        return text;
-    };
-
     return {
         init,
         getGameStats,
         incrementRoundNumber,
-        outputStats
     }
 })(jQuery);

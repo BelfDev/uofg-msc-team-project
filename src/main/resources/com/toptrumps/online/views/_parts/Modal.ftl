@@ -24,7 +24,7 @@
     <button class="button modal__button js-modal-next-round-button">Next round</button>
 </div>
 
-<div class="modal js-modal js-end-game-modal">
+<div class="modal modal--wide js-modal js-end-game-modal">
     <h2 class="modal__title js-modal-title"></h2>
     <div class="modal__hint js-modal-hint"></div>
     <a href="/toptrumps/" class="button modal__button">To main menu</a>

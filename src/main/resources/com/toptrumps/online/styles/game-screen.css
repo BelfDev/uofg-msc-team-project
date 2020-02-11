@@ -369,7 +369,7 @@
     right: 0;
     bottom: 0;
     border-radius: 1.6rem;
-    background: rgba(13, 33, 44, 0.5);
+    background: rgba(20, 28, 33, 0.94);
     z-index: -1;
     backdrop-filter: blur(1px);
 }
@@ -382,11 +382,63 @@
 }
 
 .modal__hint {
+    width: 100%;
 }
 
 .modal--opened {
     opacity: 1;
     pointer-events: initial;
+}
+
+.modal--wide {
+    width: 120rem;
+    padding: 7rem;
+}
+
+.game-stats-modal__winner-name {
+    display: block;
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.game-stats-modal__winner-icon {background: url(https://cdn1.iconfinder.com/data/icons/photo-stickers-hats/128/hat_9-512.png);background-size: contain;display: block;width: 6.4rem;height: 6.4rem;margin: auto;}
+
+.game-stats-modal__winner {
+    margin-bottom: 7rem;
+}
+
+.game-stats-modal__header {
+    font-weight: normal;
+}
+
+.game-stats-modal__rounds-box {
+    padding: 1.5rem 2rem;
+    border-right: 1px solid rgba(254, 254, 254, 0.41);
+    flex-basis: 20%;
+}
+
+.game-stats-modal__rounds-box:last-child {
+    border-right: 0
+}
+
+.game-stats-modal__rounds-number {
+    display: block;
+    font-size: 5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+}
+
+.game-stats-modal__rounds {
+    display: flex;
+    border: .3rem solid #fefefe;
+    border-radius: 1rem;
+}
+
+.modal--wide {
+    width: 120rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
 }
 
 .opponents-quantity {

@@ -85,19 +85,6 @@ const Game = (($) => {
         activePlayerID = gameData.activePlayerId;
         humanPlayerID = gameData.humanPlayer.id;
 
-        /**
-         *
-         */
-        for (let i = 0; i < 6; i++) {
-            gameData.humanPlayer.deck.pop();
-            gameData.aiPlayers.forEach(player => {
-                player.deck.pop();
-            });
-        }
-        /**incrementRoundNumber
-         *
-         */
-
         createPlayers(gameData.humanPlayer, gameData.aiPlayers);
         const players = assignDecks(gameData.humanPlayer, gameData.aiPlayers);
         PlayerModel.init(players);
@@ -307,17 +294,24 @@ const Game = (($) => {
 
     const showGameOutcome = response => {
         const title = "Game over!";
-        let hint;
+        let winnerID = null;
+
         if (response.result === "VICTORY") {
-            hint = StatsHelper.outputStats(response.winner.id);
+            winnerID = response.winner.id;
+            // hint = StatsHelper.outputStats(response.winner.id);
         } else {
             const players = PlayerModel.getPlayers();
             if (Object.keys(players).length > 0) {
-                hint = StatsHelper.outputStats(Object.keys(players)[0]);
-            } else {
-                hint = StatsHelper.outputStats(null);
+                winnerID = Object.keys(players)[0];
+                // hint = StatsHelper.outputStats(Object.keys(players)[0]);
             }
+            // else {
+            //     hint = StatsHelper.outputStats(null);
+            // }
         }
+
+        const stats = StatsHelper.getGameStats();
+        const hint = DOMHelper.getStatsMarkup(stats);
 
         saveGameStats();
 
