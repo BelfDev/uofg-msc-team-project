@@ -22,7 +22,9 @@ enum GameOption {
 
     public static boolean contains(String input) {
         for (GameOption option : GameOption.values()) {
-            return option.getFlagValue().equals(input);
+            if (option.getFlagValue().equals(input)) {
+                return true;
+            }
         }
         return false;
     }
