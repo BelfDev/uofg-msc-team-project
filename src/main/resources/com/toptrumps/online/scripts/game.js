@@ -1,12 +1,11 @@
 const Game = (($) => {
     /** VARIABLES AND CONSTANTS */
-    const newGameButtonSelector = ".js-modal-new-game-button";
-    const opponentsCountSelector = ".js-opponents-count";
+    const quitGameButtonSelector = ".js-quit-button";
     const modalIDs = {
-        requestOpponents: "ASK_FOR_NUMBER_OF_OPPONENTS",
         draw: "DRAW",
         victory: "VICTORY",
-        gameOver: "GAME_OVER"
+        gameOver: "GAME_OVER",
+        quit: "QUIT"
     };
 
     // Game state variables
@@ -22,26 +21,20 @@ const Game = (($) => {
     /** METHODS */
 
     const init = () => {
-        /* After the interface is loaded and adjusted - show ui */
-        DOMHelper.showUI();
-
         bindEvents();
 
-        requestNumberOfOpponents();
+        const numberOfOpponents = getNumberOfOpponents();
+
+        const request = NetworkHelper.makeRequest("api/game", { numberOfOpponents });
+        request.then(response => {
+            startNewGame(response);
+        });
     };
 
     const bindEvents = () => {
-        $(newGameButtonSelector).on("click", () => {
-            const numberOfOpponents = $(opponentsCountSelector).val();
-
-            const request = NetworkHelper.makeRequest("api/game", { numberOfOpponents });
-            request.then(response => {
-                Modal.closeActiveModal();
-                startNewGame(response);
-            });
+        $(quitGameButtonSelector).on("click", () => {
+            DOMHelper.showModal(modalIDs.quit, false, false)
         });
-
-        DOMHelper.bindNextRoundEvent(onNextRound);
     };
 
     const onNextRound = () => {
@@ -75,11 +68,22 @@ const Game = (($) => {
         cardsOnTable = [];
     };
 
-    const requestNumberOfOpponents = () => {
-        DOMHelper.showModal(modalIDs.requestOpponents, false, false)
+    const getNumberOfOpponents = () => {
+        const url = new URL(window.location.href);
+        const numberOfOpponents = url.searchParams.get("numberOfOpponents");
+
+        if (!numberOfOpponents) {
+            window.location.replace("/toptrumps/");
+            return;
+        }
+
+        return numberOfOpponents
     };
 
     const startNewGame = gameData => {
+        /* After the interface is loaded and adjusted - show ui */
+        DOMHelper.showUI();
+
         // Set game data
         numberOfOpponents = gameData.numberOfOpponents;
         activePlayerID = gameData.activePlayerId;
@@ -90,7 +94,9 @@ const Game = (($) => {
         PlayerModel.init(players);
         StatsHelper.init(PlayerModel.getPlayersList());
 
-        startNewRound();
+        setTimeout(() => {
+            startNewRound();
+        }, 3000);
     };
 
     const createPlayers = (humanPlayer, aiPlayers) => {
@@ -106,14 +112,14 @@ const Game = (($) => {
 
         players[humanPlayerID] = {
             id: humanPlayer.id,
-            name: humanPlayer.name,
+            name: humanPlayer.name.replace("_", " "),
             deck: humanPlayer.deck
         };
 
         aiPlayers.forEach((player, i) => {
             players[i + 1] = {
                 id: player.id,
-                name: player.name,
+                name: player.name.replace("_", " "),
                 deck: player.deck
             };
         });
@@ -149,8 +155,7 @@ const Game = (($) => {
     const startAttributeSelection = () => {
         if (activePlayerID === 0) {
             DOMHelper.showMessage("It is your turn. Choose an attribute");
-            DOMHelper.bindEndTurnEvent(onEndTurn);
-            DOMHelper.enableAttributeSelection(onAttributeSelected, humanPlayerID);
+            DOMHelper.enableAttributeSelection(onAttributeSelected, humanPlayerID, onEndTurn);
         } else {
             DOMHelper.showMessage(`It is AI turn. Active player - ${PlayerModel.getPlayerName(activePlayerID)}`);
             DOMHelper.disableAttributeSelection(humanPlayerID);
@@ -195,8 +200,6 @@ const Game = (($) => {
             distributeCards(response.winner.id, cardsOnTable);
         }
 
-        // const playersCardCount = PlayerModel.getPlayersCardCount();
-
         const players = PlayerModel.getPlayers();
         $.each(players, (i, player) => {
             DOMHelper.updateDeckCount(player.id, player.deck.length);
@@ -234,7 +237,6 @@ const Game = (($) => {
         cardsOnTable.forEach(data => {
             commonPile.push(data.card);
         });
-        // commonPile = $.merge(commonPile, cardsOnTable);
         cardsOnTable = [];
         DOMHelper.updateCommonPileIndicator(commonPile.length);
     };
@@ -272,8 +274,11 @@ const Game = (($) => {
         } else if (response.result === "VICTORY") {
             DOMHelper.showMessage(`${response.winner.name} is a winner`);
             showWinner(response.winner.id);
-            displayVictory(response);
         }
+
+        setTimeout(() => {
+            onNextRound();
+        }, 2000);
     };
 
     const showWinner = playerID => {
@@ -294,21 +299,6 @@ const Game = (($) => {
 
     const showGameOutcome = response => {
         const title = "Game over!";
-        let winnerID = null;
-
-        if (response.result === "VICTORY") {
-            winnerID = response.winner.id;
-            // hint = StatsHelper.outputStats(response.winner.id);
-        } else {
-            const players = PlayerModel.getPlayers();
-            if (Object.keys(players).length > 0) {
-                winnerID = Object.keys(players)[0];
-                // hint = StatsHelper.outputStats(Object.keys(players)[0]);
-            }
-            // else {
-            //     hint = StatsHelper.outputStats(null);
-            // }
-        }
 
         const stats = StatsHelper.getGameStats();
         const hint = DOMHelper.getStatsMarkup(stats);
@@ -323,27 +313,26 @@ const Game = (($) => {
         NetworkHelper.makeRequest(`api/statistics`, gameData);
     };
 
-    const outputRemovedPlayers = playerIDs => {
-        const playerNames = playerIDs.map(playerID => PlayerModel.getPlayerName(playerID));
-        return `These players were defeated: ${playerNames.join(", ")}`;
-    };
-
-    const displayDraw = response => {
-        let hint = `There are ${commonPile.length} cards in common pile`;
-        if (response.removedPlayerIds.length > 0) {
-            hint = outputRemovedPlayers(response.removedPlayerIds);
-        }
-        DOMHelper.showModal(modalIDs["draw"], "It's a draw!", hint);
-    };
-
-    const displayVictory = response => {
-        let hint;
-        if (response.removedPlayerIds.length > 0) {
-            hint = outputRemovedPlayers(response.removedPlayerIds);
-        }
-        const title = response.winner.isAIPlayer === true ? `${response.winner.name} has won!` : "You won the round!";
-
-        DOMHelper.showModal(modalIDs["victory"], title, hint);
+    const displayDraw = () => {
+        anime({
+            targets: '.draw-indicator',
+            keyframes: [
+                { scale: 0, translateX: '-50%', translateY: '-50%', opacity: 0 },
+                { scale: 1, translateX: '-50%', translateY: '-50%', opacity: 1 }
+            ],
+            duration: 500,
+            easing: 'easeOutElastic(1, .8)',
+            loop: false,
+            complete: function() {
+                setTimeout(() => {
+                    anime({
+                        targets: '.draw-indicator',
+                        opacity: 0,
+                        duration: 1000
+                    })
+                }, 2000)
+            }
+        });
     };
 
     return {

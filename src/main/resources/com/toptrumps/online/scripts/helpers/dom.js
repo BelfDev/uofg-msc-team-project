@@ -13,7 +13,6 @@ const DOMHelper = (($) => {
     const cardAttributeValueSelector = ".js-card-char-value";
     const cardAttributesWrapperSelector = ".js-card-chars";
     const endTurnButtonSelector = ".js-end-turn-button";
-    const nextTurnButtonSelector = ".js-modal-next-round-button";
     const countdownSelector = ".js-countdown";
     const cardImageSelector = ".js-card-image";
     const cardTitleSelector = ".js-card-title";
@@ -23,7 +22,6 @@ const DOMHelper = (($) => {
     const gameOverWinnerSelector = ".js-game-over-winner";
     const gameOverWinnerNameSelector = ".js-game-over-winner-name";
     const gameOverRoundsWrapperSelector = ".js-game-over-rounds-wrapper";
-    const gameOverRoundsBox = ".js-game-over-rounds-box";
     const gameOverRoundsName = ".js-game-over-rounds-name";
     const gameOverRoundsNumber = ".js-game-over-rounds-number";
 
@@ -33,6 +31,7 @@ const DOMHelper = (($) => {
         DRAW: ".js-round-draw-modal",
         VICTORY: ".js-round-win-modal",
         GAME_OVER: ".js-end-game-modal",
+        QUIT: ".js-quit-modal"
     };
 
     // CSS classes to represent visual state
@@ -42,7 +41,9 @@ const DOMHelper = (($) => {
     const defeatedPlayerClass = "defeated-player";
     const activePlayerClass = "active-player";
     const winnerPlayerClass = "winner-player";
-    const commonPileActiveClass = "game-status__common-pile--active";
+    const attributeSelectedClass = "human-player--attr-selected"
+    const endTurnButtonActiveClass = "end-turn-button-active";
+    const commonPileActiveClass = "heartbeat";
 
     // Templates
     const playerBoxTemplateSelector = "#template-player-box";
@@ -84,7 +85,6 @@ const DOMHelper = (($) => {
     };
 
     const initializePlugins = () => {
-        InputNumber.init(inputNumberSelector);
         Countdown.init(countdownSelector);
     };
 
@@ -99,7 +99,7 @@ const DOMHelper = (($) => {
         const playerNode = $(playerTpl).clone();
 
         playerNode.data("player-id", player.id);
-        playerNode.find(playerNameSelector).text(player.name);
+        playerNode.find(playerNameSelector).text(player.name.replace("_", " "));
         playerNode.find(playerDeckCountSelector).text(getDeckCountMessage(player.deck.length));
 
         $(opponentsBoxSelector).append(playerNode);
@@ -165,7 +165,7 @@ const DOMHelper = (($) => {
     const setCardTitle = (playerSelector, cardName) => {
         $(playerSelector)
             .find(cardTitleSelector)
-            .html(cardName);
+            .html(cardName.replace("_", " "));
     };
 
     const setCardAttributes = (playerSelector, attributes) => {
@@ -206,7 +206,7 @@ const DOMHelper = (($) => {
         anime(options);
     };
 
-    const enableAttributeSelection = (callback, humanPlayerID) => {
+    const enableAttributeSelection = (attributeCallback, humanPlayerID, endTurnCallback) => {
         let playerSelector = getPlayerSelectorByID(humanPlayerID);
 
         const $attributesWrapper = getAttributesWrapper(playerSelector);
@@ -218,13 +218,17 @@ const DOMHelper = (($) => {
             .off("click")
             .on("click", event => {
                 const $target = $(event.currentTarget);
+                $(humanPlayerSelector).addClass(attributeSelectedClass);
+                $(endTurnButtonSelector).addClass(endTurnButtonActiveClass);
                 $($attributes).removeClass(cardAttributeActiveClass);
                 $target.addClass(cardAttributeActiveClass);
 
                 const attrName = $target.data("attribute");
                 const attrValue = $target.find(".js-card-char-value").text();
 
-                callback(attrName, attrValue);
+                bindEndTurnEvent(endTurnCallback);
+
+                attributeCallback(attrName, attrValue);
             });
     };
 
@@ -252,15 +256,10 @@ const DOMHelper = (($) => {
 
     const bindEndTurnEvent = callback => {
         $(endTurnButtonSelector).on("click", function(e) {
+            $(endTurnButtonSelector).removeClass(endTurnButtonActiveClass);
             callback();
 
             e.preventDefault();
-        });
-    };
-
-    const bindNextRoundEvent = callback => {
-        $(nextTurnButtonSelector).on("click", () => {
-            callback();
         });
     };
 
@@ -282,15 +281,15 @@ const DOMHelper = (($) => {
 
     const updateCommonPileIndicator = count => {
         $(commonPileValueSelector).text(count);
-
-        if (count > 0) {
-            $(commonPileSelector).addClass(commonPileActiveClass);
-        } else {
+        $(commonPileSelector).addClass(commonPileActiveClass);
+        setTimeout(() => {
             $(commonPileSelector).removeClass(commonPileActiveClass);
-        }
+        }, 2000);
     };
 
     const clearPlayerStates = () => {
+        $(humanPlayerSelector).removeClass(attributeSelectedClass);
+        $(endTurnButtonSelector).removeClass(endTurnButtonActiveClass);
         $(playerSelector).removeClass(activePlayerClass);
         $(playerSelector).removeClass(winnerPlayerClass);
     };
@@ -368,7 +367,6 @@ const DOMHelper = (($) => {
         disableAttributeSelection,
         bindEndTurnEvent,
         unBindEndTurnEvent,
-        bindNextRoundEvent,
         setPlayerStateToDefeated,
         updateCommonPileIndicator,
         showMessage,

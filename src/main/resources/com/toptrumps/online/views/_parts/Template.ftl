@@ -4,6 +4,7 @@
 
 <script id="template-player-box" type="text/template">
     <div class="ai-player js-player">
+        <div class="winner-badge"></div>
         <div class="pcard js-card">
             <div class="pcard__front">
                 <div class="pcard__image-box">
