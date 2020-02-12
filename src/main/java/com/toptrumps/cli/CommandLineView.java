@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import static com.toptrumps.cli.PrintOptions.*;
 
@@ -35,11 +36,17 @@ public class CommandLineView {
     }
       
     public void showStats(Statistics stats){
-        typePrint(MODERATE_SPEED, "Total numbers of games played: " + stats.getGamesPlayed());
-        typePrint(MODERATE_SPEED, "Number of Human wins: " + stats.getHumanWins());
-        typePrint(MODERATE_SPEED, "Number of AI wins: " + stats.getAiWins());
-        typePrint(MODERATE_SPEED, "Average number of round draws: " + stats.getAverageDraws());
-        typePrint(MODERATE_SPEED, "Maximum number of rounds: " + stats.getMaxRounds());
+        ArrayList<String> statsMessages = new ArrayList<String>();
+        statsMessages.add("\nThe statistics for your games are:\n");
+        statsMessages.add(String.format("%-33s%3d", "Total number of games played:", stats.getGamesPlayed()));
+        statsMessages.add(String.format("%-33s%3d", "Number of Human wins:", stats.getHumanWins()));
+        statsMessages.add(String.format("%-33s%3d", "Number of AI wins:", stats.getAiWins()));
+        statsMessages.add(String.format("%-33s%3d", "Average number of round draws:", stats.getAverageDraws()));
+        statsMessages.add(String.format("%-33s%3d", "Maximum number of rounds:", stats.getMaxRounds()));
+        for(String message: statsMessages){
+            typePrint(MODERATE_SPEED, message);
+        }
+        System.out.println("\n\n");
     }
 
     public void showRequestNumberOfOpponents(int MIN_OPPONENTS, int MAX_OPPONENTS) {
@@ -262,7 +269,7 @@ public class CommandLineView {
         pausePrinting(MODERATE_PAUSE);
     }
 
-    public void showGameResult(Player winner) {
+    public void showGameResult(Player winner, Map<Player, Integer> roundWinsMap) {
         String message = "\n\n";
         if (winner.isAIPlayer()) {
             message += winner.getName() + " has won the game!";
@@ -271,8 +278,19 @@ public class CommandLineView {
         }
         Logger.getInstance().logToFileIfEnabled(message);
         typePrint(TURTLE_SPEED, message);
+        showGameStatistics(roundWinsMap);
         System.out.println("\n\n\n");
         pausePrinting(LONG_PAUSE);
+    }
+
+    private void showGameStatistics(Map<Player, Integer> roundWinsMap){
+        typePrint(MODERATE_SPEED, "\nThe number of round wins per player were:");
+        for(Player player: roundWinsMap.keySet()){
+            String playerName = player.getName();
+            Integer wins = roundWinsMap.get(player);
+            String message = String.format("%-15s%3d", playerName+":", wins);
+            typePrint(MODERATE_SPEED, message);
+        }
     }
 
     private void pausePrinting(int pauseTime) {

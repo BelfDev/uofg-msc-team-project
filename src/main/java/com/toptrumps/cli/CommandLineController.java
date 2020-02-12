@@ -138,7 +138,7 @@ public class CommandLineController {
         if(outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()){
             view.showAutomaticCompletion();
         }
-        onGameOver(activePlayer);
+        onGameOver(activePlayer, roundWinsMap);
     }
 
     // === START OF LIFE CYCLE METHODS ===
@@ -204,8 +204,8 @@ public class CommandLineController {
         }
     }
 
-    private void onGameOver(Player winner) {
-        view.showGameResult(winner);
+    private void onGameOver(Player winner, Map<Player, Integer> roundWinsMap) {
+        view.showGameResult(winner, roundWinsMap);
         start();
     }
 
