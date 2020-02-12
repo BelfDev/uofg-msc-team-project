@@ -1,7 +1,9 @@
 package com.toptrumps.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.toptrumps.core.player.Player;
+import com.toptrumps.online.api.request.PlayerState;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -66,8 +68,19 @@ public class FullStats {
         return this.draws;
     }
 
-    @JsonProperty
+    @JsonIgnore
     public Map<Player, Integer> getRoundsMap() {
         return this.roundsMap;
+    }
+
+    // TODO: REFACTOR THIS!
+    @JsonProperty("roundWins")
+    public Map<PlayerState, Integer> getPlayerStateRoundsMap() {
+        Map<PlayerState, Integer> playerStateRoundsMap = new HashMap<>();
+        this.roundsMap.forEach((player, roundWins) -> {
+                    playerStateRoundsMap.put(new PlayerState(player), roundWins);
+                }
+        );
+        return playerStateRoundsMap;
     }
 }
