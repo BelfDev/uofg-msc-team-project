@@ -49,15 +49,7 @@ import java.sql.*;
                 retrieveRow = conn.prepareStatement(retrieveRowSQL);
                 rs = retrieveRow.executeQuery();
             }catch(SQLException e){e.printStackTrace();}
-        
-            // finally{
-            //     try{
-            //         if(conn != null){conn.close();}
-            //         if(retrieveRow != null){retrieveRow.close();}
-            //     }catch(SQLException e){
-            //         e.printStackTrace();
-            //     }
-            // }
+            
             return rs;
     }
 }
