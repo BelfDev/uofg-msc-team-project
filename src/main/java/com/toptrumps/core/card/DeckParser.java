@@ -6,15 +6,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 
-
+/**
+ * Utility class to handle deck parsing.
+ */
 class DeckParser {
 
     private final static String ITEM_SEPARATOR = " ";
 
-    private DeckParser() {}
+    // Prevents someone from creating an DeckParser instance
+    private DeckParser() {
+    }
 
     /**
      * Parses the content from a local text resource
@@ -49,6 +52,8 @@ class DeckParser {
         return deck;
     }
 
+    // === CONVENIENCE METHODS ===
+
     private static Card parseCard(String[] headers, String[] cardValues) {
         ArrayList<Attribute> attributes = new ArrayList<>();
         // Traverses the card values based on the quantity of attributes
@@ -57,7 +62,7 @@ class DeckParser {
             // Extracts current attribute name and value
             String attributeName = headers[i];
             int attributeValue = Integer.parseInt(cardValues[i]);
-            // Create new attribute with the parsed values
+            // Creates a new attribute with the parsed values
             Attribute currentAttribute = new Attribute(attributeName, attributeValue);
             attributes.add(currentAttribute);
         }
