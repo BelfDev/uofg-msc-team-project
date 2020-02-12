@@ -95,11 +95,12 @@ public class CommandLineController {
             humanPlayer = getHumanPlayer(players);
             isHumanAlive = humanPlayer != null;
             // Checks if the humanPlayer has not been eliminated
+            if(!isHumanAlive){
+                IS_TEST_MODE = true; //TODO: Rename IS_TEST_MODE to AUTOCOMPLETE or something similar!!!!
+            }
             view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
             if (isHumanAlive) {
                 view.showHumanInformation(humanPlayer);
-            }else{
-                IS_TEST_MODE = true; //TODO: Rename IS_TEST_MODE to AUTOCOMPLETE or something similar!!!!
             }
 
             // == ATTRIBUTE SELECTION ==
