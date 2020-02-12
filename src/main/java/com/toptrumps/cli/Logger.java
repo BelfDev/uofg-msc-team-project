@@ -46,10 +46,6 @@ public class Logger {
         logger.setLevel(FINE);
     }
 
-    /**
-     * Controls whether the logger is enabled.
-     */
-    public void enableLoggingToFile(){this.enable();}
 
     /**
      * The Logger class follows the singleton design pattern:

@@ -18,7 +18,7 @@ public class TopTrumpsCLIApp {
 
         boolean writeGameLogsToFile = false; // Should we write game logs to file?
 
-        if (args[0].equalsIgnoreCase("true")) Logger.getInstance().enableLoggingToFile(); // Enables the logging of files to the command line
+        if (args[0].equalsIgnoreCase("true")) Logger.getInstance().enable(); // Enables the logging of files to the command line
 
         CommandLineController cliController = new CommandLineController();
         cliController.start();
