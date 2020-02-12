@@ -26,8 +26,10 @@ public class CommandLineController {
     private Game gameEngine;
 
     public CommandLineController() {
-        this.gameEngine = new Game(DECK_RESOURCE);
+        // Game view
         this.view = new CommandLineView();
+        // Game core engine model
+        this.gameEngine = new Game(DECK_RESOURCE);
         this.scanner = new Scanner(System.in);
     }
 
@@ -60,18 +62,17 @@ public class CommandLineController {
         }
     }
 
-
-
     private void startNewGame(int numberOfOpponents) {
         // Initializes the game state
         ArrayList<Card> communalPile = new ArrayList<>();
         int roundNumber = 0;
         int numberOfDraws = 0;
+        Player humanPlayer = null;
         ArrayList<Player> players = gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
-        Player humanPlayer = null;
         HashMap<Player, Integer> roundWinsMap = getRoundWinsMap(players);
         RoundOutcome outcome = null;
+        boolean isHumanAlive = true;
 
         // Checks if the game has come to an end;
         // A game ends when there's only one player left
@@ -80,48 +81,61 @@ public class CommandLineController {
             roundNumber++;
             // Retrieves the human player;
             humanPlayer = getHumanPlayer(players);
+            isHumanAlive = humanPlayer != null;
             // Checks if the humanPlayer has not been eliminated
-            if (humanPlayer != null) {
+            if (isHumanAlive) {
                 view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
             }
+
             // == ATTRIBUTE SELECTION ==
             // Handles attribute selection:
             // Human Player is asked for an input;
             // AI Player automatically selects a random max attribute;
             Attribute selectedAttribute = getSelectedAttribute(activePlayer);
+            // Invokes the lifecycle method
+            onAttributeSelected(activePlayer, isHumanAlive);
+
             // == ATTRIBUTE COMPARISON ==
+            // Evaluate who were the winners of the current round
             List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
+            // Retrieve the round cards
             List<Card> winningCards = winners.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
             List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
+            // Remove the topCard from each player
             players.forEach(Player::removeTopCard);
 
             // == ROUND OUTCOME ==
+            // Processes the round outcome
             outcome = gameEngine.processRoundOutcome(winners, players);
+            // Removes defeated players
             players.removeAll(outcome.getRemovedPlayers());
 
             switch (outcome.getResult()) {
                 case VICTORY:
+                    // Sets new active player
                     activePlayer = outcome.getWinner();
+                    // Redistributes cards
                     roundCards.addAll(communalPile);
-                    communalPile = new ArrayList<>();
                     activePlayer.collectCards(roundCards);
+                    // Resets communal pile
+                    communalPile = new ArrayList<>();
+                    // Increments round wins for the new active player
                     MapUtils.increment(roundWinsMap, activePlayer);
                     break;
                 case DRAW:
+                    // Add cards to the communal pile
                     communalPile.addAll(roundCards);
                     numberOfDraws++;
                     break;
                 default:
                     break;
             }
-
-            if (!humanPlayer.isAIPlayer()) {
-                onRoundEnd(outcome, winningCards);
-            }
+            // Invokes the lifecycle method
+            onRoundEnd(outcome, winningCards, isHumanAlive);
         }
 
         // == STATISTICS ==
-
+        // Collects the final game state
         GameStateCollector gameState = GameStateCollector.Builder.newInstance()
                 .setFinalWinner(activePlayer)
                 .setNumberOfRounds(roundNumber)
@@ -129,11 +143,15 @@ public class CommandLineController {
                 .setRoundWinsMap(roundWinsMap)
                 .build();
 
+        // Persists the collected state
         gameEngine.persistGameState(gameState);
 
-        if (outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()) {
+        if (!isHumanAlive) {
+            // Trigger automatic completion notice
             view.showAutomaticCompletion();
         }
+
+        // Invoke the lifecycle method
         onGameOver(activePlayer);
     }
 
@@ -148,8 +166,6 @@ public class CommandLineController {
             selectedAttribute = onRequestSelection(activePlayer.getTopCard());
             activePlayer.setSelectedAttribute(selectedAttribute);
         }
-        // Invokes the lifecycle method
-        onAttributeSelected(activePlayer);
 
         return selectedAttribute;
     }
@@ -195,19 +211,23 @@ public class CommandLineController {
         }
     }
 
-    private void onAttributeSelected(Player activePlayer) {
-        String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
-        String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
-        view.showSelectedAttribute(playerName, selectedAttributeName);
+    private void onAttributeSelected(Player activePlayer, boolean isHumanAlive) {
+        if (isHumanAlive) {
+            String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
+            String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
+            view.showSelectedAttribute(playerName, selectedAttributeName);
+        }
     }
 
-    private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards) {
-        view.showRoundResult(outcome, winningCards);
-        List<Player> removedPlayers = outcome.getRemovedPlayers();
-        if (!removedPlayers.isEmpty()) {
-            view.showRemovedPlayers(removedPlayers);
+    private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards, boolean isHumanAlive) {
+        if (isHumanAlive) {
+            view.showRoundResult(outcome, winningCards);
+            List<Player> removedPlayers = outcome.getRemovedPlayers();
+            if (!removedPlayers.isEmpty()) {
+                view.showRemovedPlayers(removedPlayers);
+            }
+            selectNextRound();
         }
-        selectNextRound();
     }
 
     private void selectNextRound() {
