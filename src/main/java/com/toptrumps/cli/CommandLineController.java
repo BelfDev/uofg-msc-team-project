@@ -60,6 +60,8 @@ public class CommandLineController {
         }
     }
 
+
+
     private void startNewGame(int numberOfOpponents) {
         // Initializes the game state
         ArrayList<Card> communalPile = new ArrayList<>();
@@ -67,6 +69,7 @@ public class CommandLineController {
         int numberOfDraws = 0;
         ArrayList<Player> players = gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
+        Player humanPlayer = null;
         HashMap<Player, Integer> roundWinsMap = getRoundWinsMap(players);
         RoundOutcome outcome = null;
 
@@ -76,17 +79,16 @@ public class CommandLineController {
             // == GAME START UP ==
             roundNumber++;
             // Retrieves the human player;
-            // By convention, the human player is always the first element
-            Player humanPlayer = players.get(0);
-            // Checks if humanPlayer is not an instance of AIPlayer
-            if (!humanPlayer.isAIPlayer()) {
+            humanPlayer = getHumanPlayer(players);
+            // Checks if the humanPlayer has not been eliminated
+            if (humanPlayer != null) {
                 view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
             }
             // == ATTRIBUTE SELECTION ==
             // Handles attribute selection:
             // Human Player is asked for an input;
-            // AI Player selects a random max attribute automatically;
-            Attribute selectedAttribute = getSelectedAttribute(activePlayer, humanPlayer);
+            // AI Player automatically selects a random max attribute;
+            Attribute selectedAttribute = getSelectedAttribute(activePlayer);
             // == ATTRIBUTE COMPARISON ==
             List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
             List<Card> winningCards = winners.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
@@ -135,7 +137,7 @@ public class CommandLineController {
         onGameOver(activePlayer);
     }
 
-    private Attribute getSelectedAttribute(Player activePlayer, Player humanPlayer) {
+    private Attribute getSelectedAttribute(Player activePlayer) {
         Attribute selectedAttribute;
         // Checks if the active player is an AIPlayer instance
         if (activePlayer.isAIPlayer()) {
@@ -146,11 +148,8 @@ public class CommandLineController {
             selectedAttribute = onRequestSelection(activePlayer.getTopCard());
             activePlayer.setSelectedAttribute(selectedAttribute);
         }
-
-
-        if (!humanPlayer.isAIPlayer()) {
-            onAttributeSelected(activePlayer);
-        }
+        // Invokes the lifecycle method
+        onAttributeSelected(activePlayer);
 
         return selectedAttribute;
     }
@@ -218,12 +217,18 @@ public class CommandLineController {
         }
     }
 
-    private HashMap<Player, Integer>  getRoundWinsMap(List<Player> players) {
+    private HashMap<Player, Integer> getRoundWinsMap(List<Player> players) {
         return new HashMap<Player, Integer>() {{
             players.forEach(player -> {
                 put(player, 0);
             });
         }};
+    }
+
+    private Player getHumanPlayer(ArrayList<Player> players) {
+        // By convention, the human player is always the first element;
+        // The ternary operator checks if the human player has been eliminated
+        return players.get(0).isAIPlayer() ? null : players.get(0);
     }
 
     private void onGameOver(Player winner) {

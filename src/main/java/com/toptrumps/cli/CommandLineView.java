@@ -183,6 +183,7 @@ public class CommandLineView {
     }
 
     public void showSelectedAttribute(String playerName, String selectedAttribute) {
+        // TODO: Double-check if you need to verify something about the human player
         String message = String.format("%s selected the attribute %s", playerName, selectedAttribute);
         typePrint(SLOW_SPEED, message);
     }
