@@ -87,8 +87,8 @@ public class GameEngine {
     }
 
     /**
-     * Compares each player's selected attribute and returns players who possessed
-     * a top card with the highest selected attribute value.
+     * Compares the selected attribute value of each player and returns
+     * the players who possess the highest value.
      *
      * @param selectedAttribute the attribute selected as the reference for comparison
      * @param players           list of players which are participating in the current round
@@ -120,10 +120,10 @@ public class GameEngine {
     }
 
     /**
-     * Returns the game outcome based on the winners and players of a round.
+     * Returns the round outcome based on the winners and players of a round.
      * The RoundOutcome result can be VICTORY, DRAW, or GAME_OVER.
      *
-     * @param winners the list of players which won the round
+     * @param winners the list of players who won the round
      * @param players the list of players present on the game
      * @return RoundOutcome an object that encapsulates the round result, winner,
      * number of draws, and list of players to be removed from the game
@@ -143,10 +143,10 @@ public class GameEngine {
             outcome = new RoundOutcome(GAME_OVER);
         } else if (winners.size() == 1) {
             // Checks if there's only one winner;
-            // Sets the winner player as "active"
+            // Sets the winning player as "active"
             Player winner = winners.get(0);
             winner.setActive(true);
-            // Prevents the winner player from being included to the removedPlayers list
+            // Prevents the winning player from being included to the removedPlayers list
             removedPlayers.remove(winner);
             // Declares Victory
             outcome = new RoundOutcome(VICTORY, winner, removedPlayers);
