@@ -273,13 +273,6 @@ public class CommandLineView {
         typePrint(SLOW_SPEED, removedPlayersString);
     }
 
-    public void showAutomaticCompletion() {
-        String message = "\n\nThe remaining players are completing the game...";
-        pausePrinting(SHORT_PAUSE);
-        typePrint(SLOW_SPEED, message);
-        pausePrinting(MODERATE_PAUSE);
-    }
-
     public void showGameResult(Player winner, Map<Player, Integer> roundWinsMap) {
         String message = "\n\n";
         if (winner.isAIPlayer()) {
