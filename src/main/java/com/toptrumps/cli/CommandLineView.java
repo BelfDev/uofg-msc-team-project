@@ -5,6 +5,7 @@ import com.toptrumps.core.card.Card;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.utils.ResourceLoader;
+import com.toptrumps.db.Statistics;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public class CommandLineView {
 
     public void showWelcomeMessage() {
         printWelcomeBanner();
-        typePrint(20, "\nTo start a new game, press f \nTo see game statistics, press s");
+        typePrint(10, "\nTo start a new game, press f \nTo see game statistics, press s");
         Logger.getInstance().logToFileIfEnabled("Game started");
     }
 
@@ -36,12 +37,20 @@ public class CommandLineView {
         InputStream inputStream = ResourceLoader.getResource(WELCOME_BANNER_RESOURCE);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String banner = br.lines().collect(Collectors.joining("\n"));
-        typePrint(2, banner);
+        typePrint(1, banner);
+    }
+
+    public void showStats(Statistics stats){
+        typePrint(10, "Total numbers of games played: " + stats.getGamesPlayed());
+        typePrint(10, "Number of Human wins: " + stats.getHumanWins());
+        typePrint(10, "Number of AI wins: " + stats.getAiWins());
+        typePrint(10, "Average number of round draws: " + stats.getAverageDraws());
+        typePrint(10, "Maximum number of rounds: " + stats.getMaxRounds());
     }
 
     public void showRequestNumberOfOpponents(int MIN_OPPONENTS, int MAX_OPPONENTS) {
-        typePrint(20, "How many players do you want to play against?");
-        typePrint(20, "Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
+        typePrint(10, "How many players do you want to play against?");
+        typePrint(10, "Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
     }
 
     public void showInvalidNumberOfPlayers(int MIN_OPPONENTS, int MAX_OPPONENTS){
@@ -58,14 +67,14 @@ public class CommandLineView {
         showCommunalPileSize(communalPileSize);
         showNumberOfHumanCards(humanPlayer);
         pausePrinting(500);
-        typePrint(20, "\nYour card is:");
+        typePrint(10, "\nYour card is:");
         showCard(humanPlayer.getTopCard());
     }
 
     private void showRoundNumber(int roundNumber){
-        typePrint(10, "\n\n--------------------");
-        typePrint(10, "    Round " + roundNumber);
-        typePrint(10, "--------------------");
+        typePrint(5, "\n\n--------------------");
+        typePrint(5, "    Round " + roundNumber);
+        typePrint(5, "--------------------");
     }
 
     private void showActivePlayer(Player activePlayer, Player humanPlayer){
@@ -75,12 +84,12 @@ public class CommandLineView {
         }else {
             message += activePlayer.getName() + " is the active player";
         }
-        typePrint(20, message);
+        typePrint(10, message);
     }
 
     private void showCommunalPileSize(int communalPileSize){
         String message = String.format("There are %d cards in the communal pile", communalPileSize);
-        typePrint(20, message);
+        typePrint(10, message);
     }
 
     private void showNumberOfHumanCards(Player humanPlayer){
@@ -88,7 +97,7 @@ public class CommandLineView {
             int numberOfHumanCards = humanPlayer.getDeckCount();
             String cardOrCards = numberOfHumanCards==1 ? "card" : "cards";
             String message = String.format("You have %d %s in your hand", numberOfHumanCards, cardOrCards);
-            typePrint(20, message);
+            typePrint(10, message);
         }
     }
 
@@ -97,19 +106,19 @@ public class CommandLineView {
         String name = centreCardName(card.getName());
         pausePrinting(1000);
 
-        typePrint(5, "\t-----------------------");
-        typePrint(5, String.format("\t|%-21s|", name));
-        typePrint(5, String.format("\t|%21s|", ""));
-        typePrint(5, String.format("\t|%21s|", ""));
+        typePrint(2, "\t-----------------------");
+        typePrint(2, String.format("\t|%-21s|", name));
+        typePrint(2, String.format("\t|%21s|", ""));
+        typePrint(2, String.format("\t|%21s|", ""));
 
         for (int i = 0; i < attributes.size(); i++) {
             String attributeName = attributes.get(i).getName();
             int attributeValue = attributes.get(i).getValue();
             String message = String.format("\t|%d: %-16s%2d|", i + 1, attributeName, attributeValue);
-            typePrint(5, message);
+            typePrint(2, message);
         }
 
-        typePrint(5, "\t-----------------------");
+        typePrint(2, "\t-----------------------");
     }
 
     private void showCards(List<Card> cards){
@@ -156,8 +165,8 @@ public class CommandLineView {
     }
 
     public void requestSelection(int numberOfAttributes){
-        typePrint(20, "Which attribute would you like to choose?");
-        typePrint(20, "Please select 1 - " + numberOfAttributes);
+        typePrint(10, "Which attribute would you like to choose?");
+        typePrint(10, "Please select 1 - " + numberOfAttributes);
     }
 
     public void showInvalidSelection(int numberOfAttributes){
@@ -170,7 +179,7 @@ public class CommandLineView {
 
     public void showSelectedAttribute(String playerName, String selectedAttribute){
         String message = String.format("%s selected the attribute %s", playerName, selectedAttribute);
-        typePrint(20, message);
+        typePrint(10, message);
     }
 
     public void showRoundResult(RoundOutcome outcome, List<Card> winningCards) {
@@ -179,7 +188,7 @@ public class CommandLineView {
         String outcomeMessage = "\n";
         switch (result) {
             case VICTORY:
-                typePrint(20, "\nThe winning card is...");
+                typePrint(10, "\nThe winning card is...");
                 showCard(winningCards.get(0));
                 if(outcome.getWinner().isAIPlayer()){
                     outcomeMessage += outcome.getWinner().getName() + " is the winner of the round!";
@@ -189,7 +198,7 @@ public class CommandLineView {
                 
                 break;
             case DRAW:
-                typePrint(20, "\nThe winning cards are...");
+                typePrint(10, "\nThe winning cards are...");
                 showCards(winningCards);
                 outcomeMessage += "The round ends in a draw!\nThe score was tied between: ";
                 for (Player player : outcome.getDraws()) {
@@ -209,12 +218,12 @@ public class CommandLineView {
                 }
                 break;
         }
-        typePrint(20, outcomeMessage);
+        typePrint(10, outcomeMessage);
     }
 
     public void showNextRoundMessage(){
         String message = "\nPress ENTER to continue";
-        typePrint(20, message);
+        typePrint(10, message);
     }
 
     public void showRemovedPlayers(List<Player> removedPlayers) {
@@ -232,7 +241,7 @@ public class CommandLineView {
                 String name;
                 if(!player.isAIPlayer()){
                     name = "You";
-                    typePrint(20, "\nOh no - you haven't got any cards left!");
+                    typePrint(10, "\nOh no - you haven't got any cards left!");
                     removedPlayersString = "";//removes new line character
                 }else{
                     name = player.getName();
@@ -246,13 +255,13 @@ public class CommandLineView {
                 }
             }
         }
-        typePrint(20, removedPlayersString);
+        typePrint(10, removedPlayersString);
     }
 
     public void showAutomaticCompletion(){
         String message = "\n\nThe remaining players are completing the game...";
         pausePrinting(500);
-        typePrint(20, message);
+        typePrint(10, message);
         pausePrinting(1000);
     }
 
@@ -264,7 +273,7 @@ public class CommandLineView {
             message += "Congratulations - you won the game!";
         }
         Logger.getInstance().logToFileIfEnabled(message);
-        typePrint(40, message);
+        typePrint(30, message);
         System.out.println("\n\n\n");
         pausePrinting(1500);
     }
