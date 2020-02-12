@@ -38,6 +38,10 @@ public class CommandLineController {
 
         String input = scanner.nextLine();
         // TODO: Create an Enum to encapsulate the flags
+        while(!(input.equalsIgnoreCase("f") || input.equalsIgnoreCase("s") || input.equalsIgnoreCase("q"))){
+            view.showInvalidInput();
+            input = scanner.nextLine();
+        }
         if (input.equalsIgnoreCase("f")) {
             // Start the game
             int numberOfOpponents = requestNumberOfOpponents();
@@ -46,10 +50,12 @@ public class CommandLineController {
             // TODO: Start statistics mode
             Statistics stats = new Statistics();
             view.showStats(stats);
+            view.showNextRoundMessage();
+            scanner.nextLine();
             start();
-        }
-
-        scanner.nextLine();
+        } else if (input.equalsIgnoreCase("q")){
+            view.showGoodbyeMessage();
+        } 
     }
 
     private void startNewGame(int numberOfOpponents) {
