@@ -95,8 +95,11 @@ public class CommandLineController {
             humanPlayer = getHumanPlayer(players);
             isHumanAlive = humanPlayer != null;
             // Checks if the humanPlayer has not been eliminated
+            view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
             if (isHumanAlive) {
-                view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
+                view.showHumanInformation(humanPlayer);
+            }else{
+                IS_TEST_MODE = true; //TODO: Rename IS_TEST_MODE to AUTOCOMPLETE or something similar!!!!
             }
 
             // == ATTRIBUTE SELECTION ==
@@ -105,7 +108,7 @@ public class CommandLineController {
             // AI Player automatically selects a random max attribute;
             Attribute selectedAttribute = getSelectedAttribute(activePlayer);
             // Invokes the lifecycle method
-            onAttributeSelected(activePlayer, isHumanAlive);
+            onAttributeSelected(activePlayer);
 
             // == ATTRIBUTE COMPARISON ==
             // Evaluate who were the winners of the current round
@@ -158,12 +161,8 @@ public class CommandLineController {
         // Persists the collected state
         gameEngine.persistGameState(gameState);
 
-        if (!isHumanAlive) {
-            // Trigger automatic completion notice
-            view.showAutomaticCompletion();
-        }
-
-        // Invoke the lifecycle method
+        // Invoke the lifecycle method with correct printing speed
+        IS_TEST_MODE = false;
         onGameOver(activePlayer, roundWinsMap);
     }
 
@@ -202,24 +201,21 @@ public class CommandLineController {
         }
     }
 
-    private void onAttributeSelected(Player activePlayer, boolean isHumanAlive) {
-        if (isHumanAlive) {
-            String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
-            String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
+    private void onAttributeSelected(Player activePlayer) {
+        String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
+        String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
 
-            view.showSelectedAttribute(playerName, selectedAttributeName);
-        }
+        view.showSelectedAttribute(playerName, selectedAttributeName);
     }
 
     private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards, boolean isHumanAlive) {
+        view.showRoundResult(outcome, winningCards);
+        List<Player> removedPlayers = outcome.getRemovedPlayers();
+        // Shows removed players if there's any
+        if (!removedPlayers.isEmpty()) {
+            view.showRemovedPlayers(removedPlayers);
+        }
         if (isHumanAlive) {
-            view.showRoundResult(outcome, winningCards);
-            List<Player> removedPlayers = outcome.getRemovedPlayers();
-            // Shows removed players if there's any
-            if (!removedPlayers.isEmpty()) {
-                view.showRemovedPlayers(removedPlayers);
-            }
-
             selectNextRound();
         }
     }

@@ -5,7 +5,7 @@ public class PrintOptions {
     private PrintOptions() {
     }
 
-    public static boolean IS_TEST_MODE = true;
+    public static boolean IS_TEST_MODE = false;
 
     public static int LIGHT_SPEED = 2;
     public static int FAST_SPEED = 5;

@@ -74,6 +74,9 @@ public class CommandLineView {
         showRoundNumber(roundNumber);
         showActivePlayer(activePlayer, humanPlayer);
         showCommunalPileSize(communalPileSize);
+    }
+
+    public void showHumanInformation(Player humanPlayer){
         showNumberOfHumanCards(humanPlayer);
         pausePrinting(SHORT_PAUSE);
         typePrint(SLOW_SPEED, "\nYour card is:");
