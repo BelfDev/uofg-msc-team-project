@@ -14,10 +14,10 @@ public class FullStats {
     public FullStats(ResultSet rs, PlayersList players) throws SQLException {
 
         this.players = players;
-        this.gameID = rs.getInt(1);
-        this.winnerID = rs.getInt(2);
-        this.roundsPlayed = rs.getInt(3);
-        this.draws = rs.getInt(4);
+        this.gameID = rs.getInt("game_id");
+        this.winnerID = rs.getInt("winner_id");
+        this.roundsPlayed = rs.getInt("rounds_played");
+        this.draws = rs.getInt("draws");
         this.winner = players.getPlayer(this.winnerID - 1);
         roundsMap = new HashMap<Player, Integer>();
     }
@@ -35,6 +35,7 @@ public class FullStats {
         System.out.println("Winner ID: " + this.winnerID);
         System.out.println("Rounds Played: " + this.roundsPlayed);
         System.out.println("Draws: " + this.draws);
+
         for (Map.Entry<Player, Integer> entry : roundsMap.entrySet()) {
             System.out.println("Player " + entry.getKey().getName() + " won " + entry.getValue());
         }
@@ -42,7 +43,7 @@ public class FullStats {
 
     public void buildRoundStats(ResultSet rs) throws SQLException {
 
-        this.roundsMap.put(players.getPlayer(rs.getInt(1)), rs.getInt(3));
+        this.roundsMap.put(players.getPlayer(rs.getInt("player_id")), rs.getInt("rounds_won"));
     }
 
     @JsonProperty

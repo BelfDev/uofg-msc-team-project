@@ -14,17 +14,16 @@ public class Statistics {
     private int aiWins;
     private int humanWins;
     private int drawsAverage;
-    private int maxRounds; 
+    private int maxRounds;
     private GameDAOImpl concreteGameDAO;
     private PerformanceDAOImpl concretePerformanceDAO;
-  
+
 
     public Statistics(){
         try{
             buildStatistics(retrieveHighStats());
             concreteGameDAO = new GameDAOImpl();
             concretePerformanceDAO = new PerformanceDAOImpl();
-            
         }catch(SQLException e){e.printStackTrace();}
     }
 
@@ -72,23 +71,23 @@ public class Statistics {
         ResultSet roundStats = concretePerformanceDAO.retrieve();
         int counter = 0;
 
-        try{ 
+        try{
             while(gameStats.next()){
                 allStats.add(new FullStats(gameStats,players));
             }
 
             while(roundStats.next()){
-                if(roundStats.getInt(2) == allStats.get(counter).getGameID()){
+                if(roundStats.getInt("game_id") == allStats.get(counter).getGameID()){
                     allStats.get(counter).buildRoundStats(roundStats);
                 }else{
                     counter++;
-                    if(roundStats.getInt(2) == allStats.get(counter).getGameID()){
+                    if(roundStats.getInt("game_id") == allStats.get(counter).getGameID()){
                     allStats.get(counter).buildRoundStats(roundStats);
                     }
                 }
             }
         }catch(SQLException e){e.printStackTrace();}
-        
+
         return allStats;
     }
 
