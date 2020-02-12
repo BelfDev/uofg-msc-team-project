@@ -120,10 +120,10 @@ public class GameEngine {
     }
 
     /**
-     * Returns the game outcome based on the winners and players of a round.
+     * Returns the round outcome based on the winners and players of a round.
      * The RoundOutcome result can be VICTORY, DRAW, or GAME_OVER.
      *
-     * @param winners the list of players which won the round
+     * @param winners the list of players who won the round
      * @param players the list of players present on the game
      * @return RoundOutcome an object that encapsulates the round result, winner,
      * number of draws, and list of players to be removed from the game
