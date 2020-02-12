@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.toCollection;
 
 /**
  * This class is responsible for handling fundamental card collection operations.
- * It is parses a text file into a list of cards (deck), and provides methods for
+ * It parses a text file into a list of cards (deck), and provides methods for
  * shuffling and splitting the deck into smaller chunks.
  */
 public class Dealer {
