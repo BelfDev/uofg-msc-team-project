@@ -19,7 +19,7 @@ import java.sql.*;
         public boolean create(){
             Connection conn = ConnectionFactory.getConnection();
             PreparedStatement createRow = null;
-            String createRowSQL = "INSERT INTO _game_data(winner_id,rounds_played,draws)" +
+            String createRowSQL = "INSERT INTO individual_game_data(winner_id,rounds_played,draws)" +
             "VALUES (?,?,?);";
     
             try {

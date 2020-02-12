@@ -2,34 +2,28 @@ package com.toptrumps.cli;
 
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
-import com.toptrumps.core.player.Player;
 import com.toptrumps.core.engine.RoundOutcome;
+import com.toptrumps.core.player.Player;
 import com.toptrumps.core.utils.ResourceLoader;
 import com.toptrumps.db.Statistics;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.InputMismatchException;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.lang.Thread;
-import java.lang.InterruptedException;
 
-
-import static java.util.stream.Collectors.toCollection;
+import static com.toptrumps.cli.PrintOptions.*;
 
 public class CommandLineView {
 
     private static final String WELCOME_BANNER_RESOURCE = "assets/banners/welcome.txt";
 
 
-
     public void showWelcomeMessage() {
         printWelcomeBanner();
-        typePrint(10, "\nTo start a new game, press f \nTo see game statistics, press s");
+        typePrint(SLOW_SPEED, "\nTo start a new game, press f \nTo see game statistics, press s");
         Logger.getInstance().logToFileIfEnabled("Game started");
     }
 
@@ -37,99 +31,100 @@ public class CommandLineView {
         InputStream inputStream = ResourceLoader.getResource(WELCOME_BANNER_RESOURCE);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String banner = br.lines().collect(Collectors.joining("\n"));
-        typePrint(1, banner);
+        typePrint(LIGHT_SPEED, banner);
     }
-
+      
     public void showStats(Statistics stats){
-        typePrint(10, "Total numbers of games played: " + stats.getGamesPlayed());
-        typePrint(10, "Number of Human wins: " + stats.getHumanWins());
-        typePrint(10, "Number of AI wins: " + stats.getAiWins());
-        typePrint(10, "Average number of round draws: " + stats.getAverageDraws());
-        typePrint(10, "Maximum number of rounds: " + stats.getMaxRounds());
+        typePrint(MODERATE_SPEED, "Total numbers of games played: " + stats.getGamesPlayed());
+        typePrint(MODERATE_SPEED, "Number of Human wins: " + stats.getHumanWins());
+        typePrint(MODERATE_SPEED, "Number of AI wins: " + stats.getAiWins());
+        typePrint(MODERATE_SPEED, "Average number of round draws: " + stats.getAverageDraws());
+        typePrint(MODERATE_SPEED, "Maximum number of rounds: " + stats.getMaxRounds());
     }
 
     public void showRequestNumberOfOpponents(int MIN_OPPONENTS, int MAX_OPPONENTS) {
-        typePrint(10, "How many players do you want to play against?");
-        typePrint(10, "Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
+        typePrint(SLOW_SPEED, "How many players do you want to play against?");
+        typePrint(SLOW_SPEED, "Please select " + MIN_OPPONENTS + " - " + MAX_OPPONENTS);
     }
 
-    public void showInvalidNumberOfPlayers(int MIN_OPPONENTS, int MAX_OPPONENTS){
-        typePrint(10, "Invalid number of players selected. Please select " + MIN_OPPONENTS + "-" + MAX_OPPONENTS + ".");
+    public void showInvalidNumberOfPlayers(int MIN_OPPONENTS, int MAX_OPPONENTS) {
+        typePrint(MODERATE_SPEED, "Invalid number of players selected. Please select " + MIN_OPPONENTS + "-" + MAX_OPPONENTS + ".");
     }
 
-    public void showNotANumber(){
-        typePrint(10, "You didn't enter a number!");
+    public void showNotANumber() {
+        typePrint(MODERATE_SPEED, "You didn't enter a number!");
     }
 
-    public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber, int communalPileSize){
+    public void showRoundStart(Player activePlayer, Player humanPlayer, int roundNumber, int communalPileSize) {
         showRoundNumber(roundNumber);
         showActivePlayer(activePlayer, humanPlayer);
         showCommunalPileSize(communalPileSize);
         showNumberOfHumanCards(humanPlayer);
-        pausePrinting(500);
-        typePrint(10, "\nYour card is:");
+        pausePrinting(SHORT_PAUSE);
+        typePrint(SLOW_SPEED, "\nYour card is:");
         showCard(humanPlayer.getTopCard());
     }
 
-    private void showRoundNumber(int roundNumber){
-        typePrint(5, "\n\n--------------------");
-        typePrint(5, "    Round " + roundNumber);
-        typePrint(5, "--------------------");
+    private void showRoundNumber(int roundNumber) {
+        typePrint(MODERATE_SPEED, "\n\n--------------------");
+        typePrint(MODERATE_SPEED, "    Round " + roundNumber);
+        typePrint(MODERATE_SPEED, "--------------------");
     }
 
-    private void showActivePlayer(Player activePlayer, Player humanPlayer){
+    private void showActivePlayer(Player activePlayer, Player humanPlayer) {
         String message = "";
-        if(activePlayer == humanPlayer){
+        if (activePlayer == humanPlayer) {
             message += "You are the active player";
-        }else {
+        } else {
             message += activePlayer.getName() + " is the active player";
         }
-        typePrint(10, message);
+        typePrint(SLOW_SPEED, message);
     }
 
-    private void showCommunalPileSize(int communalPileSize){
+    private void showCommunalPileSize(int communalPileSize) {
         String message = String.format("There are %d cards in the communal pile", communalPileSize);
-        typePrint(10, message);
+        typePrint(SLOW_SPEED, message);
     }
 
-    private void showNumberOfHumanCards(Player humanPlayer){
-        if(!humanPlayer.isAIPlayer()){
+    private void showNumberOfHumanCards(Player humanPlayer) {
+        if (!humanPlayer.isAIPlayer()) {
             int numberOfHumanCards = humanPlayer.getDeckCount();
-            String cardOrCards = numberOfHumanCards==1 ? "card" : "cards";
+            String cardOrCards = numberOfHumanCards == 1 ? "card" : "cards";
             String message = String.format("You have %d %s in your hand", numberOfHumanCards, cardOrCards);
-            typePrint(10, message);
+            typePrint(SLOW_SPEED, message);
         }
     }
 
-    private void showCard(Card card){
+    private void showCard(Card card) {
         List<Attribute> attributes = card.getAttributes();
         String name = centreCardName(card.getName());
-        pausePrinting(1000);
-
-        typePrint(2, "\t-----------------------");
-        typePrint(2, String.format("\t|%-21s|", name));
-        typePrint(2, String.format("\t|%21s|", ""));
-        typePrint(2, String.format("\t|%21s|", ""));
+        pausePrinting(MODERATE_PAUSE);
+        typePrint(FAST_SPEED, "\t-----------------------");
+        typePrint(FAST_SPEED, String.format("\t|%-21s|", name));
+        typePrint(FAST_SPEED, String.format("\t|%21s|", ""));
+        typePrint(FAST_SPEED, String.format("\t|%21s|", ""));
 
         for (int i = 0; i < attributes.size(); i++) {
             String attributeName = attributes.get(i).getName();
             int attributeValue = attributes.get(i).getValue();
             String message = String.format("\t|%d: %-16s%2d|", i + 1, attributeName, attributeValue);
-            typePrint(2, message);
+            typePrint(FAST_SPEED, message);
         }
 
-        typePrint(2, "\t-----------------------");
+        typePrint(FAST_SPEED, "\t-----------------------");
     }
 
-    private void showCards(List<Card> cards){
+    private void showCards(List<Card> cards) {
         List<Attribute> attributes = cards.get(0).getAttributes();
-        pausePrinting(1000);
+        pausePrinting(MODERATE_PAUSE);
 
         int linesRequired = 5 + attributes.size();
         ArrayList<String> printLines = new ArrayList<String>();
-        for(int i=0; i<linesRequired; i++){printLines.add("");}
+        for (int i = 0; i < linesRequired; i++) {
+            printLines.add("");
+        }
 
-        for(Card card: cards){
+        for (Card card : cards) {
             attributes = card.getAttributes();
             String name = centreCardName(card.getName());
             printLines.set(0, printLines.get(0) + "\t-----------------------");
@@ -139,73 +134,75 @@ public class CommandLineView {
             for (int i = 0; i < attributes.size(); i++) {
                 String attributeName = attributes.get(i).getName();
                 int attributeValue = attributes.get(i).getValue();
-                printLines.set(i+4, printLines.get(i+4) + String.format("\t|%d: %-16s%2d|", i + 1, attributeName, attributeValue));
+                printLines.set(i + 4, printLines.get(i + 4) + String.format("\t|%d: %-16s%2d|", i + 1, attributeName, attributeValue));
             }
-            printLines.set(printLines.size()-1, printLines.get(printLines.size()-1) + "\t-----------------------");
+            printLines.set(printLines.size() - 1, printLines.get(printLines.size() - 1) + "\t-----------------------");
         }
 
-        for(String line: printLines){typePrint(2, line);}
+        for (String line : printLines) {
+            typePrint(LIGHT_SPEED, line);
+        }
     }
 
-    private String centreCardName(String name){
+    private String centreCardName(String name) {
         int totalLength = 21;
-        int blankSpaceAvailable = totalLength-name.length();
+        int blankSpaceAvailable = totalLength - name.length();
         int blankSpaceRequired;
 
-        if(blankSpaceAvailable%2 != 0){
-            blankSpaceRequired = blankSpaceAvailable/2;
-        }else{
-            blankSpaceRequired = (blankSpaceAvailable/2)-1;
+        if (blankSpaceAvailable % 2 != 0) {
+            blankSpaceRequired = blankSpaceAvailable / 2;
+        } else {
+            blankSpaceRequired = (blankSpaceAvailable / 2) - 1;
         }
-        
-        for(int i=0; i<=blankSpaceRequired; i++){
+
+        for (int i = 0; i <= blankSpaceRequired; i++) {
             name = " " + name;
         }
         return name;
     }
 
-    public void requestSelection(int numberOfAttributes){
-        typePrint(10, "Which attribute would you like to choose?");
-        typePrint(10, "Please select 1 - " + numberOfAttributes);
+    public void requestSelection(int numberOfAttributes) {
+        typePrint(SLOW_SPEED, "Which attribute would you like to choose?");
+        typePrint(SLOW_SPEED, "Please select 1 - " + numberOfAttributes);
     }
 
-    public void showInvalidSelection(int numberOfAttributes){
-        typePrint(10, "Invalid attribute selected. Please select 1 -" + numberOfAttributes + ".");
+    public void showInvalidSelection(int numberOfAttributes) {
+        typePrint(MODERATE_SPEED, "Invalid attribute selected. Please select 1 -" + numberOfAttributes + ".");
     }
 
-    public void showNoNumberSelected(){
-        typePrint(10, "You didn't enter a number!");
+    public void showNoNumberSelected() {
+        typePrint(MODERATE_SPEED, "You didn't enter a number!");
     }
 
-    public void showSelectedAttribute(String playerName, String selectedAttribute){
+    public void showSelectedAttribute(String playerName, String selectedAttribute) {
         String message = String.format("%s selected the attribute %s", playerName, selectedAttribute);
-        typePrint(10, message);
+        typePrint(SLOW_SPEED, message);
     }
 
     public void showRoundResult(RoundOutcome outcome, List<Card> winningCards) {
-        pausePrinting(1000);
+        pausePrinting(MODERATE_PAUSE);
         RoundOutcome.Result result = outcome.getResult();
         String outcomeMessage = "\n";
         switch (result) {
             case VICTORY:
-                typePrint(10, "\nThe winning card is...");
+                typePrint(SLOW_SPEED, "\nThe winning card is...");
                 showCard(winningCards.get(0));
-                if(outcome.getWinner().isAIPlayer()){
+                if (outcome.getWinner().isAIPlayer()) {
                     outcomeMessage += outcome.getWinner().getName() + " is the winner of the round!";
-                }else{
+                } else {
                     outcomeMessage += "You win the round!";
                 }
-                
+
                 break;
             case DRAW:
-                typePrint(10, "\nThe winning cards are...");
+                typePrint(SLOW_SPEED, "\nThe winning cards are...");
                 showCards(winningCards);
                 outcomeMessage += "The round ends in a draw!\nThe score was tied between: ";
                 for (Player player : outcome.getDraws()) {
                     String name;
-                    if(player.isAIPlayer()){
+                    if (player.isAIPlayer()) {
                         name = player.getName();
-                    }else{
+                    } else {
                         name = "You";
                     }
                     if (player == outcome.getDraws().get(outcome.getDraws().size() - 1)) {
@@ -218,20 +215,20 @@ public class CommandLineView {
                 }
                 break;
         }
-        typePrint(10, outcomeMessage);
+        typePrint(SLOW_SPEED, outcomeMessage);
     }
 
-    public void showNextRoundMessage(){
+    public void showNextRoundMessage() {
         String message = "\nPress ENTER to continue";
-        typePrint(10, message);
+        typePrint(SLOW_SPEED, message);
     }
 
     public void showRemovedPlayers(List<Player> removedPlayers) {
         String removedPlayersString = "\n";
         if (removedPlayers.size() == 1) {
-            if(removedPlayers.get(0).isAIPlayer()){
+            if (removedPlayers.get(0).isAIPlayer()) {
                 removedPlayersString += removedPlayers.get(0).getName() + " has been removed from the game";
-            }else{
+            } else {
                 removedPlayersString += "Oh no - you haven't got any cards left! You have been removed from the game";
             }
         } else {
@@ -239,11 +236,11 @@ public class CommandLineView {
             Player secondLastPlayerInList = removedPlayers.get(removedPlayers.size() - 2);
             for (Player player : removedPlayers) {
                 String name;
-                if(!player.isAIPlayer()){
+                if (!player.isAIPlayer()) {
                     name = "You";
-                    typePrint(10, "\nOh no - you haven't got any cards left!");
+                    typePrint(SLOW_SPEED, "\nOh no - you haven't got any cards left!");
                     removedPlayersString = "";//removes new line character
-                }else{
+                } else {
                     name = player.getName();
                 }
                 if (player == lastPlayerInList) {
@@ -255,43 +252,47 @@ public class CommandLineView {
                 }
             }
         }
-        typePrint(10, removedPlayersString);
+        typePrint(SLOW_SPEED, removedPlayersString);
     }
 
-    public void showAutomaticCompletion(){
+    public void showAutomaticCompletion() {
         String message = "\n\nThe remaining players are completing the game...";
-        pausePrinting(500);
-        typePrint(10, message);
-        pausePrinting(1000);
+        pausePrinting(SHORT_PAUSE);
+        typePrint(SLOW_SPEED, message);
+        pausePrinting(MODERATE_PAUSE);
     }
 
-    public void showGameResult(Player winner){
+    public void showGameResult(Player winner) {
         String message = "\n\n";
-        if(winner.isAIPlayer()){
+        if (winner.isAIPlayer()) {
             message += winner.getName() + " has won the game!";
-        }else {
+        } else {
             message += "Congratulations - you won the game!";
         }
         Logger.getInstance().logToFileIfEnabled(message);
-        typePrint(30, message);
+        typePrint(TURTLE_SPEED, message);
         System.out.println("\n\n\n");
-        pausePrinting(1500);
+        pausePrinting(LONG_PAUSE);
     }
 
-    private void pausePrinting(int pauseTime){
-        try {
-            Thread.sleep(pauseTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    private void pausePrinting(int pauseTime) {
+        if (!IS_TEST_MODE) {
+            try {
+                Thread.sleep(pauseTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void typePrint(int characterPause, String printLine){
-        for(String s: printLine.split("")){
+    private void typePrint(int characterPause, String printLine) {
+
+        for (String s : printLine.split("")) {
             System.out.print(s);
-            pausePrinting(characterPause);
+            if (!IS_TEST_MODE) pausePrinting(characterPause);
         }
         System.out.print("\n");
+
     }
 
 }
