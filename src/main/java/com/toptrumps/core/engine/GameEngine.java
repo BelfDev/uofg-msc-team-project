@@ -39,7 +39,7 @@ public class GameEngine {
     }
 
     /**
-     * Populates the given players with shuffled decks
+     * Populates the given players with shuffled decks.
      *
      * @param players player list to whom the card decks must be assigned
      */
@@ -55,7 +55,7 @@ public class GameEngine {
 
     /**
      * Randomly assigns a player from the given array as the
-     * active player of the game
+     * active player of the game.
      *
      * @param players player list used to pick the active player
      * @return the player which has been randomly marked as active
@@ -93,7 +93,7 @@ public class GameEngine {
      * @param selectedAttribute the attribute selected as the reference for comparison
      * @param players           list of players which are participating in the current round
      * @return a player list containing the players who possessed
-     * a top card with the highest selected attribute value.
+     * a top card with the highest selected attribute value
      */
     public List<Player> getWinners(Attribute selectedAttribute, List<Player> players) {
         // Retrieves the selected attribute name
@@ -126,7 +126,7 @@ public class GameEngine {
      * @param winners the list of players which won the round
      * @param players the list of players present on the game
      * @return RoundOutcome an object that encapsulates the round result, winner,
-     * number of draws, and list of players to be removed from the game.
+     * number of draws, and list of players to be removed from the game
      */
     public RoundOutcome processRoundOutcome(List<Player> winners, List<Player> players) {
         RoundOutcome outcome;
