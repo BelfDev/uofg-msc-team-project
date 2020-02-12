@@ -164,7 +164,7 @@ public class CommandLineController {
         }
 
         // Invoke the lifecycle method
-        onGameOver(activePlayer);
+        onGameOver(activePlayer, roundWinsMap);
     }
 
     private void presentStatistics() {
@@ -224,8 +224,8 @@ public class CommandLineController {
         }
     }
 
-    private void onGameOver(Player winner) {
-        view.showGameResult(winner);
+    private void onGameOver(Player winner, HashMap<Player, Integer> roundWinsMap) {
+        view.showGameResult(winner, roundWinsMap);
         start();
     }
 
