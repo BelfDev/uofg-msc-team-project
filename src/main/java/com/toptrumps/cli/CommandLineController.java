@@ -8,6 +8,7 @@ import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.statistics.GameStateCollector;
 import com.toptrumps.core.utils.MapUtils;
+import com.toptrumps.db.Statistics;
 
 import java.util.*;
 
@@ -43,6 +44,9 @@ public class CommandLineController {
             startNewGame(numberOfOpponents);
         } else if (input.equalsIgnoreCase("s")) {
             // TODO: Start statistics mode
+            Statistics stats = new Statistics();
+            view.showStats(stats);
+            start();
         }
 
         scanner.nextLine();

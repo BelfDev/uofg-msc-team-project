@@ -5,6 +5,7 @@ import com.toptrumps.core.card.Card;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.utils.ResourceLoader;
+import com.toptrumps.db.Statistics;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -31,6 +32,14 @@ public class CommandLineView {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String banner = br.lines().collect(Collectors.joining("\n"));
         typePrint(LIGHT_SPEED, banner);
+    }
+      
+    public void showStats(Statistics stats){
+        typePrint(MODERATE_SPEED, "Total numbers of games played: " + stats.getGamesPlayed());
+        typePrint(MODERATE_SPEED, "Number of Human wins: " + stats.getHumanWins());
+        typePrint(MODERATE_SPEED, "Number of AI wins: " + stats.getAiWins());
+        typePrint(MODERATE_SPEED, "Average number of round draws: " + stats.getAverageDraws());
+        typePrint(MODERATE_SPEED, "Maximum number of rounds: " + stats.getMaxRounds());
     }
 
     public void showRequestNumberOfOpponents(int MIN_OPPONENTS, int MAX_OPPONENTS) {
@@ -90,7 +99,6 @@ public class CommandLineView {
         List<Attribute> attributes = card.getAttributes();
         String name = centreCardName(card.getName());
         pausePrinting(MODERATE_PAUSE);
-
         typePrint(FAST_SPEED, "\t-----------------------");
         typePrint(FAST_SPEED, String.format("\t|%-21s|", name));
         typePrint(FAST_SPEED, String.format("\t|%21s|", ""));
