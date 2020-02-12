@@ -1,61 +1,67 @@
 package com.toptrumps.db;
-import java.sql.*; 
+
 import com.toptrumps.core.statistics.GameStateCollector;
 
-public class Statistics{
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Statistics {
 
     private int gamesPlayed;
     private int aiWins;
     private int humanWins;
     private int drawsAverage;
-    private int maxRounds; 
+    private int maxRounds;
 
-    public Statistics(){
-        try{
+    public Statistics() {
+        try {
             buildStatistics(retrieveStats());
-        }catch(SQLException e){e.printStackTrace();}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void persistData(GameStateCollector gameState){
-
+    public void persistData(GameStateCollector gameState) {
         GameDAOImpl concreteGameDAO = new GameDAOImpl(gameState);
         concreteGameDAO.create();
         PerformanceDAOImpl concretePerformanceDAO = new PerformanceDAOImpl(gameState);
         concretePerformanceDAO.create();
     }
 
-    private ResultSet retrieveStats(){
-
+    private ResultSet retrieveStats() {
         Connection conn = ConnectionFactory.getConnection();
         PreparedStatement playedStats = null;
         ResultSet rs = null;
-        String playedStatsSQL = 
+        String playedStatsSQL =
 
-        "SELECT (SELECT COUNT (game_id)" +
-        "            FROM  individual_game_data) AS gamesplayed," +
-        "        (SELECT AVG(draws)" +
-        "            FROM individual_game_data) AS avgdraws," +
-        "        (SELECT MAX(rounds_played)" +
-        "            FROM individual_game_data) AS mostrounds," +
-        "        (SELECT COUNT (winner_id)" +
-        "            FROM individual_game_data" +
-        "            WHERE winner_id = 0) AS humanwins," +
-        "        (SELECT COUNT (winner_id)" +
-        "            FROM individual_game_data" +
-        "            WHERE winner_id != 0) AS aiwins;";
+                "SELECT (SELECT COUNT (game_id)" +
+                        "            FROM  individual_game_data) AS gamesplayed," +
+                        "        (SELECT AVG(draws)" +
+                        "            FROM individual_game_data) AS avgdraws," +
+                        "        (SELECT MAX(rounds_played)" +
+                        "            FROM individual_game_data) AS mostrounds," +
+                        "        (SELECT COUNT (winner_id)" +
+                        "            FROM individual_game_data" +
+                        "            WHERE winner_id = 0) AS humanwins," +
+                        "        (SELECT COUNT (winner_id)" +
+                        "            FROM individual_game_data" +
+                        "            WHERE winner_id != 0) AS aiwins;";
 
-        try{
+        try {
             playedStats = conn.prepareStatement(playedStatsSQL);
             rs = playedStats.executeQuery();
             return rs;
-        }catch(SQLException e){e.printStackTrace();}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return rs;
     }
 
-    private void buildStatistics(ResultSet resultSet)throws SQLException{
-
-        while(resultSet.next()){
+    private void buildStatistics(ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
             this.gamesPlayed = resultSet.getInt(1);
             this.drawsAverage = resultSet.getInt(2);
             this.maxRounds = resultSet.getInt(3);
@@ -64,23 +70,23 @@ public class Statistics{
         }
     }
 
-    public int getGamesPlayed(){
+    public int getGamesPlayed() {
         return gamesPlayed;
     }
 
-    public int getAiWins(){
+    public int getAiWins() {
         return aiWins;
     }
 
-    public int getHumanWins(){
+    public int getHumanWins() {
         return humanWins;
     }
 
-    public int getAverageDraws(){
+    public int getAverageDraws() {
         return drawsAverage;
     }
 
-    public int getMaxRounds(){
+    public int getMaxRounds() {
         return maxRounds;
     }
 }
