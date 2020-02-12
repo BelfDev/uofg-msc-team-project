@@ -59,17 +59,15 @@ public class CommandLineController {
         }
     }
 
+
+
     private void startNewGame(int numberOfOpponents) {
-        List<Card> communalPile = new ArrayList<>();
+        ArrayList<Card> communalPile = new ArrayList<>();
         int roundNumber = 0;
         int numberOfDraws = 0;
         ArrayList<Player> players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
-        HashMap<Player, Integer> roundWinsMap = new HashMap<Player, Integer>() {{
-            players.forEach(player -> {
-                put(player, 0);
-            });
-        }};
+        HashMap<Player, Integer> roundWinsMap = getRoundWinsMap(players);
         RoundOutcome outcome = null;
 
         while (players.size() != 1) {
@@ -209,6 +207,14 @@ public class CommandLineController {
             view.showNextRoundMessage();
             scanner.nextLine();
         }
+    }
+
+    private HashMap<Player, Integer>  getRoundWinsMap(List<Player> players) {
+        return new HashMap<Player, Integer>() {{
+            players.forEach(player -> {
+                put(player, 0);
+            });
+        }};
     }
 
     private void onGameOver(Player winner) {
