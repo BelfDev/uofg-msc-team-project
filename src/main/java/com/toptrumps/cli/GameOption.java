@@ -3,7 +3,8 @@ package com.toptrumps.cli;
 enum GameOption {
     GAME_MODE("f"),
     STATISTICS_MODE("s"),
-    QUIT("q");
+    QUIT("q"),
+    NOT_VALID("NOT_VALID");
 
     private String flagValue;
 
@@ -24,6 +25,15 @@ enum GameOption {
             return option.getFlagValue().equals(input);
         }
         return false;
+    }
+
+    public static GameOption fromInput(String input) {
+        for (GameOption option : GameOption.values()) {
+            if (option.getFlagValue().equals(input)) {
+                return option;
+            }
+        }
+        return NOT_VALID;
     }
 
 }

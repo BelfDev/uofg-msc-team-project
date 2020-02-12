@@ -40,20 +40,23 @@ public class CommandLineController {
             input = scanner.nextLine();
         }
 
-        if (input.equalsIgnoreCase("f")) {
-            // Start the game
-            int numberOfOpponents = requestNumberOfOpponents();
-            startNewGame(numberOfOpponents);
-        } else if (input.equalsIgnoreCase("s")) {
-            // TODO: Start statistics mode
-            Statistics stats = new Statistics();
-            view.showStats(stats);
-            view.showNextRoundMessage();
-            scanner.nextLine();
-            start();
-        } else if (input.equalsIgnoreCase("q")){
-            view.showGoodbyeMessage();
-        } 
+        switch (GameOption.fromInput(input)) {
+            case GAME_MODE:
+                int numberOfOpponents = requestNumberOfOpponents();
+                startNewGame(numberOfOpponents);
+                break;
+            case STATISTICS_MODE:
+                Statistics stats = new Statistics();
+                view.showStats(stats);
+                view.showNextRoundMessage();
+                scanner.nextLine();
+                break;
+            case QUIT:
+                view.showGoodbyeMessage();
+                break;
+            default:
+                break;
+        }
     }
 
     private void startNewGame(int numberOfOpponents) {
@@ -139,7 +142,7 @@ public class CommandLineController {
 
         gameEngine.persistGameState(gameState);
 
-        if(outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()){
+        if (outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()) {
             view.showAutomaticCompletion();
         }
         onGameOver(activePlayer);
