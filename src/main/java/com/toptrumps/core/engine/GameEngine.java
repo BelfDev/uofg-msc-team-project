@@ -16,7 +16,7 @@ import java.util.List;
 import static com.toptrumps.core.engine.RoundOutcome.Result.*;
 import static java.util.stream.Collectors.toCollection;
 
-public class Game {
+public class GameEngine {
 
     private static final String DEFAULT_USER_NAME = "Human_Player";
 
@@ -26,7 +26,7 @@ public class Game {
      * Constructor to initialise the number of players and the ArrayList of players
      * Starts the game
      */
-    public Game(String deckFile) {
+    public GameEngine(String deckFile) {
         this.dealer = new Dealer(deckFile);
     }
 
