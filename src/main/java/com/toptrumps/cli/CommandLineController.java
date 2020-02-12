@@ -2,7 +2,7 @@ package com.toptrumps.cli;
 
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
-import com.toptrumps.core.engine.Game;
+import com.toptrumps.core.engine.GameEngine;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
@@ -15,6 +15,12 @@ import java.util.*;
 import static com.toptrumps.cli.PrintOptions.IS_TEST_MODE;
 import static java.util.stream.Collectors.toCollection;
 
+/**
+ * This class controls the command line game state. It orchestrates
+ * the game dynamics by requesting core game logic from the GameEngine
+ * and presenting output through the CommandLineView. The user is provided
+ * with multiple command line options to navigate through the game.
+ */
 public class CommandLineController {
 
     private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
@@ -23,38 +29,44 @@ public class CommandLineController {
 
     private Scanner scanner;
     private CommandLineView view;
-    private Game gameEngine;
+    private GameEngine gameEngine;
 
+    /**
+     * Constructs a new CommandLineController with a CommandLineView,
+     * GameEngine, and Scanner.
+     */
     public CommandLineController() {
         // Game view
         this.view = new CommandLineView();
         // Game core engine model
-        this.gameEngine = new Game(DECK_RESOURCE);
+        this.gameEngine = new GameEngine(DECK_RESOURCE);
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Starts the Command Line game mode.
+     */
     public void start() {
         view.showWelcomeMessage();
         String input = scanner.nextLine();
-
+        // Listens to user input until a supported option is provided
         while (!GameOption.contains(input)) {
             view.showInvalidInput();
             input = scanner.nextLine();
         }
-
+        // Checks the input flag
         switch (GameOption.fromInput(input)) {
             case GAME_MODE:
+                // Starts new game with the provided number of opponents
                 int numberOfOpponents = requestNumberOfOpponents();
                 startNewGame(numberOfOpponents);
                 break;
             case STATISTICS_MODE:
-                Statistics stats = new Statistics();
-                view.showStats(stats);
-                view.showNextRoundMessage();
-                scanner.nextLine();
-                start();
+                // Shows statistics about past games
+                presentStatistics();
                 break;
             case QUIT:
+                // Quits game
                 view.showGoodbyeMessage();
                 break;
             default:
@@ -155,6 +167,90 @@ public class CommandLineController {
         onGameOver(activePlayer);
     }
 
+    private void presentStatistics() {
+        Statistics stats = new Statistics();
+        view.showStats(stats);
+        view.showNextRoundMessage();
+        scanner.nextLine();
+        start();
+    }
+
+    // === LIFECYCLE METHODS ===
+
+    private Attribute onRequestSelection(Card card) {
+        try {
+            // Requests an attribute selection based on the current card
+            final List<Attribute> attributes = card.getAttributes();
+            final int numberOfAttributes = attributes.size();
+            view.requestSelection(numberOfAttributes);
+
+            // Listens to user input until a valid attribute is selected
+            int selectedAttributeIndex = scanner.nextInt();
+            while (selectedAttributeIndex < 1 || selectedAttributeIndex > numberOfAttributes) {
+                view.showInvalidSelection(numberOfAttributes);
+                selectedAttributeIndex = scanner.nextInt();
+            }
+            scanner.nextLine();
+
+            // Returns the selected attribute
+            return attributes.get(selectedAttributeIndex - 1);
+        } catch (InputMismatchException e) {
+            // In case of error, restarts the request process
+            scanner.nextLine();
+            view.showNoNumberSelected();
+            return onRequestSelection(card);
+        }
+    }
+
+    private void onAttributeSelected(Player activePlayer, boolean isHumanAlive) {
+        if (isHumanAlive) {
+            String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
+            String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
+
+            view.showSelectedAttribute(playerName, selectedAttributeName);
+        }
+    }
+
+    private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards, boolean isHumanAlive) {
+        if (isHumanAlive) {
+            view.showRoundResult(outcome, winningCards);
+            List<Player> removedPlayers = outcome.getRemovedPlayers();
+            // Shows removed players if there's any
+            if (!removedPlayers.isEmpty()) {
+                view.showRemovedPlayers(removedPlayers);
+            }
+
+            selectNextRound();
+        }
+    }
+
+    private void onGameOver(Player winner) {
+        view.showGameResult(winner);
+        start();
+    }
+
+    // === CONVENIENCE METHODS ===
+
+    private int requestNumberOfOpponents() {
+        try {
+            view.showRequestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS);
+            int numberOfOpponents = scanner.nextInt();
+            // Listens to user input until a valid number is selected
+            while (numberOfOpponents < MIN_OPPONENTS || numberOfOpponents > MAX_OPPONENTS) {
+                view.showInvalidNumberOfPlayers(MIN_OPPONENTS, MAX_OPPONENTS);
+                numberOfOpponents = scanner.nextInt();
+            }
+            scanner.nextLine();
+            // Returns the selected number of opponents
+            return numberOfOpponents;
+        } catch (InputMismatchException e) {
+            // In case of error, restarts the request process
+            scanner.nextLine();
+            view.showNotANumber();
+            return requestNumberOfOpponents();
+        }
+    }
+
     private Attribute getSelectedAttribute(Player activePlayer) {
         Attribute selectedAttribute;
         // Checks if the active player is an AIPlayer instance
@@ -166,68 +262,7 @@ public class CommandLineController {
             selectedAttribute = onRequestSelection(activePlayer.getTopCard());
             activePlayer.setSelectedAttribute(selectedAttribute);
         }
-
         return selectedAttribute;
-    }
-
-    // === START OF LIFE CYCLE METHODS ===
-
-    private int requestNumberOfOpponents() {
-        try {
-            view.showRequestNumberOfOpponents(MIN_OPPONENTS, MAX_OPPONENTS);
-
-            int numberOfOpponents = scanner.nextInt();
-            while (numberOfOpponents < MIN_OPPONENTS || numberOfOpponents > MAX_OPPONENTS) {
-                view.showInvalidNumberOfPlayers(MIN_OPPONENTS, MAX_OPPONENTS);
-                numberOfOpponents = scanner.nextInt();
-            }
-            scanner.nextLine();
-            return numberOfOpponents;
-        } catch (InputMismatchException e) {
-            scanner.nextLine();
-            view.showNotANumber();
-            return requestNumberOfOpponents();
-        }
-    }
-
-    private Attribute onRequestSelection(Card card) {
-        try {
-            final List<Attribute> attributes = card.getAttributes();
-            final int numberOfAttributes = attributes.size();
-            view.requestSelection(numberOfAttributes);
-
-            int selectedAttributeIndex = scanner.nextInt();
-            while (selectedAttributeIndex < 1 || selectedAttributeIndex > numberOfAttributes) {
-                view.showInvalidSelection(numberOfAttributes);
-                selectedAttributeIndex = scanner.nextInt();
-            }
-            scanner.nextLine();
-
-            return attributes.get(selectedAttributeIndex - 1);
-        } catch (InputMismatchException e) {
-            scanner.nextLine();
-            view.showNoNumberSelected();
-            return onRequestSelection(card);
-        }
-    }
-
-    private void onAttributeSelected(Player activePlayer, boolean isHumanAlive) {
-        if (isHumanAlive) {
-            String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
-            String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
-            view.showSelectedAttribute(playerName, selectedAttributeName);
-        }
-    }
-
-    private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards, boolean isHumanAlive) {
-        if (isHumanAlive) {
-            view.showRoundResult(outcome, winningCards);
-            List<Player> removedPlayers = outcome.getRemovedPlayers();
-            if (!removedPlayers.isEmpty()) {
-                view.showRemovedPlayers(removedPlayers);
-            }
-            selectNextRound();
-        }
     }
 
     private void selectNextRound() {
@@ -238,6 +273,7 @@ public class CommandLineController {
     }
 
     private HashMap<Player, Integer> getRoundWinsMap(List<Player> players) {
+        // Returns a map of each player and their respective number of round wins
         return new HashMap<Player, Integer>() {{
             players.forEach(player -> {
                 put(player, 0);
@@ -249,11 +285,6 @@ public class CommandLineController {
         // By convention, the human player is always the first element;
         // The ternary operator checks if the human player has been eliminated
         return players.get(0).isAIPlayer() ? null : players.get(0);
-    }
-
-    private void onGameOver(Player winner) {
-        view.showGameResult(winner);
-        start();
     }
 
 }
