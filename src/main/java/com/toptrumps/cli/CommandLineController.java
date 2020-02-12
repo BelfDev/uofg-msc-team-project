@@ -143,7 +143,7 @@ public class CommandLineController {
         if (outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()) {
             view.showAutomaticCompletion();
         }
-        onGameOver(activePlayer);
+        onGameOver(activePlayer, roundWinsMap);
     }
 
     // === START OF LIFE CYCLE METHODS ===
@@ -208,7 +208,7 @@ public class CommandLineController {
             scanner.nextLine();
         }
     }
-
+    
     private HashMap<Player, Integer>  getRoundWinsMap(List<Player> players) {
         return new HashMap<Player, Integer>() {{
             players.forEach(player -> {
@@ -217,8 +217,8 @@ public class CommandLineController {
         }};
     }
 
-    private void onGameOver(Player winner) {
-        view.showGameResult(winner);
+    private void onGameOver(Player winner, HashMap<Player, Integer> roundWinsMap) {
+        view.showGameResult(winner, roundWinsMap);
         start();
     }
 
