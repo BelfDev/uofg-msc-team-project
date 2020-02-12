@@ -18,14 +18,12 @@ import static java.util.stream.Collectors.toCollection;
 public class CommandLineController {
 
     private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
-
-    private Scanner scanner;
-
-    // TODO: Refactor the controller to use CommandLineView
-    private CommandLineView view;
-    private Game gameEngine;
     private static final int MIN_OPPONENTS = 1;
     private static final int MAX_OPPONENTS = 4;
+
+    private Scanner scanner;
+    private CommandLineView view;
+    private Game gameEngine;
 
     public CommandLineController() {
         this.gameEngine = new Game(DECK_RESOURCE);
@@ -35,40 +33,41 @@ public class CommandLineController {
 
     public void start() {
         view.showWelcomeMessage();
-
         String input = scanner.nextLine();
-        // TODO: Create an Enum to encapsulate the flags
-        while(!(input.equalsIgnoreCase("f") || input.equalsIgnoreCase("s") || input.equalsIgnoreCase("q"))){
+
+        while (!GameOption.contains(input)) {
             view.showInvalidInput();
             input = scanner.nextLine();
         }
-        if (input.equalsIgnoreCase("f")) {
-            // Start the game
-            int numberOfOpponents = requestNumberOfOpponents();
-            startNewGame(numberOfOpponents);
-        } else if (input.equalsIgnoreCase("s")) {
-            // TODO: Start statistics mode
-            Statistics stats = new Statistics();
-            view.showStats(stats);
-            view.showNextRoundMessage();
-            scanner.nextLine();
-            start();
-        } else if (input.equalsIgnoreCase("q")){
-            view.showGoodbyeMessage();
-        } 
+
+        switch (GameOption.fromInput(input)) {
+            case GAME_MODE:
+                int numberOfOpponents = requestNumberOfOpponents();
+                startNewGame(numberOfOpponents);
+                break;
+            case STATISTICS_MODE:
+                Statistics stats = new Statistics();
+                view.showStats(stats);
+                view.showNextRoundMessage();
+                scanner.nextLine();
+                break;
+            case QUIT:
+                view.showGoodbyeMessage();
+                break;
+            default:
+                break;
+        }
     }
 
+
+
     private void startNewGame(int numberOfOpponents) {
-        List<Card> communalPile = new ArrayList<>();
+        ArrayList<Card> communalPile = new ArrayList<>();
         int roundNumber = 0;
         int numberOfDraws = 0;
         ArrayList<Player> players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
-        HashMap<Player, Integer> roundWinsMap = new HashMap<Player, Integer>() {{
-            players.forEach(player -> {
-                put(player, 0);
-            });
-        }};
+        HashMap<Player, Integer> roundWinsMap = getRoundWinsMap(players);
         RoundOutcome outcome = null;
 
         while (players.size() != 1) {
@@ -141,7 +140,7 @@ public class CommandLineController {
 
         gameEngine.persistGameState(gameState);
 
-        if(outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()){
+        if (outcome.getRemovedPlayers().get(0).isAIPlayer() && activePlayer.isAIPlayer()) {
             view.showAutomaticCompletion();
         }
         onGameOver(activePlayer);
@@ -208,6 +207,14 @@ public class CommandLineController {
             view.showNextRoundMessage();
             scanner.nextLine();
         }
+    }
+
+    private HashMap<Player, Integer>  getRoundWinsMap(List<Player> players) {
+        return new HashMap<Player, Integer>() {{
+            players.forEach(player -> {
+                put(player, 0);
+            });
+        }};
     }
 
     private void onGameOver(Player winner) {
