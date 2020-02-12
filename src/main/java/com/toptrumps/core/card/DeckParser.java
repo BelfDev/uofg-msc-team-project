@@ -15,7 +15,7 @@ class DeckParser {
 
     private final static String ITEM_SEPARATOR = " ";
 
-    // Prevents someone from creating an DeckParser instance
+    // Prevents someone from creating a DeckParser instance
     private DeckParser() {
     }
 
