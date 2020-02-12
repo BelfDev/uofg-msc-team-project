@@ -87,8 +87,8 @@ public class GameEngine {
     }
 
     /**
-     * Compares each player's selected attribute and returns players who possessed
-     * a top card with the highest selected attribute value.
+     * Compares the selected attribute value of each player and returns
+     * the players who possess the highest value.
      *
      * @param selectedAttribute the attribute selected as the reference for comparison
      * @param players           list of players which are participating in the current round
