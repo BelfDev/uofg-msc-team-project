@@ -1,10 +1,14 @@
 package com.toptrumps.db;
-import java.sql.*; 
+
 import com.toptrumps.core.statistics.GameStateCollector;
 import java.util.List;
 import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class Statistics{
+public class Statistics {
 
     private int gamesPlayed;
     private int aiWins;
@@ -35,26 +39,28 @@ public class Statistics{
         Connection conn = ConnectionFactory.getConnection();
         PreparedStatement playedStats = null;
         ResultSet rs = null;
-        String playedStatsSQL = 
+        String playedStatsSQL =
 
-        "SELECT (SELECT COUNT (game_id)" +
-        "            FROM  individual_game_data) AS gamesplayed," +
-        "        (SELECT AVG(draws)" +
-        "            FROM individual_game_data) AS avgdraws," +
-        "        (SELECT MAX(rounds_played)" +
-        "            FROM individual_game_data) AS mostrounds," +
-        "        (SELECT COUNT (winner_id)" +
-        "            FROM individual_game_data" +
-        "            WHERE winner_id = 0) AS humanwins," +
-        "        (SELECT COUNT (winner_id)" +
-        "            FROM individual_game_data" +
-        "            WHERE winner_id != 0) AS aiwins;";
+                "SELECT (SELECT COUNT (game_id)" +
+                        "            FROM  individual_game_data) AS gamesplayed," +
+                        "        (SELECT AVG(draws)" +
+                        "            FROM individual_game_data) AS avgdraws," +
+                        "        (SELECT MAX(rounds_played)" +
+                        "            FROM individual_game_data) AS mostrounds," +
+                        "        (SELECT COUNT (winner_id)" +
+                        "            FROM individual_game_data" +
+                        "            WHERE winner_id = 0) AS humanwins," +
+                        "        (SELECT COUNT (winner_id)" +
+                        "            FROM individual_game_data" +
+                        "            WHERE winner_id != 0) AS aiwins;";
 
-        try{
+        try {
             playedStats = conn.prepareStatement(playedStatsSQL);
             rs = playedStats.executeQuery();
             return rs;
-        }catch(SQLException e){e.printStackTrace();}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return rs;
     }
@@ -98,24 +104,25 @@ public class Statistics{
         }
     }
 
-    public int getGamesPlayed(){
+    public int getGamesPlayed() {
         return gamesPlayed;
     }
 
-    public int getAiWins(){
+    public int getAiWins() {
         return aiWins;
     }
 
-    public int getHumanWins(){
+    public int getHumanWins() {
         return humanWins;
     }
 
-    public int getAverageDraws(){
+    public int getAverageDraws() {
         return drawsAverage;
     }
 
-    public int getMaxRounds(){
+    public int getMaxRounds() {
         return maxRounds;
     }
 }
+
 

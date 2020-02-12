@@ -6,15 +6,14 @@ import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.statistics.GameStateCollector;
+import com.toptrumps.db.Statistics;
 import com.toptrumps.online.api.request.*;
 import com.toptrumps.online.api.response.InitialGameState;
 import com.toptrumps.online.api.response.Outcome;
+import com.toptrumps.online.api.response.StatisticsContent;
 import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -69,7 +68,7 @@ public class TopTrumpsRESTAPI {
     @POST
     @Path("/api/outcome/human")
     @Produces(MediaType.APPLICATION_JSON)
-    public Outcome getRoundOutcome(HumanPlayerMove humanPlayerMove) {
+    public Outcome generateRoundOutcome(HumanPlayerMove humanPlayerMove) {
         List<Player> players = humanPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
         List<Player> winners = gameEngine.getWinners(humanPlayerMove.getSelectedAttribute(), players);
         players.forEach(Player::removeTopCard);
@@ -80,7 +79,7 @@ public class TopTrumpsRESTAPI {
     @POST
     @Path("/api/outcome/ai")
     @Produces(MediaType.APPLICATION_JSON)
-    public Outcome getRoundOutcome(PlayerMove aiPlayerMove) {
+    public Outcome generateRoundOutcome(PlayerMove aiPlayerMove) {
         Player activeAIPlayer = aiPlayerMove.getActivePlayerState().toPlayer();
         List<Player> players = aiPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
         Attribute selectedAttribute = ((AIPlayer) activeAIPlayer).selectAttribute();
@@ -98,6 +97,14 @@ public class TopTrumpsRESTAPI {
                 .fromFinalGameState(finalGameState)
                 .build();
         gameEngine.persistGameState(stateCollector);
+    }
+
+    @GET
+    @Path("/api/statistics")
+    @Produces(MediaType.APPLICATION_JSON)
+    public StatisticsContent getStatisticsContent() {
+        Statistics gameStatistics = new Statistics();
+        return new StatisticsContent(gameStatistics);
     }
 
 }

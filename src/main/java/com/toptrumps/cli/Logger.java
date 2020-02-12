@@ -38,7 +38,7 @@ public class Logger {
             e.printStackTrace();
         }
         logger.addHandler(loggerHandler);
-        logger.setLevel(java.util.logging.Level.INFO);
+        logger.setLevel(java.util.logging.Level.FINE);
     }
 
     public static Logger getInstance() {
@@ -49,7 +49,7 @@ public class Logger {
     }
 
     public void logToFileIfEnabled(String logEntry) {
-        java.util.logging.Logger.getLogger(LOGGER).info(logEntry);
+        java.util.logging.Logger.getLogger(LOGGER).fine(logEntry);
     }
 
 }

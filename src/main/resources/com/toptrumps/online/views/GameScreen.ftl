@@ -3,6 +3,7 @@
 	<div class="js-page-curtain page-curtain"></div>
 
 	<main class="game-page">
+		<div class="draw-indicator">Draw!</div>
 		<#include "_parts/GameStatus.ftl">
 		<#include "_parts/Opponents.ftl">
 
@@ -24,7 +25,6 @@
 	<script src="/assets/scripts/helpers/stats.js"></script>
 	<script src="/assets/scripts/helpers/dom.js"></script>
 	<script src="/assets/scripts/helpers/network.js"></script>
-	<script src="/assets/scripts/plugins/input-number.js"></script>
 	<script src="/assets/scripts/plugins/message.js"></script>
 	<script src="/assets/scripts/plugins/modal.js"></script>
 	<script src="/assets/scripts/plugins/countdown.js"></script>
