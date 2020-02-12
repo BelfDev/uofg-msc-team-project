@@ -24,8 +24,16 @@ public class CommandLineView {
 
     public void showWelcomeMessage() {
         printWelcomeBanner();
-        typePrint(SLOW_SPEED, "\nTo start a new game, press f \nTo see game statistics, press s");
+        typePrint(SLOW_SPEED, "\nTo start a new game, enter f \nTo see game statistics, enter s \nTo quit, enter q");
         Logger.getInstance().logToFileIfEnabled("Game started");
+    }
+
+    public void showInvalidInput(){
+        typePrint(SLOW_SPEED, "Invalid input detected - please select f, s or q");
+    }
+
+    public void showGoodbyeMessage(){
+        typePrint(SLOW_SPEED, "\nThanks for playing!");
     }
 
     private void printWelcomeBanner() {
