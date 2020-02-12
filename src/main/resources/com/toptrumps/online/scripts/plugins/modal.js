@@ -5,6 +5,7 @@ const Modal = (($) => {
     const backdropSelector = ".js-backdrop";
     const modalTitleSelector = ".js-modal-title";
     const modalHintSelector = ".js-modal-hint";
+    const closeButtonSelector = ".js-modal-close";
 
     // Templates
     const backdropTemplate = '<div class="backdrop js-backdrop"></div>';
@@ -18,6 +19,10 @@ const Modal = (($) => {
 
         setModalTitle(selector, title || "");
         setModalHint(selector, hint || "");
+
+        $(closeButtonSelector).one("click", () => {
+            closeActiveModal();
+        });
     };
 
     const showBackdrop = function() {
@@ -25,12 +30,16 @@ const Modal = (($) => {
     };
 
     const setModalTitle = (targetModalSelector, title) => {
+        if (!title) return;
+
         $(targetModalSelector)
             .find(modalTitleSelector)
             .html(title);
     };
 
     const setModalHint = (targetModalSelector, hint) => {
+        if (!hint) return;
+
         $(targetModalSelector)
             .find(modalHintSelector)
             .html(hint);
