@@ -11,6 +11,7 @@ import com.toptrumps.core.utils.MapUtils;
 
 import java.util.*;
 
+import static com.toptrumps.cli.PrintOptions.IS_TEST_MODE;
 import static java.util.stream.Collectors.toCollection;
 
 public class CommandLineController {
@@ -193,8 +194,10 @@ public class CommandLineController {
     }
 
     private void selectNextRound() {
-        view.showNextRoundMessage();
-        scanner.nextLine();
+        if (!IS_TEST_MODE) {
+            view.showNextRoundMessage();
+            scanner.nextLine();
+        }
     }
 
     private void onGameOver(Player winner) {
