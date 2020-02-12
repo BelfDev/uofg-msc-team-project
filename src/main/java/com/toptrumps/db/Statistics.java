@@ -1,6 +1,8 @@
 package com.toptrumps.db;
 import java.sql.*; 
 import com.toptrumps.core.statistics.GameStateCollector;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Statistics{
 
@@ -9,22 +11,26 @@ public class Statistics{
     private int humanWins;
     private int drawsAverage;
     private int maxRounds; 
+    private GameDAOImpl concreteGameDAO;
+    private PerformanceDAOImpl concretePerformanceDAO;
+  
 
     public Statistics(){
         try{
-            buildStatistics(retrieveStats());
+            buildStatistics(retrieveHighStats());
+            concreteGameDAO = new GameDAOImpl();
+            concretePerformanceDAO = new PerformanceDAOImpl();
+            
         }catch(SQLException e){e.printStackTrace();}
     }
 
     public void persistData(GameStateCollector gameState){
 
-        GameDAOImpl concreteGameDAO = new GameDAOImpl(gameState);
-        concreteGameDAO.create();
-        PerformanceDAOImpl concretePerformanceDAO = new PerformanceDAOImpl(gameState);
-        concretePerformanceDAO.create();
+        concreteGameDAO.create(gameState);
+        concretePerformanceDAO.create(gameState);
     }
 
-    private ResultSet retrieveStats(){
+    private ResultSet retrieveHighStats(){
 
         Connection conn = ConnectionFactory.getConnection();
         PreparedStatement playedStats = null;
@@ -51,6 +57,34 @@ public class Statistics{
         }catch(SQLException e){e.printStackTrace();}
 
         return rs;
+    }
+
+    public List retrieveAllStats(){
+
+        PlayersList players = new PlayersList();
+        List<FullStats> allStats = new ArrayList<FullStats>();
+        ResultSet gameStats = concreteGameDAO.retrieve();
+        ResultSet roundStats = concretePerformanceDAO.retrieve();
+        int counter = 0;
+
+        try{ 
+            while(gameStats.next()){
+                allStats.add(new FullStats(gameStats,players));
+            }
+
+            while(roundStats.next()){
+                if(roundStats.getInt(2) == allStats.get(counter).getGameID()){
+                    allStats.get(counter).buildRoundStats(roundStats);
+                }else{
+                    counter++;
+                    if(roundStats.getInt(2) == allStats.get(counter).getGameID()){
+                    allStats.get(counter).buildRoundStats(roundStats);
+                    }
+                }
+            }
+        }catch(SQLException e){e.printStackTrace();}
+        
+        return allStats;
     }
 
     private void buildStatistics(ResultSet resultSet)throws SQLException{

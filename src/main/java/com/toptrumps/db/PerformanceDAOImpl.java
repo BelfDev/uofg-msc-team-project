@@ -6,13 +6,8 @@ import com.toptrumps.core.player.Player;
 
 public class PerformanceDAOImpl implements GameDAO{
 
-    private int gameID;
-    private Map<Player,Integer> map;
+    public PerformanceDAOImpl(){
 
-    public PerformanceDAOImpl(GameStateCollector gameState){
-
-        this.gameID = getGameID();
-        this.map = gameState.getRoundWinsMap();
     }
 
     public int getGameID(){
@@ -35,7 +30,10 @@ public class PerformanceDAOImpl implements GameDAO{
         return id;
     }
 
-    public boolean create(){
+    public boolean create(GameStateCollector gameState){
+
+        int gameID = getGameID();
+        Map<Player,Integer> map = gameState.getRoundWinsMap();
         
         Connection con = ConnectionFactory.getConnection();
         PreparedStatement createRow = null;
@@ -69,4 +67,29 @@ public class PerformanceDAOImpl implements GameDAO{
         }
         return true;
     } 
-}
+
+    public ResultSet retrieve(){
+
+        Connection conn = ConnectionFactory.getConnection();
+        PreparedStatement retrieveRow = null;
+        ResultSet rs = null;
+        String retrieveRowSQL = 
+
+            "SELECT *" +
+            "FROM player_performance";
+        
+        try{
+            retrieveRow = conn.prepareStatement(retrieveRowSQL);
+            rs = retrieveRow.executeQuery();
+        }catch(SQLException e){e.printStackTrace();}
+    
+        // finally{
+        //     try{
+        //         if(conn != null){conn.close();}
+        //         if(retrieveRow != null){retrieveRow.close();}
+        //     }catch(SQLException e){
+        //         e.printStackTrace();
+        //     }
+        return rs;
+        }
+    }

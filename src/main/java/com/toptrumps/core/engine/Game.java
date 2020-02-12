@@ -9,6 +9,7 @@ import com.toptrumps.core.player.Player;
 import com.toptrumps.core.utils.RandomGenerator;
 import com.toptrumps.core.statistics.GameStateCollector;
 import com.toptrumps.db.Statistics;
+import com.toptrumps.db.FullStats;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +126,6 @@ public class Game {
     public void persistGameState(GameStateCollector gameState) {
        Statistics stats = new Statistics();
        stats.persistData(gameState);
+       List<FullStats> allStats = stats.retrieveAllStats();
     }
-
-
 }
