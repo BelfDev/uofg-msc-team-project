@@ -18,14 +18,12 @@ import static java.util.stream.Collectors.toCollection;
 public class CommandLineController {
 
     private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
-
-    private Scanner scanner;
-
-    // TODO: Refactor the controller to use CommandLineView
-    private CommandLineView view;
-    private Game gameEngine;
     private static final int MIN_OPPONENTS = 1;
     private static final int MAX_OPPONENTS = 4;
+
+    private Scanner scanner;
+    private CommandLineView view;
+    private Game gameEngine;
 
     public CommandLineController() {
         this.gameEngine = new Game(DECK_RESOURCE);
@@ -35,13 +33,13 @@ public class CommandLineController {
 
     public void start() {
         view.showWelcomeMessage();
-
         String input = scanner.nextLine();
-        // TODO: Create an Enum to encapsulate the flags
-        while(!(input.equalsIgnoreCase("f") || input.equalsIgnoreCase("s") || input.equalsIgnoreCase("q"))){
+
+        while (!GameOption.contains(input)) {
             view.showInvalidInput();
             input = scanner.nextLine();
         }
+
         if (input.equalsIgnoreCase("f")) {
             // Start the game
             int numberOfOpponents = requestNumberOfOpponents();
