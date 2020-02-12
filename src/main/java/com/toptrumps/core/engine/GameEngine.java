@@ -143,10 +143,10 @@ public class GameEngine {
             outcome = new RoundOutcome(GAME_OVER);
         } else if (winners.size() == 1) {
             // Checks if there's only one winner;
-            // Sets the winner player as "active"
+            // Sets the winning player as "active"
             Player winner = winners.get(0);
             winner.setActive(true);
-            // Prevents the winner player from being included to the removedPlayers list
+            // Prevents the winning player from being included to the removedPlayers list
             removedPlayers.remove(winner);
             // Declares Victory
             outcome = new RoundOutcome(VICTORY, winner, removedPlayers);
