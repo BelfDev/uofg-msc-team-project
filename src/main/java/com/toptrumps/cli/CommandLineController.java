@@ -50,6 +50,7 @@ public class CommandLineController {
                 view.showStats(stats);
                 view.showNextRoundMessage();
                 scanner.nextLine();
+                start();
                 break;
             case QUIT:
                 view.showGoodbyeMessage();
@@ -59,51 +60,40 @@ public class CommandLineController {
         }
     }
 
-
-
     private void startNewGame(int numberOfOpponents) {
+        // Initializes the game state
         ArrayList<Card> communalPile = new ArrayList<>();
         int roundNumber = 0;
         int numberOfDraws = 0;
-        ArrayList<Player> players = (ArrayList<Player>) gameEngine.startUp(numberOfOpponents);
+        ArrayList<Player> players = gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
         HashMap<Player, Integer> roundWinsMap = getRoundWinsMap(players);
         RoundOutcome outcome = null;
 
+        // Checks if the game has come to an end;
+        // A game ends when there's only one player left
         while (players.size() != 1) {
-            // === GAME START UP ===
+            // == GAME START UP ==
             roundNumber++;
-
-            // TODO: Double check if we are going to rely on this convention
+            // Retrieves the human player;
+            // By convention, the human player is always the first element
             Player humanPlayer = players.get(0);
-            // TODO: We might want to shift to member variables and drop this parameters
+            // Checks if humanPlayer is not an instance of AIPlayer
             if (!humanPlayer.isAIPlayer()) {
                 view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
             }
-
             // == ATTRIBUTE SELECTION ==
-
-            Attribute selectedAttribute;
-            if (activePlayer.isAIPlayer()) {
-                selectedAttribute = ((AIPlayer) activePlayer).selectAttribute();
-            } else {
-                selectedAttribute = onRequestSelection(activePlayer.getTopCard());
-                activePlayer.setSelectedAttribute(selectedAttribute);
-            }
-
-            if (!humanPlayer.isAIPlayer()) {
-                onAttributeSelected(activePlayer);
-            }
-
+            // Handles attribute selection:
+            // Human Player is asked for an input;
+            // AI Player selects a random max attribute automatically;
+            Attribute selectedAttribute = getSelectedAttribute(activePlayer, humanPlayer);
             // == ATTRIBUTE COMPARISON ==
-
             List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
             List<Card> winningCards = winners.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
             List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
             players.forEach(Player::removeTopCard);
 
             // == ROUND OUTCOME ==
-
             outcome = gameEngine.processRoundOutcome(winners, players);
             players.removeAll(outcome.getRemovedPlayers());
 
@@ -126,7 +116,6 @@ public class CommandLineController {
             if (!humanPlayer.isAIPlayer()) {
                 onRoundEnd(outcome, winningCards);
             }
-
         }
 
         // == STATISTICS ==
@@ -144,6 +133,26 @@ public class CommandLineController {
             view.showAutomaticCompletion();
         }
         onGameOver(activePlayer);
+    }
+
+    private Attribute getSelectedAttribute(Player activePlayer, Player humanPlayer) {
+        Attribute selectedAttribute;
+        // Checks if the active player is an AIPlayer instance
+        if (activePlayer.isAIPlayer()) {
+            // Selects the attribute automatically
+            selectedAttribute = ((AIPlayer) activePlayer).selectAttribute();
+        } else {
+            // Asks human player for new input
+            selectedAttribute = onRequestSelection(activePlayer.getTopCard());
+            activePlayer.setSelectedAttribute(selectedAttribute);
+        }
+
+
+        if (!humanPlayer.isAIPlayer()) {
+            onAttributeSelected(activePlayer);
+        }
+
+        return selectedAttribute;
     }
 
     // === START OF LIFE CYCLE METHODS ===

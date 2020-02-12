@@ -65,7 +65,7 @@ public class Game {
         return activePlayer;
     }
 
-    public List<Player> startUp(int numberOfOpponents) {
+    public ArrayList<Player> startUp(int numberOfOpponents) {
         ArrayList<Player> players = createPlayers(numberOfOpponents);
         assignDecks(players);
         return players;
