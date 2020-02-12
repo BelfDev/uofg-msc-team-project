@@ -126,6 +126,6 @@ public class Game {
     public void persistGameState(GameStateCollector gameState) {
        Statistics stats = new Statistics();
        stats.persistData(gameState);
-       List<FullStats> allStats = stats.retrieveAllStats();
+       List<FullStats> allStats = stats.getFullStatsList();
     }
 }

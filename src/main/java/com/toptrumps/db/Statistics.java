@@ -65,8 +65,7 @@ public class Statistics {
         return rs;
     }
 
-    public List retrieveAllStats(){
-
+    public List<FullStats> getFullStatsList(){
         PlayersList players = new PlayersList();
         List<FullStats> allStats = new ArrayList<FullStats>();
         ResultSet gameStats = concreteGameDAO.retrieve();
