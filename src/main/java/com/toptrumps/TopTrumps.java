@@ -5,6 +5,8 @@ import com.toptrumps.online.TopTrumpsOnlineApp;
 
 public class TopTrumps {
 
+    public static final String CONFIG_FILE_NAME = "TopTrumps.json";
+
     /**
      * This is the main class for the TopTrumps Applications
      */

@@ -8,6 +8,7 @@ import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.statistics.GameStateCollector;
 import com.toptrumps.core.utils.MapUtils;
+import com.toptrumps.core.utils.ResourceLoader;
 import com.toptrumps.db.Statistics;
 
 import java.util.*;
@@ -23,7 +24,6 @@ import static java.util.stream.Collectors.toCollection;
  */
 public class CommandLineController {
 
-    private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
     private static final int MIN_OPPONENTS = 1;
     private static final int MAX_OPPONENTS = 4;
 
@@ -38,8 +38,9 @@ public class CommandLineController {
     public CommandLineController() {
         // Game view
         this.view = new CommandLineView();
+        String deckResource = ResourceLoader.getDeckFileName();
         // Game core engine model
-        this.gameEngine = new GameEngine(DECK_RESOURCE);
+        this.gameEngine = new GameEngine(deckResource);
         this.scanner = new Scanner(System.in);
     }
 
