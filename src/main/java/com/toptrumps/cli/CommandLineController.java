@@ -118,7 +118,9 @@ public class CommandLineController {
             List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
             // Retrieve the round cards
             List<Card> winningCards = winners.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
-            List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
+            // Extracts a shuffled list of round cards
+            List<Card> roundCards = gameEngine.getShuffledRoundCards(players);
+
             // Remove the topCard from each player
             players.forEach(Player::removeTopCard);
 
@@ -167,14 +169,6 @@ public class CommandLineController {
         // Invoke the lifecycle method 
         skipPrintAnimation = false;
         onGameOver(activePlayer, roundWinsMap);
-    }
-
-    private void presentStatistics() {
-        Statistics stats = new Statistics();
-        view.showStats(stats);
-        view.showNextRoundMessage();
-        scanner.nextLine();
-        start();
     }
 
     // === LIFECYCLE METHODS ===
@@ -285,6 +279,14 @@ public class CommandLineController {
         // By convention, the human player is always the first element;
         // The ternary operator checks if the human player has been eliminated
         return players.get(0).isAIPlayer() ? null : players.get(0);
+    }
+
+    private void presentStatistics() {
+        Statistics stats = new Statistics();
+        view.showStats(stats);
+        view.showNextRoundMessage();
+        scanner.nextLine();
+        start();
     }
 
 }
