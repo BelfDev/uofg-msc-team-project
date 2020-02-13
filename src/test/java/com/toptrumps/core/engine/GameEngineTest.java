@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sun.tools.internal.xjc.reader.Ring.add;
 import static com.toptrumps.core.engine.RoundOutcome.Result.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.stream.Collectors.toCollection;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
-class CoreEngineTest {
+class GameEngineTest {
 
     private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
 
@@ -108,6 +109,15 @@ class CoreEngineTest {
         Attribute selectedAttribute = winningAttributes.get(0);
 
         assertEquals(2, gameEngine.getWinners(selectedAttribute, roundPlayers).size());
+    }
+
+    @Test
+    @DisplayName("getShuffledRoundCards should return a shuffled list of top cards")
+    void getShuffledRoundCards_RoundPlayers_ShuffledCardList() {
+        List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
+        List<Card> intactRoundCards = new ArrayList<>(roundCards);
+        roundCards = gameEngine.getShuffledRoundCards(players);
+        assertNotEquals(intactRoundCards, roundCards);
     }
 
     @Test

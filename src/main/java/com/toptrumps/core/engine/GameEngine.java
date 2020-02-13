@@ -105,6 +105,20 @@ public class GameEngine {
     }
 
     /**
+     * Returns a shuffled list of cards based on the top cards of the round players.
+     *
+     * @param roundPlayers a list of players that participate in a game round
+     * @return a shuffled list of top cards
+     */
+    public List<Card> getShuffledRoundCards(List<Player> roundPlayers) {
+        List<Card> roundCards = roundPlayers.stream()
+                .map(Player::getTopCard)
+                .collect(toCollection(ArrayList::new));
+        dealer.shuffleCards(roundCards);
+        return roundCards;
+    }
+
+    /**
      * Returns the round outcome based on the winners and players of a round.
      * The RoundOutcome result can be VICTORY, DRAW, or GAME_OVER.
      *
