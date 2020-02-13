@@ -86,7 +86,7 @@ public class GameEngine {
         String attributeName = selectedAttribute.getName();
 
         for (Player p : players) {
-            Logger.getInstance().logToFileIfEnabled(p.getName() + "attribute: " + p.getTopCard().getAttributeByName(attributeName));
+            Logger.getInstance().logToFileIfEnabled(p.getName() + "attribute: " + attributeName + p.getTopCard().getAttributeByName(attributeName));
             Logger.getInstance().logToFileIfEnabled(p.getName() + "'s deck: \n" + p.toString());
         }
 
@@ -150,6 +150,11 @@ public class GameEngine {
         } else {
             // Declares Draw
             outcome = new RoundOutcome(DRAW, winners, removedPlayers);
+        }
+
+        for (Player p : players) {
+            Logger.getInstance().logToFileIfEnabled("State of decks after round end:\n");
+            Logger.getInstance().logToFileIfEnabled(p.getName() + "'s deck: \n" + p.toString());
         }
 
         return outcome;
