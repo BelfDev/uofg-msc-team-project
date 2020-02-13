@@ -21,7 +21,9 @@
 
 	<script src="/assets/scripts/libs/jquery-3.4.1.min.js"></script>
 	<script src="/assets/scripts/libs/anime.min.js"></script>
+	<script src="/assets/scripts/config/settings.js"></script>
 	<script src="/assets/scripts/plugins/screen.js"></script>
+	<script src="/assets/scripts/helpers/logger.js"></script>
 	<script src="/assets/scripts/helpers/stats.js"></script>
 	<script src="/assets/scripts/helpers/dom.js"></script>
 	<script src="/assets/scripts/helpers/network.js"></script>

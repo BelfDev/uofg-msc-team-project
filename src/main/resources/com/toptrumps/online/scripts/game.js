@@ -8,6 +8,10 @@ const Game = (($) => {
         quit: "QUIT"
     };
 
+    let timerBase = window.APP.TIMER_BASE;
+    let nextRoundTimer = window.APP.NEXT_ROUND_TIMER;
+    let activePlayerTimer = window.APP.ACTIVE_PLAYER_TIMER;
+
     // Game state variables
     let numberOfOpponents;
     let activePlayerID;
@@ -26,6 +30,7 @@ const Game = (($) => {
         const numberOfOpponents = getNumberOfOpponents();
 
         const request = NetworkHelper.makeRequest("api/game", { numberOfOpponents });
+        Logger.output("Number of opponents", "init", numberOfOpponents);
         request.then(response => {
             startNewGame(response);
         });
@@ -41,7 +46,7 @@ const Game = (($) => {
         resetRoundData();
         setTimeout(() => {
             startNewRound();
-        }, 2000);
+        }, nextRoundTimer);
     };
 
     const onEndTurn = () => {
@@ -66,11 +71,12 @@ const Game = (($) => {
         Modal.closeActiveModal();
 
         cardsOnTable = [];
+
+        Logger.output("Cards on table after reset", "resetRoundData", cardsOnTable);
     };
 
     const getNumberOfOpponents = () => {
-        const url = new URL(window.location.href);
-        const numberOfOpponents = url.searchParams.get("numberOfOpponents");
+        const numberOfOpponents = NetworkHelper.getCurrentURLParameterValue("numberOfOpponents");
 
         if (!numberOfOpponents) {
             window.location.replace("/toptrumps/");
@@ -89,14 +95,19 @@ const Game = (($) => {
         activePlayerID = gameData.activePlayerId;
         humanPlayerID = gameData.humanPlayer.id;
 
+        Logger.output("Active player ID", "startNewGame", activePlayerID);
+        Logger.output("Human player ID", "startNewGame", humanPlayerID);
+
         createPlayers(gameData.humanPlayer, gameData.aiPlayers);
         const players = assignDecks(gameData.humanPlayer, gameData.aiPlayers);
+
+        Logger.output("Players list", "startNewGame", players);
         PlayerModel.init(players);
         StatsHelper.init(PlayerModel.getPlayersList());
 
         setTimeout(() => {
             startNewRound();
-        }, 3000);
+        }, timerBase * 3);
     };
 
     const createPlayers = (humanPlayer, aiPlayers) => {
@@ -128,6 +139,8 @@ const Game = (($) => {
     };
 
     const startNewRound = () => {
+        Logger.output("Cards before starting new round", "startNewRound", PlayerModel.getPlayersCardCount());
+
         if (!isHumanPlayerDefeated) {
             const topCard = PlayerModel.getTopCard(humanPlayerID);
             DOMHelper.showCard(humanPlayerID, topCard);
@@ -140,10 +153,11 @@ const Game = (($) => {
             layCardOnTable(playerID, card);
         });
 
+        Logger.output("Cards on table", "startNewRound", cardsOnTable);
 
         setTimeout(() => {
             DOMHelper.displayActivePlayer(activePlayerID);
-        }, 1000);
+        }, activePlayerTimer);
 
         startAttributeSelection();
     };
@@ -159,12 +173,23 @@ const Game = (($) => {
         } else {
             DOMHelper.showMessage(`It is AI turn. Active player - ${PlayerModel.getPlayerName(activePlayerID)}`);
             DOMHelper.disableAttributeSelection(humanPlayerID);
-            setTimeout(() => {
+
+            if (window.APP.TEST_MODE) {
                 getChosenAttribute().then(response => {
+                    Logger.output("Received AI attribute", "startAttributeSelection", response.selectedAttribute);
                     onAttributeSelected(response.selectedAttribute.name, response.selectedAttribute.value);
-                    Countdown.run(() => { startRoundConclusion(response) });
+                    startRoundConclusion(response)
                 });
-            }, 2000);
+            } else {
+                setTimeout(() => {
+                    getChosenAttribute().then(response => {
+                        onAttributeSelected(response.selectedAttribute.name, response.selectedAttribute.value);
+                        Countdown.run(() => {
+                            startRoundConclusion(response)
+                        });
+                    });
+                }, timerBase * 2);
+            }
         }
     };
 
@@ -175,23 +200,33 @@ const Game = (($) => {
     const startRoundConclusion = async response => {
         DOMHelper.showOpponentsCards(cardsOnTable);
 
-        setTimeout(() => {
-            DOMHelper.showMessage(`Attribute ${activeAttribute.name} selected`);
-            DOMHelper.highlightAttribute(activeAttribute);
-
-            if (response.result === "VICTORY") {
-                DOMHelper.clearPlayerStates();
-                DOMHelper.displayWinnerPlayer(response.winner.id);
-            }
-
+        if (window.APP.TEST_MODE) {
+            showWinningConditions(response);
+            startRoundOutcome(response);
+        } else {
             setTimeout(() => {
-                startRoundOutcome(response);
-            }, 3000);
-        }, 3000);
+                showWinningConditions(response);
+
+                setTimeout(() => {
+                    startRoundOutcome(response);
+                }, timerBase * 3);
+            }, timerBase * 3);
+        }
 
     };
 
+    const showWinningConditions = response => {
+        DOMHelper.showMessage(`Attribute ${activeAttribute.name} selected`);
+        DOMHelper.highlightAttribute(activeAttribute);
+
+        if (response.result === "VICTORY") {
+            DOMHelper.clearPlayerStates();
+            DOMHelper.displayWinnerPlayer(response.winner.id);
+        }
+    }
+
     const startRoundOutcome = response => {
+        Logger.output("Round outcome", "startRoundOutcome", response.result);
         if (response.result === "DRAW") {
             StatsHelper.incrementRoundNumber(null);
             updateCommonPile();
@@ -222,6 +257,7 @@ const Game = (($) => {
             if (removedPlayerIDs.indexOf(playerID) === -1)
                 removedPlayerIDs.push(playerID);
         })
+        Logger.output("List of removed players updated", "updateRemovedPlayers", removedPlayerIDs);
 
     };
 
@@ -238,11 +274,14 @@ const Game = (($) => {
             commonPile.push(data.card);
         });
         cardsOnTable = [];
+        Logger.output("Cards on table", "updateCommonPile", cardsOnTable);
+        Logger.output("New common pile count", "updateCommonPile", commonPile.length);
         DOMHelper.updateCommonPileIndicator(commonPile.length);
     };
 
     const resetCommonPile = () => {
         commonPile = [];
+        Logger.output("New common pile count", "resetCommonPile", commonPile.length);
         DOMHelper.updateCommonPileIndicator(0);
     };
 
@@ -278,7 +317,7 @@ const Game = (($) => {
 
         setTimeout(() => {
             onNextRound();
-        }, 2000);
+        }, nextRoundTimer);
     };
 
     const showWinner = playerID => {
@@ -292,6 +331,9 @@ const Game = (($) => {
             cards.push(data.card);
         });
 
+        Logger.output("Cards for distribution:", "distributeCards", cards);
+        Logger.output("Player receiving cards", "distributeCards", playerID);
+
         PlayerModel.passCardsToPlayerByID(playerID, cards);
 
         resetCommonPile();
@@ -302,6 +344,8 @@ const Game = (($) => {
 
         const stats = StatsHelper.getGameStats();
         const hint = DOMHelper.getStatsMarkup(stats);
+
+        Logger.output("End of game stats", "showGameOutcome", stats);
 
         saveGameStats();
 
@@ -320,7 +364,7 @@ const Game = (($) => {
                 { scale: 0, translateX: '-50%', translateY: '-50%', opacity: 0 },
                 { scale: 1, translateX: '-50%', translateY: '-50%', opacity: 1 }
             ],
-            duration: 500,
+            duration: timerBase / 2,
             easing: 'easeOutElastic(1, .8)',
             loop: false,
             complete: function() {
@@ -328,9 +372,9 @@ const Game = (($) => {
                     anime({
                         targets: '.draw-indicator',
                         opacity: 0,
-                        duration: 1000
+                        duration: timerBase
                     })
-                }, 2000)
+                }, timerBase * 2)
             }
         });
     };

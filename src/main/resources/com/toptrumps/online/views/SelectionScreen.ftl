@@ -28,6 +28,7 @@
 </main>
 
     <script src="/assets/scripts/libs/jquery-3.4.1.min.js"></script>
+    <script src="/assets/scripts/config/settings.js"></script>
     <script src="/assets/scripts/plugins/screen.js"></script>
     <script src="/assets/scripts/plugins/modal.js"></script>
     <script src="/assets/scripts/plugins/input-number.js"></script>

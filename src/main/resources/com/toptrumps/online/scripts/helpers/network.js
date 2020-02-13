@@ -4,7 +4,6 @@ const NetworkHelper = (($) => {
 
     /** METHODS */
     const makeRequest = (url, data, type) => {
-        const parameters = {}
         return $.ajax({
             url: `${REST_API_URL}/${url}`,
             type: type || "POST",
@@ -12,8 +11,15 @@ const NetworkHelper = (($) => {
             processData: false,
             contentType: "application/json; charset=utf-8",
             dataType: "json"
+        }).always(response => {
+            Logger.output(`Response from request to /${url}`, "makeRequest", response);
         });
     };
+
+    const getCurrentURLParameterValue = parameterName => {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(parameterName)
+    }
 
     const checkIfResourceExists = url => {
         return $.ajax({
@@ -29,5 +35,6 @@ const NetworkHelper = (($) => {
     return {
         makeRequest,
         checkIfResourceExists,
+        getCurrentURLParameterValue
     }
 })(jQuery);
