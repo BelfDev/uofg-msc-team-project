@@ -25,7 +25,6 @@ public class CommandLineView {
     public void showWelcomeMessage() {
         printWelcomeBanner();
         typePrint(SLOW_SPEED, "\nTo start a new game, enter f \nTo see game statistics, enter s \nTo quit, enter q", false);
-        Logger.getInstance().logToFileIfEnabled("Game started");
     }
 
     public void showInvalidInput(){
@@ -193,7 +192,9 @@ public class CommandLineView {
 
     public void showSelectedAttribute(String playerName, String selectedAttribute, boolean skipPrintAnimation) {
         String message = String.format("%s selected the attribute %s", playerName, selectedAttribute);
+        Logger.getInstance().logToFileIfEnabled(message);
         typePrint(SLOW_SPEED, message, skipPrintAnimation);
+
     }
 
     public void showRoundResult(RoundOutcome outcome, List<Card> winningCards, boolean skipPrintAnimation) {
