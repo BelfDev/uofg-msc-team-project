@@ -30,6 +30,7 @@ public class CommandLineController {
     private Scanner scanner;
     private CommandLineView view;
     private GameEngine gameEngine;
+    private boolean skipPrintAnimation = false;
 
     /**
      * Constructs a new CommandLineController with a CommandLineView,
@@ -95,8 +96,12 @@ public class CommandLineController {
             humanPlayer = getHumanPlayer(players);
             isHumanAlive = humanPlayer != null;
             // Checks if the humanPlayer has not been eliminated
+            if(!isHumanAlive){
+                skipPrintAnimation = true;
+            }
+            view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size(), skipPrintAnimation);
             if (isHumanAlive) {
-                view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
+                view.showHumanInformation(humanPlayer);
             }
 
             // == ATTRIBUTE SELECTION ==
@@ -105,7 +110,7 @@ public class CommandLineController {
             // AI Player automatically selects a random max attribute;
             Attribute selectedAttribute = getSelectedAttribute(activePlayer);
             // Invokes the lifecycle method
-            onAttributeSelected(activePlayer, isHumanAlive);
+            onAttributeSelected(activePlayer);
 
             // == ATTRIBUTE COMPARISON ==
             // Evaluate who were the winners of the current round
@@ -158,12 +163,8 @@ public class CommandLineController {
         // Persists the collected state
         gameEngine.persistGameState(gameState);
 
-        if (!isHumanAlive) {
-            // Trigger automatic completion notice
-            view.showAutomaticCompletion();
-        }
-
-        // Invoke the lifecycle method
+        // Invoke the lifecycle method 
+        skipPrintAnimation = false;
         onGameOver(activePlayer, roundWinsMap);
     }
 
@@ -202,30 +203,28 @@ public class CommandLineController {
         }
     }
 
-    private void onAttributeSelected(Player activePlayer, boolean isHumanAlive) {
-        if (isHumanAlive) {
-            String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
-            String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
+    private void onAttributeSelected(Player activePlayer) {
+        String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
+        String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
 
-            view.showSelectedAttribute(playerName, selectedAttributeName);
-        }
+        view.showSelectedAttribute(playerName, selectedAttributeName, skipPrintAnimation);
     }
 
     private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards, boolean isHumanAlive) {
+        view.showRoundResult(outcome, winningCards, skipPrintAnimation);
+        List<Player> removedPlayers = outcome.getRemovedPlayers();
+        // Shows removed players if there's any
+        if (!removedPlayers.isEmpty()) {
+            view.showRemovedPlayers(removedPlayers, skipPrintAnimation);
+        }
         if (isHumanAlive) {
-            view.showRoundResult(outcome, winningCards);
-            List<Player> removedPlayers = outcome.getRemovedPlayers();
-            // Shows removed players if there's any
-            if (!removedPlayers.isEmpty()) {
-                view.showRemovedPlayers(removedPlayers);
-            }
-
             selectNextRound();
         }
     }
 
     private void onGameOver(Player winner, HashMap<Player, Integer> roundWinsMap) {
         view.showGameResult(winner, roundWinsMap);
+        selectNextRound();
         start();
     }
 
