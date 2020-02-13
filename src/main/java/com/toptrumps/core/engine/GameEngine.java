@@ -40,21 +40,6 @@ public class GameEngine {
     }
 
     /**
-     * Populates the given players with shuffled decks.
-     *
-     * @param players player list to whom the card decks must be assigned
-     */
-    public void assignDecks(ArrayList<Player> players) {
-        final int numberOfPlayers = players.size();
-        // Gets the shuffled and split decks from the dealer
-        final ArrayList<ArrayList<Card>> decks = dealer.dealCards(numberOfPlayers);
-        // Distributes the split decks to the game players
-        for (int i = 0; i < numberOfPlayers; i++) {
-            players.get(i).setDeck(decks.get(i));
-        }
-    }
-
-    /**
      * Randomly assigns a player from the given array as the
      * active player of the game.
      *
@@ -118,6 +103,20 @@ public class GameEngine {
     }
 
     /**
+     * Returns a shuffled list of cards based on the top cards of the round players.
+     *
+     * @param roundPlayers a list of players that participate in a game round
+     * @return a shuffled list of top cards
+     */
+    public List<Card> getShuffledRoundCards(List<Player> roundPlayers) {
+        List<Card> roundCards = roundPlayers.stream()
+                .map(Player::getTopCard)
+                .collect(toCollection(ArrayList::new));
+        dealer.shuffleCards(roundCards);
+        return roundCards;
+    }
+
+    /**
      * Returns the round outcome based on the winners and players of a round.
      * The RoundOutcome result can be VICTORY, DRAW, or GAME_OVER.
      *
@@ -167,6 +166,16 @@ public class GameEngine {
     }
 
     // === CONVENIENCE METHODS ===
+
+    private void assignDecks(ArrayList<Player> players) {
+        final int numberOfPlayers = players.size();
+        // Gets the shuffled and split decks from the dealer
+        final ArrayList<ArrayList<Card>> decks = dealer.dealCards(numberOfPlayers);
+        // Distributes the split decks to the game players
+        for (int i = 0; i < numberOfPlayers; i++) {
+            players.get(i).setDeck(decks.get(i));
+        }
+    }
 
     private ArrayList<Player> createPlayers(int numberOfOpponents) {
         // Creates AI Players

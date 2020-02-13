@@ -8,6 +8,7 @@ import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.statistics.GameStateCollector;
 import com.toptrumps.core.utils.MapUtils;
+import com.toptrumps.core.utils.ResourceLoader;
 import com.toptrumps.db.Statistics;
 
 import java.util.*;
@@ -23,13 +24,13 @@ import static java.util.stream.Collectors.toCollection;
  */
 public class CommandLineController {
 
-    private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
     private static final int MIN_OPPONENTS = 1;
     private static final int MAX_OPPONENTS = 4;
 
     private Scanner scanner;
     private CommandLineView view;
     private GameEngine gameEngine;
+    private boolean skipPrintAnimation = false;
 
     /**
      * Constructs a new CommandLineController with a CommandLineView,
@@ -38,8 +39,9 @@ public class CommandLineController {
     public CommandLineController() {
         // Game view
         this.view = new CommandLineView();
+        String deckResource = ResourceLoader.getDeckFileName();
         // Game core engine model
-        this.gameEngine = new GameEngine(DECK_RESOURCE);
+        this.gameEngine = new GameEngine(deckResource);
         this.scanner = new Scanner(System.in);
     }
 
@@ -96,8 +98,12 @@ public class CommandLineController {
             humanPlayer = getHumanPlayer(players);
             isHumanAlive = humanPlayer != null;
             // Checks if the humanPlayer has not been eliminated
+            if(!isHumanAlive){
+                skipPrintAnimation = true;
+            }
+            view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size(), skipPrintAnimation);
             if (isHumanAlive) {
-                view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
+                view.showHumanInformation(humanPlayer);
             }
 
             // == ATTRIBUTE SELECTION ==
@@ -106,14 +112,16 @@ public class CommandLineController {
             // AI Player automatically selects a random max attribute;
             Attribute selectedAttribute = getSelectedAttribute(activePlayer);
             // Invokes the lifecycle method
-            onAttributeSelected(activePlayer, isHumanAlive);
+            onAttributeSelected(activePlayer);
 
             // == ATTRIBUTE COMPARISON ==
             // Evaluate who were the winners of the current round
             List<Player> winners = gameEngine.getWinners(selectedAttribute, players);
             // Retrieve the round cards
             List<Card> winningCards = winners.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
-            List<Card> roundCards = players.stream().map(Player::getTopCard).collect(toCollection(ArrayList::new));
+            // Extracts a shuffled list of round cards
+            List<Card> roundCards = gameEngine.getShuffledRoundCards(players);
+
             // Remove the topCard from each player
             players.forEach(Player::removeTopCard);
 
@@ -160,21 +168,9 @@ public class CommandLineController {
         // Persists the collected state
         gameEngine.persistGameState(gameState);
 
-        if (!isHumanAlive) {
-            // Trigger automatic completion notice
-            view.showAutomaticCompletion();
-        }
-
-        // Invoke the lifecycle method
+        // Invoke the lifecycle method 
+        skipPrintAnimation = false;
         onGameOver(activePlayer, roundWinsMap);
-    }
-
-    private void presentStatistics() {
-        Statistics stats = new Statistics();
-        view.showStats(stats);
-        view.showNextRoundMessage();
-        scanner.nextLine();
-        start();
     }
 
     // === LIFECYCLE METHODS ===
@@ -204,30 +200,28 @@ public class CommandLineController {
         }
     }
 
-    private void onAttributeSelected(Player activePlayer, boolean isHumanAlive) {
-        if (isHumanAlive) {
-            String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
-            String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
+    private void onAttributeSelected(Player activePlayer) {
+        String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
+        String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
 
-            view.showSelectedAttribute(playerName, selectedAttributeName);
-        }
+        view.showSelectedAttribute(playerName, selectedAttributeName, skipPrintAnimation);
     }
 
     private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards, boolean isHumanAlive) {
+        view.showRoundResult(outcome, winningCards, skipPrintAnimation);
+        List<Player> removedPlayers = outcome.getRemovedPlayers();
+        // Shows removed players if there's any
+        if (!removedPlayers.isEmpty()) {
+            view.showRemovedPlayers(removedPlayers, skipPrintAnimation);
+        }
         if (isHumanAlive) {
-            view.showRoundResult(outcome, winningCards);
-            List<Player> removedPlayers = outcome.getRemovedPlayers();
-            // Shows removed players if there's any
-            if (!removedPlayers.isEmpty()) {
-                view.showRemovedPlayers(removedPlayers);
-            }
-
             selectNextRound();
         }
     }
 
     private void onGameOver(Player winner, HashMap<Player, Integer> roundWinsMap) {
         view.showGameResult(winner, roundWinsMap);
+        selectNextRound();
         start();
     }
 
@@ -287,6 +281,14 @@ public class CommandLineController {
         // By convention, the human player is always the first element;
         // The ternary operator checks if the human player has been eliminated
         return players.get(0).isAIPlayer() ? null : players.get(0);
+    }
+
+    private void presentStatistics() {
+        Statistics stats = new Statistics();
+        view.showStats(stats);
+        view.showNextRoundMessage();
+        scanner.nextLine();
+        start();
     }
 
 }

@@ -4,6 +4,7 @@ import com.toptrumps.cli.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -32,13 +33,33 @@ public class Dealer {
     }
 
     /**
+     * Returns an array list of parsed cards
+     *
+     * @return array list of cards
+     */
+    public ArrayList<Card> getDeck() {
+        return deck;
+    }
+
+    /**
+     * Randomly rearrange the order of the card elements
+     * @param cards list of cards to be shuffled
+     */
+    public void shuffleCards(List<Card> cards) {
+        // Randomly reorder the list of cards
+        Collections.shuffle(cards, new Random());
+    }
+
+    /**
      * Returns shuffled split decks bases on the number of players present in the game.
      *
      * @param numberOfPlayers the number of players present in the game
      * @return a list of shuffled smaller decks (list of cards)
      */
     public ArrayList<ArrayList<Card>> dealCards(int numberOfPlayers) {
-        shuffleCards();
+        shuffleCards(deck);
+        // Logs the shuffled deck if enabled
+        Logger.getInstance().logToFileIfEnabled("Shuffled cards: \n" + printDeck());
         return splitDeck(numberOfPlayers);
     }
 
@@ -56,13 +77,6 @@ public class Dealer {
     }
 
     // === CONVENIENCE METHODS ===
-
-    private void shuffleCards() {
-        // Randomly reorder the list of cards
-        Collections.shuffle(deck, new Random());
-        // Logs the shuffled deck if enabled
-        Logger.getInstance().logToFileIfEnabled("Shuffled cards: \n" + printDeck());
-    }
 
     private ArrayList<ArrayList<Card>> splitDeck(int numberOfSplits) {
         int size = this.deck.size();
