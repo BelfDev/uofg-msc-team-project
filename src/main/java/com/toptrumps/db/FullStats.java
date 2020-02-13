@@ -75,11 +75,11 @@ public class FullStats {
 
     // TODO: REFACTOR THIS!
     @JsonProperty("roundWins")
-    public Map<PlayerState, Integer> getPlayerStateRoundsMap() {
-        Map<PlayerState, Integer> playerStateRoundsMap = new HashMap<>();
+    public Map<String, Integer> getPlayerNameRoundsMap() {
+        Map<String, Integer> playerStateRoundsMap = new HashMap<>();
         this.roundsMap.forEach((player, roundWins) -> {
-                    playerStateRoundsMap.put(new PlayerState(player), roundWins);
-                }
+                playerStateRoundsMap.put(player.getName(), roundWins);
+            }
         );
         return playerStateRoundsMap;
     }
