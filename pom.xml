@@ -14,6 +14,7 @@
         <dropwizard.version>1.2.2</dropwizard.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+        <junit.jupiter.version>5.5.2</junit.jupiter.version>
     </properties>
 
     <!-- These are the other software libruaries developed by third parties that we need -->
@@ -42,11 +43,12 @@
             <version>${dropwizard.version}</version>
         </dependency>
 
+        <!-- JUnit 5 for unit testing -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>compile</scope>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- dependency to connect with postgres db -->

@@ -32,6 +32,15 @@ public class Dealer {
     }
 
     /**
+     * Returns an array list of parsed cards
+     *
+     * @return array list of cards
+     */
+    public ArrayList<Card> getDeck() {
+        return deck;
+    }
+
+    /**
      * Returns shuffled split decks bases on the number of players present in the game.
      *
      * @param numberOfPlayers the number of players present in the game
