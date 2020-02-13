@@ -5,6 +5,10 @@ import com.toptrumps.online.api.request.FinalGameState;
 
 import java.util.Map;
 
+/**
+ * This class is responsible for collecting the game state through
+ * the Builder pattern.
+ */
 public final class GameStateCollector {
 
     private final int numberOfDraws;

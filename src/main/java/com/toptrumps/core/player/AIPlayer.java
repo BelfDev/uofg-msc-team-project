@@ -8,7 +8,6 @@ import com.toptrumps.online.api.request.PlayerState;
  * Represents an AI player in the game.
  * There can be up to 4 AI players.
  */
-
 public class AIPlayer extends Player {
 
     private static final String DEFAULT_AI_NAME = "AI_Player";

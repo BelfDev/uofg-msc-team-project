@@ -1,7 +1,7 @@
 package com.toptrumps.online.api;
 
 import com.toptrumps.core.card.Attribute;
-import com.toptrumps.core.engine.Game;
+import com.toptrumps.core.engine.GameEngine;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class TopTrumpsRESTAPI {
 
-    Game gameEngine;
+    GameEngine gameEngine;
 
     /**
      * Contructor method for the REST API. This is called first. It provides
@@ -44,7 +44,7 @@ public class TopTrumpsRESTAPI {
      * @param conf
      */
     public TopTrumpsRESTAPI(TopTrumpsJSONConfiguration conf) {
-        this.gameEngine = new Game(conf.getDeckFile());
+        this.gameEngine = new GameEngine(conf.getDeckFile());
     }
 
     // ----------------------------------------------------
