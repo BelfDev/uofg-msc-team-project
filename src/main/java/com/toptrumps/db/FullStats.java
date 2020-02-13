@@ -20,7 +20,7 @@ public class FullStats {
         this.winnerID = rs.getInt("winner_id");
         this.roundsPlayed = rs.getInt("rounds_played");
         this.draws = rs.getInt("draws");
-        this.winner = players.getPlayer(this.winnerID - 1);
+        this.winner = players.getPlayer(this.winnerID);
         roundsMap = new HashMap<Player, Integer>();
     }
 
