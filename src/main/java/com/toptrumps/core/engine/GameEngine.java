@@ -86,8 +86,7 @@ public class GameEngine {
         String attributeName = selectedAttribute.getName();
 
         for (Player p : players) {
-            Logger.getInstance().logToFileIfEnabled(p.getName() + "attribute: " + attributeName + p.getTopCard().getAttributeByName(attributeName));
-            Logger.getInstance().logToFileIfEnabled(p.getName() + "'s deck: \n" + p.toString());
+            Logger.getInstance().logToFileIfEnabled(p.getName() + "attribute: " + p.getTopCard().getAttributeByName(attributeName));
         }
 
         // Finds the maximum attribute value
@@ -151,9 +150,8 @@ public class GameEngine {
             // Declares Draw
             outcome = new RoundOutcome(DRAW, winners, removedPlayers);
         }
-
+        Logger.getInstance().logToFileIfEnabled("State of decks after round end:\n");
         for (Player p : players) {
-            Logger.getInstance().logToFileIfEnabled("State of decks after round end:\n");
             Logger.getInstance().logToFileIfEnabled(p.getName() + "'s deck: \n" + p.toString());
         }
 
