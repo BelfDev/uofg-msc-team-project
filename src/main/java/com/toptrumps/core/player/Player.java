@@ -105,7 +105,6 @@ public class Player implements Comparable<Player> {
 
     public void setSelectedAttribute(Attribute attribute) {
         this.selectedAttribute = attribute;
-        Logger.getInstance().logToFileIfEnabled(name + " selected the attribute " + attribute.getName() + " " + attribute.getValue() + "\n");
     }
 
     @Override
