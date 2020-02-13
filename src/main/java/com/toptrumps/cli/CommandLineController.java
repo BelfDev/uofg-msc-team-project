@@ -30,6 +30,7 @@ public class CommandLineController {
     private Scanner scanner;
     private CommandLineView view;
     private GameEngine gameEngine;
+    private boolean skipPrintAnimation = false;
 
     /**
      * Constructs a new CommandLineController with a CommandLineView,
@@ -96,9 +97,9 @@ public class CommandLineController {
             isHumanAlive = humanPlayer != null;
             // Checks if the humanPlayer has not been eliminated
             if(!isHumanAlive){
-                IS_TEST_MODE = true; //TODO: Rename IS_TEST_MODE to AUTOCOMPLETE or something similar!!!!
+                skipPrintAnimation = true;
             }
-            view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
+            view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size(), skipPrintAnimation);
             if (isHumanAlive) {
                 view.showHumanInformation(humanPlayer);
             }
@@ -162,8 +163,8 @@ public class CommandLineController {
         // Persists the collected state
         gameEngine.persistGameState(gameState);
 
-        // Invoke the lifecycle method with correct printing speed
-        IS_TEST_MODE = false;
+        // Invoke the lifecycle method 
+        skipPrintAnimation = false;
         onGameOver(activePlayer, roundWinsMap);
     }
 
@@ -206,15 +207,15 @@ public class CommandLineController {
         String selectedAttributeName = activePlayer.getSelectedAttribute().getName();
         String playerName = activePlayer.isAIPlayer() ? activePlayer.getName() : "You";
 
-        view.showSelectedAttribute(playerName, selectedAttributeName);
+        view.showSelectedAttribute(playerName, selectedAttributeName, skipPrintAnimation);
     }
 
     private void onRoundEnd(RoundOutcome outcome, List<Card> winningCards, boolean isHumanAlive) {
-        view.showRoundResult(outcome, winningCards);
+        view.showRoundResult(outcome, winningCards, skipPrintAnimation);
         List<Player> removedPlayers = outcome.getRemovedPlayers();
         // Shows removed players if there's any
         if (!removedPlayers.isEmpty()) {
-            view.showRemovedPlayers(removedPlayers);
+            view.showRemovedPlayers(removedPlayers, skipPrintAnimation);
         }
         if (isHumanAlive) {
             selectNextRound();
@@ -223,6 +224,7 @@ public class CommandLineController {
 
     private void onGameOver(Player winner, HashMap<Player, Integer> roundWinsMap) {
         view.showGameResult(winner, roundWinsMap);
+        selectNextRound();
         start();
     }
 
