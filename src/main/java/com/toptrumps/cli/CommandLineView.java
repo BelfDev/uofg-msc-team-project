@@ -24,9 +24,7 @@ public class CommandLineView {
 
     public void showWelcomeMessage() {
         printWelcomeBanner();
-
-    typePrint(SLOW_SPEED, "\nTo start a new game, enter f \nTo see game statistics, enter s \nTo quit, enter q", false);
-
+        typePrint(SLOW_SPEED, "\nTo start a new game, enter f \nTo see game statistics, enter s \nTo quit, enter q", false);
     }
 
     public void showInvalidInput(){
