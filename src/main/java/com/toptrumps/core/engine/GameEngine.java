@@ -1,5 +1,6 @@
 package com.toptrumps.core.engine;
 
+import com.toptrumps.cli.Logger;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.core.card.Dealer;
@@ -99,13 +100,10 @@ public class GameEngine {
         // Retrieves the selected attribute name
         String attributeName = selectedAttribute.getName();
 
-        /*
-        // TODO: Move this away from the core engine.
-        for (Player p : players) { // TODO Maybe integrate this for loop with something else to prevent looping.
+        for (Player p : players) {
             Logger.getInstance().logToFileIfEnabled(p.getName() + "'s top card:  " + p.getTopCard().toString() + "\n\n"
                     + p.getName() + "'s deck: \n" + p.toString());
         }
-        */
 
         // Finds the maximum attribute value
         int maxValue = players.stream()

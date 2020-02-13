@@ -91,13 +91,14 @@ public class CommandLineController {
         while (players.size() != 1) {
             // == GAME START UP ==
             roundNumber++;
+            Logger.getInstance().logToFileIfEnabled(roundNumber + "");
             // Retrieves the human player;
             humanPlayer = getHumanPlayer(players);
             isHumanAlive = humanPlayer != null;
             // Checks if the humanPlayer has not been eliminated
             if (isHumanAlive) {
                 view.showRoundStart(activePlayer, humanPlayer, roundNumber, communalPile.size());
-            }
+            };
 
             // == ATTRIBUTE SELECTION ==
             // Handles attribute selection:

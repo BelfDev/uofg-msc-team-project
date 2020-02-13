@@ -29,7 +29,7 @@ public class Attribute implements Comparable<Attribute> {
 
     @Override
     public String toString() {
-        return String.format("Attribute => name: %1$-2s value: %2$2s", name, value);
+        return String.format("%1$-2s: %2$2s", name, value);
     }
 
 
