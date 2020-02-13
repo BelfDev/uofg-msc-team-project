@@ -196,7 +196,7 @@ public class CommandLineView {
         String message = String.format("%s selected the attribute %s", playerName, selectedAttribute);
       
         Logger.getInstance().logToFileIfEnabled(message);
-        typePrint(SLOW_SPEED, message);
+        typePrint(SLOW_SPEED, message, skipPrintAnimation);
 
     }
 
