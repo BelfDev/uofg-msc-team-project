@@ -101,8 +101,8 @@ public class GameEngine {
         String attributeName = selectedAttribute.getName();
 
         for (Player p : players) {
-            Logger.getInstance().logToFileIfEnabled(p.getName() + "'s top card:  " + p.getTopCard().toString() + "\n\n"
-                    + p.getName() + "'s deck: \n" + p.toString());
+            Logger.getInstance().logToFileIfEnabled(p.getName() + "attribute: " + p.getTopCard().getAttributeByName(attributeName));
+            Logger.getInstance().logToFileIfEnabled(p.getName() + "'s deck: \n" + p.toString());
         }
 
         // Finds the maximum attribute value
