@@ -9,23 +9,23 @@
 		<div class="statistics-total">
 			<div class="statistics-total__item">
 				Games Played
-				<span class="statistics-total__item-value">30</span>
+				<span class="statistics-total__item-value js-stats-games-played-value">0</span>
 			</div>
 			<div class="statistics-total__item">
 				AI Wins
-				<span class="statistics-total__item-value">30</span>
+				<span class="statistics-total__item-value js-stats-ai-wins-value">0</span>
 			</div>
 			<div class="statistics-total__item">
 				Human Wins
-				<span class="statistics-total__item-value">30</span>
+				<span class="statistics-total__item-value js-stats-human-wins-value">0</span>
 			</div>
 			<div class="statistics-total__item">
 				Average Draws
-				<span class="statistics-total__item-value">30</span>
+				<span class="statistics-total__item-value js-stats-average-draws-value">0</span>
 			</div>
 			<div class="statistics-total__item">
 				Rounds Record
-				<span class="statistics-total__item-value">30</span>
+				<span class="statistics-total__item-value js-stats-rounds-record-value">0</span>
 			</div>
 		</div>
 
@@ -42,233 +42,27 @@
 					<th>AI 4 wins</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>AI 2</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>4</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>5</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>6</td>
-					<td>Human</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>7</td>
-					<td>AI 3</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td>AI 4</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>8</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>9</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>10</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>11</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>12</td>
-					<td>Human</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>13</td>
-					<td>Human</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>14</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>15</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>16</td>
-					<td>Human</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>17</td>
-					<td>AI 2</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>18</td>
-					<td>Human</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>19</td>
-					<td>AI 4</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>20</td>
-					<td>AI 1</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-				<tr>
-					<td>21</td>
-					<td>AI 3</td>
-					<td>35</td>
-					<td>15</td>
-					<td>4</td>
-					<td>6</td>
-					<td>2</td>
-					<td>8</td>
-				</tr>
-			</tbody>
+			<tbody class="js-stats-body"></tbody>
 		</table>
 	</main>
 
+	<script id="template-stats-row" type="text/template">
+		<tr>
+			<td class="js-game-id-value"></td>
+			<td class="js-winner-name"></td>
+			<td class="js-total-rounds-value"></td>
+			<td class="js-human-wins"></td>
+			<td class="js-aione-wins"></td>
+			<td class="js-aitwo-wins"></td>
+			<td class="js-aithree-wins"></td>
+			<td class="js-aifour-wins"></td>
+		</tr>
+	</script>
+
 	<script src="/assets/scripts/libs/jquery-3.4.1.min.js"></script>
 	<script src="/assets/scripts/plugins/screen.js"></script>
+	<script src="/assets/scripts/helpers/network.js"></script>
+	<script src="/assets/scripts/statistics.js"></script>
 	<script>
 		$(function() {
 			Screen.init()

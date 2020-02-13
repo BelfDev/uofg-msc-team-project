@@ -22,7 +22,11 @@ const Countdown = (($) => {
     const run = callback => {
         $countdown.addClass(countdownActiveClass);
 
-        animateCountdown(callback);
+        if (window.TEST_MODE) {
+            callback();
+        } else {
+            animateCountdown(callback);
+        }
     };
 
     const animateCountdown = (callback) => {
@@ -30,9 +34,9 @@ const Countdown = (($) => {
             opacityIn: [0, 1],
             scaleIn: [0.2, 1],
             scaleOut: 3,
-            durationIn: 500,
-            durationOut: 300,
-            delay: 100
+            durationIn: DOMHelper.timerBase / 2,
+            durationOut: DOMHelper.timerBase / 3,
+            delay: DOMHelper.timerBase / 10
         };
 
         anime
@@ -87,8 +91,8 @@ const Countdown = (($) => {
             .add({
                 targets: countdownSelector,
                 opacity: 0,
-                duration: 500,
-                delay: 500
+                duration: DOMHelper.timerBase / 2,
+                delay: DOMHelper.timerBase / 2
             });
     };
 

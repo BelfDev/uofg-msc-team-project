@@ -52,7 +52,13 @@ const DOMHelper = (($) => {
     const roundsBoxTemplateSelector = "#template-rounds-box";
 
     // Timer and duration variables
-    const curtainDelay = 1000;
+    const timerBase = window.APP.TIMER_BASE;
+    const curtainDelay = window.APP.STARTUP_DELAY;
+    const cardAnimation = {
+        scaleDelay: timerBase / 4,
+        rotateDelay: timerBase / 5,
+        duration: timerBase / 2.5
+    }
 
     // Easings
     const easeInQuart = 'cubicBezier(0.895, 0.030, 0.685, 0.220)';
@@ -133,7 +139,7 @@ const DOMHelper = (($) => {
         setCardAttributes(playerSelector, card.attributes);
 
         const $card = $(playerSelector).find(cardSelector);
-        animateCard($card);
+        animateCard($card, false);
     };
 
     const setCardImage = (playerSelector, cardName) => {
@@ -192,18 +198,24 @@ const DOMHelper = (($) => {
         return attrNodeCollection;
     };
 
-    const animateCard = ($card) => {
+    const animateCard = ($card, hide) => {
+        const direction = hide === true ? "+" : "-";
         $card.addClass(cardActiveClass);
 
-        const options = {
-            targets: $card[0],
-            scale: [{ value: 1 }, { value: 1.3 }, { value: 1, delay: 250 }],
-            rotateY: { value: "+=180", delay: 200 },
-            easing: "easeInOutSine",
-            duration: 400
-        };
+        if (window.APP.TEST_MODE) {
+            const transformValue = 'rotateY(180deg)';
+            $card.css('transform', transformValue);
+        } else {
+            const options = {
+                targets: $card[0],
+                scale: [{value: 1}, {value: 1.3}, {value: 1, delay: cardAnimation.scaleDelay}],
+                rotateY: {value: `${direction}=180deg`, delay: cardAnimation.rotateDelay},
+                easing: "easeInOutSine",
+                duration: cardAnimation.duration
+            };
 
-        anime(options);
+            anime(options);
+        }
     };
 
     const enableAttributeSelection = (attributeCallback, humanPlayerID, endTurnCallback) => {
@@ -275,7 +287,7 @@ const DOMHelper = (($) => {
 
         const $card = $(playerSelector).find(cardSelector);
 
-        animateCard($card, playerID);
+        animateCard($card,true);
         $card.removeClass(cardActiveClass);
     };
 
@@ -284,7 +296,7 @@ const DOMHelper = (($) => {
         $(commonPileSelector).addClass(commonPileActiveClass);
         setTimeout(() => {
             $(commonPileSelector).removeClass(commonPileActiveClass);
-        }, 2000);
+        }, timerBase * 2);
     };
 
     const clearPlayerStates = () => {
@@ -312,7 +324,7 @@ const DOMHelper = (($) => {
 
             setTimeout(() => {
                 showCard(data.playerID, data.card);
-            }, 500 * index);
+            }, (timerBase / 2) * index);
         });
     };
 
@@ -376,6 +388,7 @@ const DOMHelper = (($) => {
         showOpponentsCards,
         highlightAttribute,
         resetAttributeHighlight,
-        getStatsMarkup
+        getStatsMarkup,
+        timerBase
     }
 })(jQuery);
