@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Player implements Comparable<Player> {
+public class Player {
 
     final protected int id;
     final protected String name;
@@ -108,18 +108,10 @@ public class Player implements Comparable<Player> {
     }
 
     @Override
-    public int compareTo(Player opponent) {
-        Attribute opponentAttribute = opponent.getSelectedAttribute();
-        if (opponentAttribute == null || selectedAttribute == null) throw new NoSelectionException();
-        return selectedAttribute.compareTo(opponentAttribute);
-    }
-
-    // TODO: Come up with a better format
-    @Override
     public String toString() {
         String deckString = "Player => " + name + "\nDeck:\n";
         for (Card c : deck) {
-            deckString += c.toString(); // Mangling the exisiting toString was the only way I could find to print it out nicely.
+            deckString += c.toString();
         }
         return deckString;
     }

@@ -26,6 +26,7 @@ public class GameEngine {
     private static final String DEFAULT_USER_NAME = "Human_Player";
 
     private final Dealer dealer;
+    private Logger logger;
 
     /**
      * Constructs the GameEngine model that exposes core game
@@ -37,6 +38,7 @@ public class GameEngine {
     public GameEngine(String deckFile) {
         // Object responsible for shuffling and splitting the deck
         this.dealer = new Dealer(deckFile);
+        this.logger = Logger.getInstance();
     }
 
     /**
@@ -85,8 +87,9 @@ public class GameEngine {
         // Retrieves the selected attribute name
         String attributeName = selectedAttribute.getName();
 
-        for (Player p : players) {
-            Logger.getInstance().logToFileIfEnabled(p.getName() + "attribute: " + p.getTopCard().getAttributeByName(attributeName));
+        // Logs to file if Logger is enabled
+        if (logger.isEnabled()) {
+            players.forEach(p -> logger.logToFile(p.getName() + "attribute: " + p.getTopCard().getAttributeByName(attributeName)));
         }
 
         // Finds the maximum attribute value
@@ -150,9 +153,10 @@ public class GameEngine {
             // Declares Draw
             outcome = new RoundOutcome(DRAW, winners, removedPlayers);
         }
-        Logger.getInstance().logToFileIfEnabled("State of decks after round end:\n");
-        for (Player p : players) {
-            Logger.getInstance().logToFileIfEnabled(p.getName() + "'s deck: \n" + p.toString());
+
+        if (logger.isEnabled()) {
+            logger.logToFile("State of decks after round end:\n");
+            players.forEach(p -> logger.logToFile(p.getName() + "'s deck: \n" + p.toString()));
         }
 
         return outcome;
