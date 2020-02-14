@@ -92,7 +92,7 @@ const Countdown = (($) => {
                 targets: countdownSelector,
                 opacity: 0,
                 duration: DOMHelper.timerBase / 2,
-                delay: DOMHelper.timerBase / 2
+                delay: 0
             });
     };
 
