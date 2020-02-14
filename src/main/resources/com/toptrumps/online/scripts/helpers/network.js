@@ -5,6 +5,7 @@ const NetworkHelper = (($) => {
     /** METHODS */
     const makeRequest = (url, data, type) => {
         return $.ajax({
+            async: false,
             url: `${REST_API_URL}/${url}`,
             type: type || "POST",
             data: data ? JSON.stringify(data) : {},
