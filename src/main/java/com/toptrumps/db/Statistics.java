@@ -84,17 +84,12 @@ public class Statistics {
 
             while(roundStats.next()){
                 gameId = roundStats.getInt("game_id");
-                if(gameId == allStats.get(counter).getGameID()){
-                    allStats.get(counter).buildRoundStats(roundStats,players);
-                    
-                }else{
-                        counter++;
-                        if(gameId == allStats.get(counter).getGameID()){
-                        allStats.get(counter).buildRoundStats(roundStats,players);
+                while(gameId != allStats.get(counter).getGameID()){
+                    counter++;
                 }
+                allStats.get(counter).buildRoundStats(roundStats,players);
             }
-        }
-        }catch(SQLException e){e.printStackTrace();}
+            }catch(SQLException e){e.printStackTrace();}
             
         return allStats;
         }

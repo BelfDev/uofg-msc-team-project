@@ -15,6 +15,18 @@ public class FullStats{
 
     }
 
+    public void printStats() {
+        System.out.println("Game ID: " + this.gameID);
+        System.out.println("Rounds Played: " + this.roundsPlayed);
+        System.out.println("Draws: " + this.draws);
+
+        for (Map.Entry<Player, Integer> entry : roundsMap.entrySet()) {
+            System.out.println("Player " + entry.getKey().getName() + " won " + entry.getValue());
+        }
+
+        System.out.println("---------------------------------------");
+    }
+
     private int gameID;
     private Player winner;
     private int roundsPlayed;
