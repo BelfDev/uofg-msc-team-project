@@ -34,9 +34,9 @@ const Countdown = (($) => {
             opacityIn: [0, 1],
             scaleIn: [0.2, 1],
             scaleOut: 3,
-            durationIn: DOMHelper.timerBase / 2,
-            durationOut: DOMHelper.timerBase / 3,
-            delay: DOMHelper.timerBase / 10
+            durationIn: DOMHelper.timerBase / 3,
+            durationOut: DOMHelper.timerBase / 5,
+            delay: DOMHelper.timerBase / 15
         };
 
         anime
