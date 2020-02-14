@@ -12,16 +12,32 @@ import static java.util.logging.Level.FINE;
  */
 
 public class Logger {
+
     public static final String LOGGER = "commandLineLogger";
     public static final String DIVIDER = "-------------------";
+
     private static final String FILE_PATH = "./TopTrumps.log";
+
     private static Logger instance;
     java.util.logging.Logger logger;
+
     private Handler loggerHandler;
+    private boolean isEnabled;
 
 
     private Logger() {
         logger = java.util.logging.Logger.getLogger(LOGGER); //Creates a Logger with the name set to the string in LOGGER
+        this.isEnabled = false;
+    }
+
+    /**
+     * Returns whether the LoggerHandler has been initialized and
+     * added to the Logger.
+     *
+     * @return a boolean value indicating if the logger is enabled
+     */
+    public boolean isEnabled() {
+        return isEnabled;
     }
 
     /**
@@ -32,13 +48,14 @@ public class Logger {
     public void enable() {
         try {
             loggerHandler = new FileHandler(FILE_PATH);
-
             loggerHandler.setFormatter(new Formatter() {
                 @Override
                 public String format(LogRecord record) {
                     return String.format(("%s\n%s\n"), record.getMessage(), DIVIDER);
                 }
             });
+
+            isEnabled = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,10 +79,21 @@ public class Logger {
     }
 
     /**
-     * Writes messages passed to it to the log. 
-     * @param String logEntry
+     * Wrapper that verifies if the Logger is enabled, and if true, writes
+     * messages passed to it to the log file.
+     *
+     * @param logEntry
      */
     public void logToFileIfEnabled(String logEntry) {
+        logToFile(logEntry);
+    }
+
+    /**
+     * Writes messages passed to it to the log.
+     *
+     * @param logEntry
+     */
+    public void logToFile(String logEntry) {
         java.util.logging.Logger.getLogger(LOGGER).fine(logEntry);
     }
 
