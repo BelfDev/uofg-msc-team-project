@@ -30,7 +30,6 @@ public class PlayerMove {
         return activePlayerId;
     }
 
-    // TODO: Optimize all filter operations
     public PlayerState getActivePlayerState() {
         return playerStates.stream()
                 .filter(p -> p.getId() == activePlayerId)
