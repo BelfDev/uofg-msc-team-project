@@ -1,5 +1,6 @@
 const APP = {
     TEST_MODE: false,
+    ENABLE_LOGGER: true,
     TIMER_BASE: 1000,
     STARTUP_DELAY: 1000,
     NEXT_ROUND_TIMER: 2000,
@@ -8,6 +9,7 @@ const APP = {
 
 if (APP.TEST_MODE) {
     APP.TIMER_BASE = 100;
+    ENABLE_LOGGER = true;
     APP.NEXT_ROUND_TIMER = 1;
     APP.ACTIVE_PLAYER_TIMER = 1;
 }

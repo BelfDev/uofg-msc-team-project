@@ -92,8 +92,7 @@ const Game = (($) => {
 
         // Set game data
         numberOfOpponents = gameData.numberOfOpponents;
-        // activePlayerID = gameData.activePlayerId;
-        activePlayerID = 0;
+        activePlayerID = gameData.activePlayerId;
         humanPlayerID = gameData.humanPlayer.id;
 
         Logger.output("Active player ID", "startNewGame", activePlayerID);
@@ -309,7 +308,7 @@ const Game = (($) => {
 
     const showRoundOutcome = response => {
         if (response.result === "DRAW") {
-            DOMHelper.showMessage("It's a draw");
+            DOMHelper.showMessage("It is a draw");
             displayDraw(response);
         } else if (response.result === "VICTORY") {
             DOMHelper.showMessage(`${response.winner.name} is the winner`);
