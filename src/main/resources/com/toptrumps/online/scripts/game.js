@@ -42,11 +42,10 @@ const Game = (($) => {
         });
     };
 
-    const onNextRound = () => {
+    const onNextRound = async () => {
         resetRoundData();
-        setTimeout(() => {
-            startNewRound();
-        }, nextRoundTimer);
+        await DOMHelper.delay(nextRoundTimer);
+        startNewRound();
     };
 
     const onEndTurn = () => {
@@ -86,7 +85,7 @@ const Game = (($) => {
         return numberOfOpponents
     };
 
-    const startNewGame = gameData => {
+    const startNewGame = async gameData => {
         /* After the interface is loaded and adjusted - show ui */
         DOMHelper.showUI();
 
@@ -105,9 +104,8 @@ const Game = (($) => {
         PlayerModel.init(players);
         StatsHelper.init(PlayerModel.getPlayersList());
 
-        setTimeout(() => {
-            startNewRound();
-        }, timerBase * 3);
+        await DOMHelper.delay(timerBase * 3);
+        startNewRound();
     };
 
     const createPlayers = (humanPlayer, aiPlayers) => {
@@ -138,7 +136,7 @@ const Game = (($) => {
         return players;
     };
 
-    const startNewRound = () => {
+    const startNewRound = async () => {
         Logger.output("Cards before starting new round", "startNewRound", PlayerModel.getPlayersCardCount());
 
         if (!isHumanPlayerDefeated) {
@@ -155,9 +153,8 @@ const Game = (($) => {
 
         Logger.output("Cards on table", "startNewRound", cardsOnTable);
 
-        setTimeout(() => {
-            DOMHelper.displayActivePlayer(activePlayerID);
-        }, activePlayerTimer);
+        await DOMHelper.delay(activePlayerTimer);
+        DOMHelper.displayActivePlayer(activePlayerID);
 
         startAttributeSelection();
     };
@@ -166,7 +163,7 @@ const Game = (($) => {
         cardsOnTable.push({ playerID, card });
     };
 
-    const startAttributeSelection = () => {
+    const startAttributeSelection = async () => {
         if (activePlayerID === 0) {
             DOMHelper.showMessage("&nbsp;&nbsp;&nbsp;Your turn. Choose an attribute from&nbsp;&nbsp;&nbsp;&nbsp;your card");
             DOMHelper.enableAttributeSelection(onAttributeSelected, humanPlayerID, onEndTurn);
@@ -181,14 +178,13 @@ const Game = (($) => {
                     startRoundConclusion(response)
                 });
             } else {
-                setTimeout(() => {
-                    getChosenAttribute().then(response => {
-                        onAttributeSelected(response.selectedAttribute.name, response.selectedAttribute.value);
-                        Countdown.run(() => {
-                            startRoundConclusion(response)
-                        });
+                await DOMHelper.delay(timerBase * 2);
+                getChosenAttribute().then(response => {
+                    onAttributeSelected(response.selectedAttribute.name, response.selectedAttribute.value);
+                    Countdown.run(() => {
+                        startRoundConclusion(response)
                     });
-                }, timerBase * 2);
+                });
             }
         }
     };
@@ -204,13 +200,11 @@ const Game = (($) => {
             showWinningConditions(response);
             startRoundOutcome(response);
         } else {
-            setTimeout(() => {
-                showWinningConditions(response);
+            await DOMHelper.delay(timerBase * 3);
+            showWinningConditions(response);
 
-                setTimeout(() => {
-                    startRoundOutcome(response);
-                }, timerBase * 3);
-            }, timerBase * 3);
+            await DOMHelper.delay(timerBase * 3);
+            startRoundOutcome(response);
         }
 
     };
@@ -306,18 +300,17 @@ const Game = (($) => {
         })
     };
 
-    const showRoundOutcome = response => {
+    const showRoundOutcome = async response => {
         if (response.result === "DRAW") {
             DOMHelper.showMessage("It is a draw");
-            displayDraw(response);
+            DOMHelper.displayDraw();
         } else if (response.result === "VICTORY") {
             DOMHelper.showMessage(`${response.winner.name} is the winner`);
             showWinner(response.winner.id);
         }
 
-        setTimeout(() => {
-            onNextRound();
-        }, nextRoundTimer);
+        await DOMHelper.delay(nextRoundTimer);
+        onNextRound();
     };
 
     const showWinner = playerID => {
@@ -355,28 +348,6 @@ const Game = (($) => {
     const saveGameStats = () => {
         const gameData = StatsHelper.getGameStats();
         NetworkHelper.makeRequest(`api/statistics`, gameData);
-    };
-
-    const displayDraw = () => {
-        anime({
-            targets: '.draw-indicator',
-            keyframes: [
-                { scale: 0, translateX: '-50%', translateY: '-50%', opacity: 0 },
-                { scale: 1, translateX: '-50%', translateY: '-50%', opacity: 1 }
-            ],
-            duration: timerBase / 2,
-            easing: 'easeOutElastic(1, .8)',
-            loop: false,
-            complete: function() {
-                setTimeout(() => {
-                    anime({
-                        targets: '.draw-indicator',
-                        opacity: 0,
-                        duration: timerBase
-                    })
-                }, timerBase * 2)
-            }
-        });
     };
 
     return {

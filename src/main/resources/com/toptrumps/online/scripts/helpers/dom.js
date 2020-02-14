@@ -66,19 +66,18 @@ const DOMHelper = (($) => {
 
     /** METHODS */
 
-    const showUI = () => {
-        setTimeout(() => {
-            initializePlugins();
+    const showUI = async () => {
+        await delay(curtainDelay);
+        initializePlugins();
 
-            anime({
-                targets: pageCurtainSelector,
-                opacity: '0',
-                easing: easeInQuart, /* easeInQuart */
-                complete: (anim) => {
-                    $(anim.animatables[0].target).remove();
-                }
-            });
-        }, curtainDelay);
+        anime({
+            targets: pageCurtainSelector,
+            opacity: '0',
+            easing: easeInQuart, /* easeInQuart */
+            complete: (anim) => {
+                $(anim.animatables[0].target).remove();
+            }
+        });
 
     };
 
@@ -89,6 +88,15 @@ const DOMHelper = (($) => {
             Message.animateLog(messageLogSelector);
         });
     };
+
+    const delay = n => {
+        n = n || 2000;
+        return new Promise(done => {
+            setTimeout(() => {
+                done();
+            }, n);
+        });
+    }
 
     const initializePlugins = () => {
         Countdown.init(countdownSelector);
@@ -199,17 +207,17 @@ const DOMHelper = (($) => {
     };
 
     const animateCard = ($card, hide) => {
-        const direction = hide === true ? "+" : "-";
         $card.addClass(cardActiveClass);
 
         if (window.APP.TEST_MODE) {
-            const transformValue = 'rotateY(180deg)';
+            const transformValue = 'rotateY(-180deg)';
             $card.css('transform', transformValue);
         } else {
+            const transformValue = hide === true ? '0deg' : '-180deg'
             const options = {
                 targets: $card[0],
                 scale: [{value: 1}, {value: 1.3}, {value: 1, delay: cardAnimation.scaleDelay}],
-                rotateY: {value: `${direction}=180deg`, delay: cardAnimation.rotateDelay},
+                rotateY: {value: transformValue, delay: cardAnimation.rotateDelay},
                 easing: "easeInOutSine",
                 duration: cardAnimation.duration
             };
@@ -291,14 +299,13 @@ const DOMHelper = (($) => {
         $card.removeClass(cardActiveClass);
     };
 
-    const updateCommonPileIndicator = count => {
+    const updateCommonPileIndicator = async count => {
         const prevCount = parseInt($(commonPileValueSelector).text());
         $(commonPileValueSelector).text(count);
         if (prevCount !== count) {
             $(commonPileSelector).addClass(commonPileActiveClass);
-            setTimeout(() => {
-                $(commonPileSelector).removeClass(commonPileActiveClass);
-            }, timerBase * 2);
+            await delay(timerBase * 2);
+            $(commonPileSelector).removeClass(commonPileActiveClass);
         }
     };
 
@@ -322,12 +329,11 @@ const DOMHelper = (($) => {
     };
 
     const showOpponentsCards = cardsOnTable => {
-        cardsOnTable.forEach((data, index) => {
+        cardsOnTable.forEach(async (data, index) => {
             if (data.playerID === 0) return;
 
-            setTimeout(() => {
-                showCard(data.playerID, data.card);
-            }, (timerBase / 2) * index);
+            await delay((timerBase / 2) * index);
+            showCard(data.playerID, data.card);
         });
     };
 
@@ -369,11 +375,34 @@ const DOMHelper = (($) => {
         });
 
         return boxNodeCollection;
-    }
+    };
+
+    const displayDraw = () => {
+        anime({
+            targets: '.draw-indicator',
+            keyframes: [
+                { scale: 0, translateX: '-50%', translateY: '-50%', opacity: 0 },
+                { scale: 1, translateX: '-50%', translateY: '-50%', opacity: 1 }
+            ],
+            duration: timerBase / 2,
+            easing: 'easeOutElastic(1, .8)',
+            loop: false,
+            complete: async () => {
+                await DOMHelper.delay(timerBase);
+                anime({
+                    targets: '.draw-indicator',
+                    opacity: 0,
+                    duration: timerBase
+                });
+            }
+        });
+    };
 
     return {
         showUI,
         showModal,
+        delay,
+        displayDraw,
         renderPlayer,
         updateDeckCount,
         showCard,
