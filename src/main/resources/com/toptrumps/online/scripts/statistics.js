@@ -14,6 +14,8 @@ $(function() {
     const rowAITwoWinsSelector = ".js-aitwo-wins";
     const rowAIThreeWinsSelector = ".js-aithree-wins";
     const rowAIFourWinsSelector = ".js-aifour-wins";
+    const inputNumberSelector = ".js-opponents-quantity";
+    const newGameButtonSelector = ".js-modal-new-game-button";
 
     const templateStatsRowSelector = "#template-stats-row";
 
@@ -61,5 +63,10 @@ $(function() {
             const rowNodes = createRow(record);
             $(statsBodySelector).prepend(rowNodes);
         });
-    })
+    });
+
+    InputNumber.init(inputNumberSelector);
+    $(newGameButtonSelector).on("click", () => {
+        DOMHelper.showModal("ASK_FOR_NUMBER_OF_OPPONENTS", false, false)
+    });
 });

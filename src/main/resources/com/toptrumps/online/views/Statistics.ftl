@@ -4,7 +4,7 @@
 		<div class="statistics-page-top-panel">
 			<a href="/toptrumps/" class="button button--outlined">Go back</a>
 			<h1 class="game-title">Statistics</h1>
-			<a href="/toptrumps/game/" class="button">New game</a>
+			<a href="javascript:void(0)" class="button js-modal-new-game-button">New game</a>
 		</div>
 		<div class="statistics-total">
 			<div class="statistics-total__item">
@@ -46,6 +46,8 @@
 		</table>
 	</main>
 
+	<#include "_parts/OpponentsSelection.ftl">
+
 	<script id="template-stats-row" type="text/template">
 		<tr>
 			<td class="js-game-id-value"></td>
@@ -60,8 +62,13 @@
 	</script>
 
 	<script src="/assets/scripts/libs/jquery-3.4.1.min.js"></script>
-	<script src="/assets/scripts/plugins/screen.js"></script>
+	<script src="/assets/scripts/config/settings.js"></script>
+	<script src="/assets/scripts/helpers/logger.js"></script>
 	<script src="/assets/scripts/helpers/network.js"></script>
+	<script src="/assets/scripts/plugins/screen.js"></script>
+	<script src="/assets/scripts/plugins/modal.js"></script>
+	<script src="/assets/scripts/plugins/input-number.js"></script>
+	<script src="/assets/scripts/helpers/dom.js"></script>
 	<script src="/assets/scripts/statistics.js"></script>
 	<script>
 		$(function() {

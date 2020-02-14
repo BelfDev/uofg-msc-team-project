@@ -138,6 +138,10 @@
     filter: grayscale(1);
 }
 
+.defeated-player .ai-player__name {
+    text-decoration: line-through;
+}
+
 .defeated-player .pcard.js-card {
     transform: none !important;
 }
