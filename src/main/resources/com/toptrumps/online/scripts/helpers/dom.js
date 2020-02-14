@@ -292,11 +292,14 @@ const DOMHelper = (($) => {
     };
 
     const updateCommonPileIndicator = count => {
+        const prevCount = parseInt($(commonPileValueSelector).text());
         $(commonPileValueSelector).text(count);
-        $(commonPileSelector).addClass(commonPileActiveClass);
-        setTimeout(() => {
-            $(commonPileSelector).removeClass(commonPileActiveClass);
-        }, timerBase * 2);
+        if (prevCount !== count) {
+            $(commonPileSelector).addClass(commonPileActiveClass);
+            setTimeout(() => {
+                $(commonPileSelector).removeClass(commonPileActiveClass);
+            }, timerBase * 2);
+        }
     };
 
     const clearPlayerStates = () => {

@@ -168,7 +168,7 @@ const Game = (($) => {
 
     const startAttributeSelection = () => {
         if (activePlayerID === 0) {
-            DOMHelper.showMessage("It is your turn. Choose an attribute");
+            DOMHelper.showMessage("&nbsp;&nbsp;&nbsp;Your turn. Choose an attribute from&nbsp;&nbsp;&nbsp;&nbsp;your card");
             DOMHelper.enableAttributeSelection(onAttributeSelected, humanPlayerID, onEndTurn);
         } else {
             DOMHelper.showMessage(`It is AI turn. Active player - ${PlayerModel.getPlayerName(activePlayerID)}`);
@@ -308,10 +308,10 @@ const Game = (($) => {
 
     const showRoundOutcome = response => {
         if (response.result === "DRAW") {
-            DOMHelper.showMessage("It's a draw");
+            DOMHelper.showMessage("It is a draw");
             displayDraw(response);
         } else if (response.result === "VICTORY") {
-            DOMHelper.showMessage(`${response.winner.name} is a winner`);
+            DOMHelper.showMessage(`${response.winner.name} is the winner`);
             showWinner(response.winner.id);
         }
 
