@@ -48,13 +48,12 @@ const Game = (($) => {
         startNewRound();
     };
 
-    const onEndTurn = () => {
+    const onEndTurn = async () => {
         if (activeAttribute) {
-            setChosenAttribute().then(response => {
-                DOMHelper.unBindEndTurnEvent(onEndTurn);
-                Countdown.run(() => {
-                    startRoundConclusion(response)
-                });
+            const response = await setChosenAttribute();
+            DOMHelper.unBindEndTurnEvent(onEndTurn);
+            Countdown.run(() => {
+                startRoundConclusion(response)
             });
         }
     };
@@ -153,10 +152,10 @@ const Game = (($) => {
 
         Logger.output("Cards on table", "startNewRound", cardsOnTable);
 
-        await DOMHelper.delay(activePlayerTimer);
         DOMHelper.displayActivePlayer(activePlayerID);
+        await DOMHelper.delay(activePlayerTimer);
 
-        startAttributeSelection();
+        await startAttributeSelection();
     };
 
     const layCardOnTable = (playerID, card) => {
@@ -171,19 +170,19 @@ const Game = (($) => {
             DOMHelper.showMessage(`It is AI turn. Active player - ${PlayerModel.getPlayerName(activePlayerID)}`);
             DOMHelper.disableAttributeSelection(humanPlayerID);
 
-            if (window.APP.TEST_MODE) {
-                getChosenAttribute().then(response => {
-                    Logger.output("Received AI attribute", "startAttributeSelection", response.selectedAttribute);
-                    onAttributeSelected(response.selectedAttribute.name, response.selectedAttribute.value);
-                    startRoundConclusion(response)
-                });
-            } else {
+            if (!window.APP.TEST_MODE) {
                 await DOMHelper.delay(timerBase * 2);
-                getChosenAttribute().then(response => {
-                    onAttributeSelected(response.selectedAttribute.name, response.selectedAttribute.value);
-                    Countdown.run(() => {
-                        startRoundConclusion(response)
-                    });
+            }
+
+            const response = await getChosenAttribute();
+            Logger.output("Received AI attribute", "startAttributeSelection", response.selectedAttribute);
+            onAttributeSelected(response.selectedAttribute.name, response.selectedAttribute.value);
+
+            if (window.APP.TEST_MODE) {
+                startRoundConclusion(response)
+            } else {
+                Countdown.run(() => {
+                    startRoundConclusion(response)
                 });
             }
         }
@@ -283,7 +282,7 @@ const Game = (($) => {
         if (removedPlayerIDs.length === numberOfOpponents) return true;
     };
 
-    const setChosenAttribute = () => {
+    const setChosenAttribute = async () => {
         const dataset = PlayerModel.prepareDataset(cardsOnTable);
         return NetworkHelper.makeRequest('api/outcome/human', {
             selectedAttribute: activeAttribute,
@@ -292,7 +291,7 @@ const Game = (($) => {
         })
     };
 
-    const getChosenAttribute = () => {
+    const getChosenAttribute = async () => {
         const dataset = PlayerModel.prepareDataset(cardsOnTable);
         return NetworkHelper.makeRequest('api/outcome/ai', {
             activePlayerId: activePlayerID,
@@ -332,7 +331,7 @@ const Game = (($) => {
         resetCommonPile();
     };
 
-    const showGameOutcome = response => {
+    const showGameOutcome = () => {
         const title = "Game over!";
 
         const stats = StatsHelper.getGameStats();
@@ -340,9 +339,8 @@ const Game = (($) => {
 
         Logger.output("End of game stats", "showGameOutcome", stats);
 
-        saveGameStats();
-
         DOMHelper.showModal(modalIDs["gameOver"], title, hint);
+        saveGameStats();
     };
 
     const saveGameStats = () => {
