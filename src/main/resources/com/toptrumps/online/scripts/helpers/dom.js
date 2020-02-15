@@ -85,7 +85,7 @@ const DOMHelper = (($) => {
 
     const showMessage = message => {
         $(messageLogSelector).fadeOut("fast", () => {
-            $(messageLogSelector).html(message);
+            $(messageLogSelector).html(replaceUnderscore(message));
             $(messageLogSelector).show();
             Message.animateLog(messageLogSelector);
         });
@@ -115,7 +115,7 @@ const DOMHelper = (($) => {
         const playerNode = $(playerTpl).clone();
 
         playerNode.data("player-id", player.id);
-        playerNode.find(playerNameSelector).text(player.name.replace("_", " "));
+        playerNode.find(playerNameSelector).text(replaceUnderscore(player.name));
         playerNode.find(playerDeckCountSelector).text(getDeckCountMessage(player.deck.length));
 
         $(opponentsBoxSelector).append(playerNode);
@@ -163,8 +163,12 @@ const DOMHelper = (($) => {
         });
     };
 
+    const replaceUnderscore = string => {
+        return string.replace(/_/g, ' ');
+    }
+
     const getImagePath = async cardName => {
-        const imageName = cardName.replace(" ", "_");
+        const imageName = cardName;
         const imageUrl = `/assets/images/cards/${imageName}.png`;
         const result = await checkResource(imageUrl);
         let finalUrl = `/assets/images/cards/Default.png`;
@@ -181,7 +185,7 @@ const DOMHelper = (($) => {
     const setCardTitle = (playerSelector, cardName) => {
         $(playerSelector)
             .find(cardTitleSelector)
-            .html(cardName.replace("_", " "));
+            .html(replaceUnderscore(cardName));
     };
 
     const setCardAttributes = (playerSelector, attributes) => {
@@ -354,7 +358,8 @@ const DOMHelper = (($) => {
         const $gameStats = $(gameStatsTpl).clone();
 
         if (stats.finalWinner !== null) {
-            $gameStats.find(gameOverWinnerNameSelector).text(stats.finalWinner.name);
+            const winnerName = replaceUnderscore(stats.finalWinner.name);
+            $gameStats.find(gameOverWinnerNameSelector).text(winnerName);
         } else {
             $gameStats.find(gameOverWinnerSelector).hide();
         }
@@ -371,7 +376,7 @@ const DOMHelper = (($) => {
 
         roundWins.forEach(player => {
             const $box = $(roundsBoxTpl).clone();
-            $box.find(gameOverRoundsName).text(player.name);
+            $box.find(gameOverRoundsName).text(replaceUnderscore(player.name));
             $box.find(gameOverRoundsNumber).text(player.numberOfWins);
             boxNodeCollection.push($box);
         });
