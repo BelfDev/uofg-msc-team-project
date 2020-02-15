@@ -42,19 +42,7 @@ public class GameWebPagesResource {
      * Hosted at 'http://localhost:7777/toptrumps/game'
      * @return
      */
-    public GameScreenView getGameScreen() {
-        /* 
-        Temporary output to get a list of player
-        TODO: change this to the real player list getter
-        */
-        List<String> players = new ArrayList<String>();
-        for (int i = 0; i < 4; i++) {
-            String playerName = "Player " + (i + 1);
-            players.add(playerName);
-        }
-
-        return new GameScreenView(players);
-    }
+    public GameScreenView getGameScreen() { return new GameScreenView(); }
 
     @GET
     @Path("/stats")

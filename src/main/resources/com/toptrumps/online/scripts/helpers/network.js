@@ -3,8 +3,8 @@ const NetworkHelper = (($) => {
     const REST_API_URL = "http://localhost:7777/toptrumps";
 
     /** METHODS */
-    const makeRequest = (url, data, type) => {
-        return $.ajax({
+    const makeRequest = async (url, data, type) => {
+        return await $.ajax({
             url: `${REST_API_URL}/${url}`,
             type: type || "POST",
             data: data ? JSON.stringify(data) : {},

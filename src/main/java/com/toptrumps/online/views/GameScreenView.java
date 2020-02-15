@@ -17,14 +17,6 @@ import java.util.List;
  * however we do not expect you to use the additional functionality that freemarker provides.
  */
 public class GameScreenView extends View {
-    private final List<String> players;
 
-    public GameScreenView(List<String> players) {
-        super("GameScreen.ftl");
-        this.players = players;
-    }
-
-    public List<String> getPlayers() {
-        return players;
-    }
+    public GameScreenView() { super("GameScreen.ftl"); }
 }

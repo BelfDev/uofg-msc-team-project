@@ -208,8 +208,8 @@
 
 .winner-badge {
     display: block;
-    width: 84px;
-    height: 84px;
+    width: 11rem;
+    height: 11rem;
     position: absolute;
     background: url(https://cdn.iconscout.com/icon/free/png-256/crown-1777389-1511981.png) no-repeat;
     z-index: 20;
