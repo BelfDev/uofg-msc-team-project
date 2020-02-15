@@ -13,13 +13,18 @@ const DOMHelper = (($) => {
     const cardAttributeValueSelector = ".js-card-char-value";
     const cardAttributesWrapperSelector = ".js-card-chars";
     const endTurnButtonSelector = ".js-end-turn-button";
-    const nextTurnButtonSelector = ".js-modal-next-round-button";
     const countdownSelector = ".js-countdown";
     const cardImageSelector = ".js-card-image";
     const cardTitleSelector = ".js-card-title";
     const commonPileValueSelector = ".js-common-pile-value";
     const commonPileSelector = ".js-common-pile";
     const messageLogSelector = ".js-game-log";
+    const gameOverWinnerSelector = ".js-game-over-winner";
+    const gameOverWinnerNameSelector = ".js-game-over-winner-name";
+    const gameOverRoundsWrapperSelector = ".js-game-over-rounds-wrapper";
+    const gameOverRoundsName = ".js-game-over-rounds-name";
+    const gameOverRoundsNumber = ".js-game-over-rounds-number";
+    const backdropSelector = ".js-backdrop";
 
     // Modals
     const modalSelectors = {
@@ -27,6 +32,7 @@ const DOMHelper = (($) => {
         DRAW: ".js-round-draw-modal",
         VICTORY: ".js-round-win-modal",
         GAME_OVER: ".js-end-game-modal",
+        QUIT: ".js-quit-modal"
     };
 
     // CSS classes to represent visual state
@@ -36,14 +42,25 @@ const DOMHelper = (($) => {
     const defeatedPlayerClass = "defeated-player";
     const activePlayerClass = "active-player";
     const winnerPlayerClass = "winner-player";
-    const commonPileActiveClass = "game-status__common-pile--active";
+    const attributeSelectedClass = "human-player--attr-selected"
+    const endTurnButtonActiveClass = "end-turn-button-active";
+    const commonPileActiveClass = "heartbeat";
 
     // Templates
     const playerBoxTemplateSelector = "#template-player-box";
     const cardAttributeTemplateSelector = "#template-attribute-item";
+    const gameOverTemplateSelector = "#template-game-over";
+    const roundsBoxTemplateSelector = "#template-rounds-box";
+    const backdropTemplate = '<div class="backdrop js-backdrop"></div>';
 
     // Timer and duration variables
-    const curtainDelay = 1000;
+    const timerBase = window.APP.TIMER_BASE;
+    const curtainDelay = window.APP.STARTUP_DELAY;
+    const cardAnimation = {
+        scaleDelay: timerBase / 4,
+        rotateDelay: timerBase / 5,
+        duration: timerBase / 2.5
+    }
 
     // Easings
     const easeInQuart = 'cubicBezier(0.895, 0.030, 0.685, 0.220)';
@@ -51,32 +68,39 @@ const DOMHelper = (($) => {
 
     /** METHODS */
 
-    const showUI = () => {
-        setTimeout(() => {
-            initializePlugins();
+    const showUI = async () => {
+        await delay(curtainDelay);
+        initializePlugins();
 
-            anime({
-                targets: pageCurtainSelector,
-                opacity: '0',
-                easing: easeInQuart, /* easeInQuart */
-                complete: (anim) => {
-                    $(anim.animatables[0].target).remove();
-                }
-            });
-        }, curtainDelay);
+        anime({
+            targets: pageCurtainSelector,
+            opacity: '0',
+            easing: easeInQuart, /* easeInQuart */
+            complete: (anim) => {
+                $(anim.animatables[0].target).remove();
+            }
+        });
 
     };
 
     const showMessage = message => {
         $(messageLogSelector).fadeOut("fast", () => {
-            $(messageLogSelector).html(message);
+            $(messageLogSelector).html(replaceUnderscore(message));
             $(messageLogSelector).show();
             Message.animateLog(messageLogSelector);
         });
     };
 
+    const delay = n => {
+        n = n || 2000;
+        return new Promise(done => {
+            setTimeout(() => {
+                done();
+            }, n);
+        });
+    }
+
     const initializePlugins = () => {
-        InputNumber.init(inputNumberSelector);
         Countdown.init(countdownSelector);
     };
 
@@ -91,7 +115,7 @@ const DOMHelper = (($) => {
         const playerNode = $(playerTpl).clone();
 
         playerNode.data("player-id", player.id);
-        playerNode.find(playerNameSelector).text(player.name);
+        playerNode.find(playerNameSelector).text(replaceUnderscore(player.name));
         playerNode.find(playerDeckCountSelector).text(getDeckCountMessage(player.deck.length));
 
         $(opponentsBoxSelector).append(playerNode);
@@ -125,7 +149,7 @@ const DOMHelper = (($) => {
         setCardAttributes(playerSelector, card.attributes);
 
         const $card = $(playerSelector).find(cardSelector);
-        animateCard($card);
+        animateCard($card, false);
     };
 
     const setCardImage = (playerSelector, cardName) => {
@@ -139,8 +163,12 @@ const DOMHelper = (($) => {
         });
     };
 
+    const replaceUnderscore = string => {
+        return string.replace(/_/g, ' ');
+    }
+
     const getImagePath = async cardName => {
-        const imageName = cardName.replace(" ", "_");
+        const imageName = cardName;
         const imageUrl = `/assets/images/cards/${imageName}.png`;
         const result = await checkResource(imageUrl);
         let finalUrl = `/assets/images/cards/Default.png`;
@@ -157,7 +185,7 @@ const DOMHelper = (($) => {
     const setCardTitle = (playerSelector, cardName) => {
         $(playerSelector)
             .find(cardTitleSelector)
-            .html(cardName);
+            .html(replaceUnderscore(cardName));
     };
 
     const setCardAttributes = (playerSelector, attributes) => {
@@ -184,21 +212,27 @@ const DOMHelper = (($) => {
         return attrNodeCollection;
     };
 
-    const animateCard = ($card) => {
+    const animateCard = ($card, hide) => {
         $card.addClass(cardActiveClass);
 
-        const options = {
-            targets: $card[0],
-            scale: [{ value: 1 }, { value: 1.3 }, { value: 1, delay: 250 }],
-            rotateY: { value: "+=180", delay: 200 },
-            easing: "easeInOutSine",
-            duration: 400
-        };
+        if (window.APP.TEST_MODE) {
+            const transformValue = 'rotateY(-180deg)';
+            $card.css('transform', transformValue);
+        } else {
+            const transformValue = hide === true ? '0deg' : '-180deg'
+            const options = {
+                targets: $card[0],
+                scale: [{value: 1}, {value: 1.3}, {value: 1, delay: cardAnimation.scaleDelay}],
+                rotateY: {value: transformValue, delay: cardAnimation.rotateDelay},
+                easing: "easeInOutSine",
+                duration: cardAnimation.duration
+            };
 
-        anime(options);
+            anime(options);
+        }
     };
 
-    const enableAttributeSelection = (callback, humanPlayerID) => {
+    const enableAttributeSelection = (attributeCallback, humanPlayerID, endTurnCallback) => {
         let playerSelector = getPlayerSelectorByID(humanPlayerID);
 
         const $attributesWrapper = getAttributesWrapper(playerSelector);
@@ -210,13 +244,17 @@ const DOMHelper = (($) => {
             .off("click")
             .on("click", event => {
                 const $target = $(event.currentTarget);
+                $(humanPlayerSelector).addClass(attributeSelectedClass);
+                $(endTurnButtonSelector).addClass(endTurnButtonActiveClass);
                 $($attributes).removeClass(cardAttributeActiveClass);
                 $target.addClass(cardAttributeActiveClass);
 
                 const attrName = $target.data("attribute");
                 const attrValue = $target.find(".js-card-char-value").text();
 
-                callback(attrName, attrValue);
+                bindEndTurnEvent(endTurnCallback);
+
+                attributeCallback(attrName, attrValue);
             });
     };
 
@@ -243,16 +281,11 @@ const DOMHelper = (($) => {
     };
 
     const bindEndTurnEvent = callback => {
-        $(endTurnButtonSelector).on("click", function(e) {
+        $(endTurnButtonSelector).off("click").on("click", e => {
+            $(endTurnButtonSelector).removeClass(endTurnButtonActiveClass);
             callback();
 
             e.preventDefault();
-        });
-    };
-
-    const bindNextRoundEvent = callback => {
-        $(nextTurnButtonSelector).on("click", () => {
-            callback();
         });
     };
 
@@ -268,21 +301,23 @@ const DOMHelper = (($) => {
 
         const $card = $(playerSelector).find(cardSelector);
 
-        animateCard($card, playerID);
+        animateCard($card,true);
         $card.removeClass(cardActiveClass);
     };
 
-    const updateCommonPileIndicator = count => {
+    const updateCommonPileIndicator = async count => {
+        const prevCount = parseInt($(commonPileValueSelector).text());
         $(commonPileValueSelector).text(count);
-
-        if (count > 0) {
+        if (prevCount !== count) {
             $(commonPileSelector).addClass(commonPileActiveClass);
-        } else {
+            await delay(timerBase * 2);
             $(commonPileSelector).removeClass(commonPileActiveClass);
         }
     };
 
     const clearPlayerStates = () => {
+        $(humanPlayerSelector).removeClass(attributeSelectedClass);
+        $(endTurnButtonSelector).removeClass(endTurnButtonActiveClass);
         $(playerSelector).removeClass(activePlayerClass);
         $(playerSelector).removeClass(winnerPlayerClass);
     };
@@ -300,12 +335,11 @@ const DOMHelper = (($) => {
     };
 
     const showOpponentsCards = cardsOnTable => {
-        cardsOnTable.forEach((data, index) => {
+        cardsOnTable.forEach(async (data, index) => {
             if (data.playerID === 0) return;
 
-            setTimeout(() => {
-                showCard(data.playerID, data.card);
-            }, 500 * index);
+            await delay((timerBase / 2) * index);
+            showCard(data.playerID, data.card);
         });
     };
 
@@ -319,9 +353,76 @@ const DOMHelper = (($) => {
         $(cardAttributeSelector).removeClass(cardAttributeActiveClass);
     };
 
+    const getStatsMarkup = stats => {
+        const gameStatsTpl = $(gameOverTemplateSelector).html()
+        const $gameStats = $(gameStatsTpl).clone();
+
+        if (stats.finalWinner !== null) {
+            const winnerName = replaceUnderscore(stats.finalWinner.name);
+            $gameStats.find(gameOverWinnerNameSelector).text(winnerName);
+        } else {
+            $gameStats.find(gameOverWinnerSelector).hide();
+        }
+
+        const $roundsWrapper = $gameStats.find(gameOverRoundsWrapperSelector);
+        $roundsWrapper.html(createRoundsBoxNodes(stats.roundWins));
+
+        return $gameStats;
+    };
+
+    const createRoundsBoxNodes = roundWins => {
+        const boxNodeCollection = [];
+        const roundsBoxTpl = $(roundsBoxTemplateSelector).html();
+
+        roundWins.forEach(player => {
+            const $box = $(roundsBoxTpl).clone();
+            $box.find(gameOverRoundsName).text(replaceUnderscore(player.name));
+            $box.find(gameOverRoundsNumber).text(player.numberOfWins);
+            boxNodeCollection.push($box);
+        });
+
+        return boxNodeCollection;
+    };
+
+    const displayDraw = () => {
+        DOMHelper.showBackdrop();
+
+        anime({
+            targets: '.draw-indicator',
+            keyframes: [
+                { scale: 0, translateX: '-50%', translateY: '-50%', opacity: 0 },
+                { scale: 1, translateX: '-50%', translateY: '-50%', opacity: 1 }
+            ],
+            duration: timerBase / 2,
+            easing: 'easeOutElastic(1, .8)',
+            loop: false,
+            complete: async () => {
+                await DOMHelper.delay(timerBase);
+                anime({
+                    targets: '.draw-indicator',
+                    opacity: 0,
+                    duration: timerBase
+                });
+                DOMHelper.removeBackdrop();
+            }
+        });
+    };
+
+    const showBackdrop = function() {
+        $(document.body).append(backdropTemplate);
+    };
+
+    const removeBackdrop = function() {
+        $(backdropSelector).remove();
+    };
+
     return {
         showUI,
         showModal,
+        delay,
+        displayDraw,
+        showBackdrop,
+        removeBackdrop,
         renderPlayer,
         updateDeckCount,
         showCard,
@@ -330,7 +431,6 @@ const DOMHelper = (($) => {
         disableAttributeSelection,
         bindEndTurnEvent,
         unBindEndTurnEvent,
-        bindNextRoundEvent,
         setPlayerStateToDefeated,
         updateCommonPileIndicator,
         showMessage,
@@ -339,6 +439,8 @@ const DOMHelper = (($) => {
         clearPlayerStates,
         showOpponentsCards,
         highlightAttribute,
-        resetAttributeHighlight
+        resetAttributeHighlight,
+        getStatsMarkup,
+        timerBase
     }
 })(jQuery);

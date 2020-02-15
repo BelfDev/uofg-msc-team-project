@@ -14,7 +14,7 @@ public class Statistics {
     private int aiWins;
     private int humanWins;
     private int drawsAverage;
-    private int maxRounds; 
+    private int maxRounds;
     private GameDAOImpl concreteGameDAO;
     private PerformanceDAOImpl concretePerformanceDAO;
     private PlayersDAOImpl concretePlayerDAO;
@@ -77,7 +77,7 @@ public class Statistics {
         int counter = 0;
         int gameId = 0;
 
-        try{ 
+        try{
             while(gameStats.next()){
                 allStats.add(new FullStats(gameStats,players));
             }

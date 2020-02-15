@@ -77,7 +77,6 @@
 
 .game-status__common-pile {
     display: block;
-    opacity: 0;
     position: absolute;
     left: 0;
     width: 100%;
@@ -104,6 +103,7 @@
     height: 30.7rem;
     transform-style: preserve-3d;
     transition: box-shadow .3s;
+    border-radius: 0.8rem;
 }
 
 .pcard__front,
@@ -138,6 +138,10 @@
     filter: grayscale(1);
 }
 
+.defeated-player .ai-player__name {
+    text-decoration: line-through;
+}
+
 .defeated-player .pcard.js-card {
     transform: none !important;
 }
@@ -146,12 +150,79 @@
     background-image: url(../images/lost_player_card_back.png);
 }
 
-.active-player .pcard {
+.ai-player.active-player .pcard {
     animation: active-player-animation 1s ease-in-out infinite alternate;
 }
 
+.human-player.active-player .pcard {
+    animation: human-player-animation 1s ease-in-out infinite alternate;
+}
+
+.human-player.human-player--attr-selected .pcard {
+    animation: none;
+}
+
+.end-turn-button-active {
+    animation: human-player-animation 1s ease-in-out infinite alternate;
+}
+
+.ai-player, .human-player {
+    transition: transform .5s;
+    position: relative;
+    z-index: 20;
+}
+
+.draw-indicator {
+    background: url(../images/icon_swords.png) center 30px no-repeat;
+    background-size: 128px;
+    width: 128px;
+    display: block;
+    position: fixed;
+    top: 57%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 35;
+    text-align: center;
+    padding-top: 180px;
+    padding-left: 60px;
+    padding-right: 50px;
+    padding-bottom: 30px;
+    font-size: 5rem;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.draw-indicator.draw-indicator--active {
+    animation: bounceInDrop 2.267s linear 0s 1 normal both;
+    transform-origin: 50% 50%;
+}
+
 .winner-player .pcard {
-    animation: winner-player-animation 1s ease-in-out infinite alternate;
+    animation: winner-player-animation .5s ease-in-out infinite alternate;
+}
+
+.winner-player .pcard__front {
+    border-color: #ffffff;
+}
+
+.winner-badge {
+    display: block;
+    width: 11rem;
+    height: 11rem;
+    position: absolute;
+    background: url(../images/icon_crown.png) no-repeat;
+    z-index: 20;
+    background-size: contain;
+    top: -9rem;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+}
+
+
+.winner-player .winner-badge {
+    opacity: 1;
 }
 
 @-webkit-keyframes active-player-animation {
@@ -160,7 +231,31 @@
         /*box-shadow: 0 0 5px var(--color-animation-active), 0 0 10px var(--color-animation-active), 0 0 15px var(--color-animation-active), 0 0 20px var(--color-animation-active), 0 0 35px var(--color-animation-active), 0 0 40px var(--color-animation-active), 0 0 50px var(--color-animation-active), 0 0 75px var(--color-animation-active);*/
     }
     to {
-        box-shadow: 0 0 3px var(--color-animation-active), 0 0 5px var(--color-animation-active), 0 0 8px var(--color-animation-active), 0 0 10px var(--color-animation-active), 0 0 18px var(--color-animation-active), 0 0 20px var(--color-animation-active), 0 0 25px var(--color-animation-active), 0 0 34px var(--color-animation-active);
+        box-shadow: 0 0 3px var(--color-animation-active),
+        0 0 5px var(--color-animation-active),
+        0 0 8px var(--color-animation-active),
+        0 0 10px var(--color-animation-active),
+        0 0 18px var(--color-animation-active),
+        0 0 20px var(--color-animation-active),
+        0 0 25px var(--color-animation-active),
+        0 0 34px var(--color-animation-active);
+    }
+}
+
+@-webkit-keyframes human-player-animation {
+    from {
+        box-shadow: none;
+        /*box-shadow: 0 0 5px var(--color-animation-winner), 0 0 10px var(--color-animation-winner), 0 0 15px var(--color-animation-winner), 0 0 20px var(--color-animation-winner), 0 0 35px var(--color-animation-winner), 0 0 40px var(--color-animation-winner), 0 0 50px var(--color-animation-winner), 0 0 75px var(--color-animation-winner);*/
+    }
+    to {
+        box-shadow: 0 0 3px var(--color-animation-human),
+        0 0 5px var(--color-animation-human),
+        0 0 8px var(--color-animation-human),
+        0 0 10px var(--color-animation-human),
+        0 0 18px var(--color-animation-human),
+        0 0 20px var(--color-animation-human),
+        0 0 25px var(--color-animation-human),
+        0 0 34px var(--color-animation-human);
     }
 }
 
@@ -170,7 +265,14 @@
         /*box-shadow: 0 0 5px var(--color-animation-winner), 0 0 10px var(--color-animation-winner), 0 0 15px var(--color-animation-winner), 0 0 20px var(--color-animation-winner), 0 0 35px var(--color-animation-winner), 0 0 40px var(--color-animation-winner), 0 0 50px var(--color-animation-winner), 0 0 75px var(--color-animation-winner);*/
     }
     to {
-        box-shadow: 0 0 3px var(--color-animation-winner), 0 0 5px var(--color-animation-winner), 0 0 8px var(--color-animation-winner), 0 0 10px var(--color-animation-winner), 0 0 18px var(--color-animation-winner), 0 0 20px var(--color-animation-winner), 0 0 25px var(--color-animation-winner), 0 0 34px var(--color-animation-winner);
+        box-shadow: 0 0 3px #fff,
+        0 0 5px #fff,
+        0 0 8px #fff,
+        0 0 10px #fff,
+        0 0 18px #fff,
+        0 0 20px #fff,
+        0 0 25px #fff,
+        0 0 34px #fff;
     }
 }
 
@@ -188,6 +290,8 @@
 
 .pcard__image {
     width: 100%;
+    position: relative;
+    top: 1.5rem;
 }
 
 .pcard__title {
@@ -253,7 +357,7 @@
     bottom: 0;
     pointer-events: none;
     opacity: 0;
-    z-index: 10;
+    z-index: 30;
     transition: opacity 0.2s ease-in;
 }
 
@@ -267,6 +371,7 @@
     margin: auto;
     left: 50%;
     top: 50%;
+    margin-left: -2rem;
     opacity: 0;
     transform: translate(-50%, -50%);
 }
@@ -324,7 +429,7 @@
 
 .backdrop {
     position: absolute;
-    z-index: 10;
+    z-index: 30;
     top: 0;
     left: 0;
     right: 0;
@@ -338,7 +443,7 @@
     align-items: center;
     box-sizing: border-box;
     position: absolute;
-    z-index: 20;
+    z-index: 35;
     top: 50%;
     left: 50%;
     width: 100rem;
@@ -354,6 +459,20 @@
     transition: opacity 0.3s ease-in-out;
 }
 
+.modal__close {
+    display: block;
+    width: 3.2rem;
+    height: 3.2rem;
+    cursor: pointer;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: url(../images/icon_close.svg);
+    border: 0;
+    outline: 0;
+    background-size: contain;
+}
+
 .modal__button {
     margin-top: 14rem;
 }
@@ -367,7 +486,7 @@
     right: 0;
     bottom: 0;
     border-radius: 1.6rem;
-    background: rgba(13, 33, 44, 0.5);
+    background: rgba(20, 28, 33, 0.94);
     z-index: -1;
     backdrop-filter: blur(1px);
 }
@@ -380,11 +499,70 @@
 }
 
 .modal__hint {
+    width: 100%;
 }
 
 .modal--opened {
     opacity: 1;
     pointer-events: initial;
+}
+
+.modal--wide {
+    width: 120rem;
+    padding: 7rem;
+}
+
+.game-stats-modal__winner-name {
+    display: block;
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.game-stats-modal__winner-icon {
+    background: url(../images/icon_crown.png);
+    background-size: contain;
+    display: block;
+    width: 6.4rem;
+    height: 6.4rem;
+    margin: auto;
+}
+
+.game-stats-modal__winner {
+    margin-bottom: 7rem;
+}
+
+.game-stats-modal__header {
+    font-weight: normal;
+}
+
+.game-stats-modal__rounds-box {
+    padding: 1.5rem 2rem;
+    border-right: 1px solid rgba(254, 254, 254, 0.41);
+    flex-basis: 20%;
+}
+
+.game-stats-modal__rounds-box:last-child {
+    border-right: 0
+}
+
+.game-stats-modal__rounds-number {
+    display: block;
+    font-size: 5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+}
+
+.game-stats-modal__rounds {
+    display: flex;
+    border: .3rem solid #fefefe;
+    border-radius: 1rem;
+}
+
+.modal--wide {
+    width: 120rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
 }
 
 .opponents-quantity {
@@ -441,4 +619,40 @@
     left: -5.6rem;
     font-size: 4.8rem;
     line-height: 4.5rem;
+}
+
+@keyframes heartBeat {
+    0% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+
+    14% {
+        -webkit-transform: scale(1.3);
+        transform: scale(1.3);
+    }
+
+    28% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+
+    42% {
+        -webkit-transform: scale(1.3);
+        transform: scale(1.3);
+    }
+
+    70% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+
+.heartbeat {
+    -webkit-animation-name: heartBeat;
+    animation-name: heartBeat;
+    -webkit-animation-duration: 1.3s;
+    animation-duration: 1.3s;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
 }

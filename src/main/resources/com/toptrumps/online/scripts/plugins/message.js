@@ -14,14 +14,14 @@ const Message = (($) => {
             .add({
                 targets: gameStatusSelector,
                 opacity: 1,
-                duration: 1000,
+                duration: 100,
                 easing: "easeOutExpo",
             })
             .add({
                 targets: gameLetterSelector,
                 opacity: [0,1],
                 easing: "easeOutExpo",
-                duration: 600,
+                duration: 300,
                 offset: '-=775',
                 delay: (el, i) => 34 * (i+1)
             })

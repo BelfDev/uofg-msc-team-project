@@ -1,6 +1,7 @@
 const PlayerModel = (($) => {
     let players = {};
     let playersList = {};
+    let humanPlayerID = 0;
 
     const init = playersData => {
         playersData.forEach(player => {
@@ -39,7 +40,7 @@ const PlayerModel = (($) => {
         cardsOnTable.forEach(data => {
             dataset.push({
                 id: data.playerID,
-                isAIPlayer: data.playerID !== 0,
+                isAIPlayer: data.playerID !== humanPlayerID,
                 name: players[data.playerID].name,
                 deckCount: players[data.playerID].deck.length + 1,
                 topCard: data.card
@@ -47,6 +48,26 @@ const PlayerModel = (($) => {
         });
 
         return dataset;
+    };
+
+    const getPlayerWithMostCards = () => {
+        let targetPlayer = players[0];
+        let max = 0;
+        $.each(players, (i, player) => {
+            if (player.deck.length > max) {
+                targetPlayer = {
+                    id: player.id,
+                    name: player.name,
+                    isAIPlayer: player.playerID !== humanPlayerID
+                };
+            }
+        });
+
+        return targetPlayer;
+    }
+
+    const setHumanPlayerID = ID => {
+        humanPlayerID = ID;
     };
 
     const getPlayersCardCount = () => {
@@ -79,6 +100,8 @@ const PlayerModel = (($) => {
         getPlayersList,
         getTopCard,
         getAiPlayersTopCards,
+        getPlayerWithMostCards,
+        setHumanPlayerID,
         prepareDataset,
         getPlayersCardCount,
         removePlayer,

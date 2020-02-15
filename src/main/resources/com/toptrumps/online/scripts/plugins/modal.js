@@ -2,47 +2,44 @@ const Modal = (($) => {
     /** VARIABLES AND CONSTANTS */
     // Selectors
     const modalSelector = ".js-modal";
-    const backdropSelector = ".js-backdrop";
     const modalTitleSelector = ".js-modal-title";
     const modalHintSelector = ".js-modal-hint";
-
-    // Templates
-    const backdropTemplate = '<div class="backdrop js-backdrop"></div>';
+    const closeButtonSelector = ".js-modal-close";
 
     // CSS classes to represent visual state
     const openedModalClass = "modal--opened";
 
     const openModal = (selector, title, hint) => {
-        showBackdrop();
+        DOMHelper.showBackdrop();
         $(selector).addClass(openedModalClass);
 
         setModalTitle(selector, title || "");
         setModalHint(selector, hint || "");
-    };
 
-    const showBackdrop = function() {
-        $(document.body).append(backdropTemplate);
+        $(closeButtonSelector).one("click", () => {
+            closeActiveModal();
+        });
     };
 
     const setModalTitle = (targetModalSelector, title) => {
+        if (!title) return;
+
         $(targetModalSelector)
             .find(modalTitleSelector)
             .html(title);
     };
 
     const setModalHint = (targetModalSelector, hint) => {
+        if (!hint) return;
+
         $(targetModalSelector)
             .find(modalHintSelector)
             .html(hint);
     };
 
     const closeActiveModal = () => {
-        removeBackdrop();
+        DOMHelper.removeBackdrop();
         $(modalSelector).removeClass(openedModalClass);
-    };
-
-    const removeBackdrop = function() {
-        $(backdropSelector).remove();
     };
 
     return {

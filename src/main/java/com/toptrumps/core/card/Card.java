@@ -33,7 +33,6 @@ public class Card {
         return name;
     }
 
-    // TODO: Revisit this method to increase efficiency
     public Attribute getAttributeByName(String name) {
         return attributes.stream()
                 .filter(a -> a.getName().equals(name))
@@ -54,6 +53,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return String.format("Card => name: %1$-14s attributes: %2$20s\n" , name, attributes);
+        return String.format("Card: %1$-20s attributes: %2$20s\n", name, attributes);
     }
 }

@@ -1,4 +1,5 @@
 <div class="human-player js-player js-human-player">
+    <div class="winner-badge"></div>
     <div class="pcard js-card">
         <div class="pcard__front">
             <div class="pcard__image-box">

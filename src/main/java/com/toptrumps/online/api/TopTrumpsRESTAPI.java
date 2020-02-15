@@ -1,20 +1,19 @@
 package com.toptrumps.online.api;
 
 import com.toptrumps.core.card.Attribute;
-import com.toptrumps.core.engine.Game;
+import com.toptrumps.core.engine.GameEngine;
 import com.toptrumps.core.engine.RoundOutcome;
 import com.toptrumps.core.player.AIPlayer;
 import com.toptrumps.core.player.Player;
 import com.toptrumps.core.statistics.GameStateCollector;
+import com.toptrumps.db.Statistics;
 import com.toptrumps.online.api.request.*;
 import com.toptrumps.online.api.response.InitialGameState;
 import com.toptrumps.online.api.response.Outcome;
+import com.toptrumps.online.api.response.StatisticsContent;
 import com.toptrumps.online.configuration.TopTrumpsJSONConfiguration;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -35,7 +34,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class TopTrumpsRESTAPI {
 
-    Game gameEngine;
+    GameEngine gameEngine;
 
     /**
      * Contructor method for the REST API. This is called first. It provides
@@ -45,7 +44,7 @@ public class TopTrumpsRESTAPI {
      * @param conf
      */
     public TopTrumpsRESTAPI(TopTrumpsJSONConfiguration conf) {
-        this.gameEngine = new Game(conf.getDeckFile());
+        this.gameEngine = new GameEngine(conf.getDeckFile());
     }
 
     // ----------------------------------------------------
@@ -59,7 +58,6 @@ public class TopTrumpsRESTAPI {
         int numberOfOpponents = gamePreferences.getNumberOfOpponents();
         List<Player> players = gameEngine.startUp(numberOfOpponents);
         Player activePlayer = gameEngine.assignActivePlayer(players);
-        // TODO: Double check if we are going to rely on this convention
         Player humanPlayer = players.get(0);
         List<Player> aiPlayers = players.subList(1, numberOfOpponents + 1);
 
@@ -69,7 +67,7 @@ public class TopTrumpsRESTAPI {
     @POST
     @Path("/api/outcome/human")
     @Produces(MediaType.APPLICATION_JSON)
-    public Outcome getRoundOutcome(HumanPlayerMove humanPlayerMove) {
+    public Outcome generateRoundOutcome(HumanPlayerMove humanPlayerMove) {
         List<Player> players = humanPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
         List<Player> winners = gameEngine.getWinners(humanPlayerMove.getSelectedAttribute(), players);
         players.forEach(Player::removeTopCard);
@@ -80,7 +78,7 @@ public class TopTrumpsRESTAPI {
     @POST
     @Path("/api/outcome/ai")
     @Produces(MediaType.APPLICATION_JSON)
-    public Outcome getRoundOutcome(PlayerMove aiPlayerMove) {
+    public Outcome generateRoundOutcome(PlayerMove aiPlayerMove) {
         Player activeAIPlayer = aiPlayerMove.getActivePlayerState().toPlayer();
         List<Player> players = aiPlayerMove.getPlayerStates().stream().map(PlayerState::toPlayer).collect(toList());
         Attribute selectedAttribute = ((AIPlayer) activeAIPlayer).selectAttribute();
@@ -98,6 +96,14 @@ public class TopTrumpsRESTAPI {
                 .fromFinalGameState(finalGameState)
                 .build();
         gameEngine.persistGameState(stateCollector);
+    }
+
+    @GET
+    @Path("/api/statistics")
+    @Produces(MediaType.APPLICATION_JSON)
+    public StatisticsContent getStatisticsContent() {
+        Statistics gameStatistics = new Statistics();
+        return new StatisticsContent(gameStatistics);
     }
 
 }

@@ -12,7 +12,7 @@
     --color-button-light-hovered: #d8d8d8;
 
     --color-animation-active: rgba(36, 142, 255, 0.3);
-    --color-animation-winner: rgb(255, 221, 36);
+    --color-animation-human: rgb(255, 221, 36);
 }
 
 @font-face {
@@ -62,6 +62,7 @@ body {
     font-size: 3.6rem;
     white-space: nowrap;
     transition: all 0.2s ease-in-out;
+    outline: 0;
 }
 
 .button--outlined {

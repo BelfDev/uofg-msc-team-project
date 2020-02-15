@@ -1,9 +1,14 @@
 package com.toptrumps.db;
-import java.sql.*;
-import java.util.*;
-import com.toptrumps.core.player.Player;
 
-public class FullStats{
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.toptrumps.core.player.Player;
+import com.toptrumps.online.api.request.PlayerState;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
     public FullStats(ResultSet rs,Map<Integer,String> players) throws SQLException{
 
@@ -41,7 +46,8 @@ public class FullStats{
         this.roundsMap.put(player,rs.getInt("rounds_won"));
     }
 
-    public int getGameID(){
+    @JsonProperty
+    public int getGameID() {
         return this.gameID;
     }
 
@@ -49,11 +55,24 @@ public class FullStats{
         return this.roundsPlayed;
     }
 
-    public int getDraws(){
+    @JsonProperty
+    public int getDraws() {
         return this.draws;
     }
 
-    public Map getRoundsMap(){
+    @JsonIgnore
+    public Map<Player, Integer> getRoundsMap() {
         return this.roundsMap;
+    }
+
+    // TODO: REFACTOR THIS!
+    @JsonProperty("roundWins")
+    public Map<String, Integer> getPlayerNameRoundsMap() {
+        Map<String, Integer> playerStateRoundsMap = new HashMap<>();
+        this.roundsMap.forEach((player, roundWins) -> {
+                playerStateRoundsMap.put(player.getName(), roundWins);
+            }
+        );
+        return playerStateRoundsMap;
     }
 }
