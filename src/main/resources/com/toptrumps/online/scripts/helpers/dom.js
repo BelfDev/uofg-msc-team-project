@@ -275,7 +275,7 @@ const DOMHelper = (($) => {
     };
 
     const bindEndTurnEvent = callback => {
-        $(endTurnButtonSelector).on("click", function(e) {
+        $(endTurnButtonSelector).off("click").on("click", e => {
             $(endTurnButtonSelector).removeClass(endTurnButtonActiveClass);
             callback();
 
