@@ -92,6 +92,7 @@ const Game = (($) => {
         numberOfOpponents = gameData.numberOfOpponents;
         activePlayerID = gameData.activePlayerId;
         humanPlayerID = gameData.humanPlayer.id;
+        PlayerModel.setHumanPlayerID(humanPlayerID);
 
         Logger.output("Active player ID", "startNewGame", activePlayerID);
         Logger.output("Human player ID", "startNewGame", humanPlayerID);

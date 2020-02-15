@@ -24,6 +24,7 @@ const DOMHelper = (($) => {
     const gameOverRoundsWrapperSelector = ".js-game-over-rounds-wrapper";
     const gameOverRoundsName = ".js-game-over-rounds-name";
     const gameOverRoundsNumber = ".js-game-over-rounds-number";
+    const backdropSelector = ".js-backdrop";
 
     // Modals
     const modalSelectors = {
@@ -50,6 +51,7 @@ const DOMHelper = (($) => {
     const cardAttributeTemplateSelector = "#template-attribute-item";
     const gameOverTemplateSelector = "#template-game-over";
     const roundsBoxTemplateSelector = "#template-rounds-box";
+    const backdropTemplate = '<div class="backdrop js-backdrop"></div>';
 
     // Timer and duration variables
     const timerBase = window.APP.TIMER_BASE;
@@ -378,6 +380,8 @@ const DOMHelper = (($) => {
     };
 
     const displayDraw = () => {
+        DOMHelper.showBackdrop();
+
         anime({
             targets: '.draw-indicator',
             keyframes: [
@@ -394,8 +398,17 @@ const DOMHelper = (($) => {
                     opacity: 0,
                     duration: timerBase
                 });
+                DOMHelper.removeBackdrop();
             }
         });
+    };
+
+    const showBackdrop = function() {
+        $(document.body).append(backdropTemplate);
+    };
+
+    const removeBackdrop = function() {
+        $(backdropSelector).remove();
     };
 
     return {
@@ -403,6 +416,8 @@ const DOMHelper = (($) => {
         showModal,
         delay,
         displayDraw,
+        showBackdrop,
+        removeBackdrop,
         renderPlayer,
         updateDeckCount,
         showCard,
