@@ -318,6 +318,10 @@ const Game = (($) => {
         DOMHelper.displayWinnerPlayer(playerID);
     };
 
+    const shuffleCards = cardsArray => {
+        return cardsArray.sort(() => Math.random() - 0.5);
+    };
+
     const distributeCards = (playerID, cardsOnTable) => {
         const cards = commonPile;
         cardsOnTable.forEach(data => {
@@ -326,6 +330,8 @@ const Game = (($) => {
 
         Logger.output("Cards for distribution:", "distributeCards", cards);
         Logger.output("Player receiving cards", "distributeCards", playerID);
+
+        shuffleCards(cards);
 
         PlayerModel.passCardsToPlayerByID(playerID, cards);
 
