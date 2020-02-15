@@ -1,5 +1,6 @@
 package com.toptrumps.core.card;
 
+import com.toptrumps.core.utils.ResourceLoader;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -12,13 +13,12 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @TestInstance(PER_CLASS)
 class DealerTest {
 
-    private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
-
     private Dealer dealer;
 
     @BeforeAll
     void oneTimeSetUp() {
-        this.dealer = new Dealer(DECK_RESOURCE);
+        String fileName = ResourceLoader.getDeckFileName();
+        this.dealer = new Dealer(fileName);
     }
 
     @Test

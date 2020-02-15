@@ -3,6 +3,7 @@ package com.toptrumps.core.engine;
 import com.toptrumps.core.card.Attribute;
 import com.toptrumps.core.card.Card;
 import com.toptrumps.core.player.Player;
+import com.toptrumps.core.utils.ResourceLoader;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -16,16 +17,15 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
 class GameEngineTest {
-
-    private final static String DECK_RESOURCE = "assets/WitcherDeck.txt";
-
+    
     private GameEngine gameEngine;
     private int numberOfOpponents;
     private ArrayList<Player> players;
 
     @BeforeAll
     void oneTimeSetUp() {
-        this.gameEngine = new GameEngine(DECK_RESOURCE);
+        String fileName = ResourceLoader.getDeckFileName();
+        this.gameEngine = new GameEngine(fileName);
         numberOfOpponents = 4;
     }
 
