@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static com.toptrumps.cli.PrintOptions.*;
 
-public class CommandLineView {
+class CommandLineView {
 
     private static final String WELCOME_BANNER_RESOURCE = "assets/banners/welcome.txt";
 
