@@ -4,22 +4,15 @@ const NetworkHelper = (($) => {
 
     /** METHODS */
     const makeRequest = async (url, data, type) => {
-        return await fetch(`${REST_API_URL}/${url}`, {
-            method: type || "POST",
-            mode: 'cors',
-            body: data ? JSON.stringify(data) : {},
+        return await $.ajax({
+            url: `${REST_API_URL}/${url}`,
+            type: type || "POST",
+            data: data ? JSON.stringify(data) : {},
             processData: false,
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(response => response.text())
-        .then(text => {
-            const response = text.length ? JSON.parse(text) : {};
-            Logger.output(`Response from request to /${url}`, "makeRequest", {data, response});
-            return response;
-        }).catch(response => {
-            Logger.output(`Error from request to /${url}`, "makeRequest", { data, response });
-            return response.json();
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).always(response => {
+            Logger.output(`Response from request to /${url}`, "makeRequest", response);
         });
     };
 
