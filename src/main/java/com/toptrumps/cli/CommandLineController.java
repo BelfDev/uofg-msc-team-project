@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toCollection;
  * and presenting output through the CommandLineView. The user is provided
  * with multiple command line options to navigate through the game.
  */
-public class CommandLineController {
+class CommandLineController {
 
     private static final int MIN_OPPONENTS = 1;
     private static final int MAX_OPPONENTS = 4;
