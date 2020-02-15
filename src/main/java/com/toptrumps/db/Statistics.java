@@ -1,12 +1,14 @@
 package com.toptrumps.db;
 
 import com.toptrumps.core.statistics.GameStateCollector;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import com.toptrumps.core.player.Player;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Statistics {
 
@@ -18,32 +20,33 @@ public class Statistics {
     private GameDAOImpl concreteGameDAO;
     private PerformanceDAOImpl concretePerformanceDAO;
     private PlayersDAOImpl concretePlayerDAO;
-  
-    public Statistics(){
 
-        try{
+    public Statistics() {
+
+        try {
 
             buildStatistics(retrieveHighStats());
             concreteGameDAO = new GameDAOImpl();
             concretePerformanceDAO = new PerformanceDAOImpl();
             concretePlayerDAO = new PlayersDAOImpl();
 
-        }catch(SQLException e){e.printStackTrace();}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void persistData(GameStateCollector gameState){
+    public void persistData(GameStateCollector gameState) {
 
         concreteGameDAO.create(gameState);
         concretePerformanceDAO.create(gameState);
     }
 
-    private ResultSet retrieveHighStats(){
+    private ResultSet retrieveHighStats() {
 
         Connection conn = ConnectionFactory.getConnection();
         PreparedStatement playedStats = null;
         ResultSet rs = null;
         String playedStatsSQL =
-
                 "SELECT (SELECT COUNT (game_id)" +
                         "            FROM  individual_game_data) AS gamesplayed," +
                         "        (SELECT AVG(draws)" +
@@ -67,36 +70,36 @@ public class Statistics {
 
         return rs;
     }
- 
-    public List retrieveAllStats(){
 
-        Map<Integer,String> players = concretePlayerDAO.retrieve();
+    public List<FullStats> getPerformanceHistory() {
+        Map<Integer, String> players = concretePlayerDAO.retrieve();
         List<FullStats> allStats = new ArrayList<FullStats>();
         ResultSet gameStats = concreteGameDAO.retrieve();
         ResultSet roundStats = concretePerformanceDAO.retrieve();
         int counter = 0;
         int gameId = 0;
 
-        try{
-            while(gameStats.next()){
-                allStats.add(new FullStats(gameStats,players));
+        try {
+            while (gameStats.next()) {
+                allStats.add(new FullStats(gameStats, players));
             }
 
-            while(roundStats.next()){
+            while (roundStats.next()) {
                 gameId = roundStats.getInt("game_id");
-                while(gameId != allStats.get(counter).getGameID()){
+                while (gameId != allStats.get(counter).getGameID()) {
                     counter++;
                 }
-                allStats.get(counter).buildRoundStats(roundStats,players);
+                allStats.get(counter).buildRoundStats(roundStats, players);
             }
-            }catch(SQLException e){e.printStackTrace();}
-            
-        return allStats;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        
-    private void buildStatistics(ResultSet resultSet)throws SQLException{
 
-        while(resultSet.next()){
+        return allStats;
+    }
+
+    private void buildStatistics(ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
             this.gamesPlayed = resultSet.getInt("gamesplayed");
             this.drawsAverage = resultSet.getInt("avgdraws");
             this.maxRounds = resultSet.getInt("mostrounds");
@@ -124,5 +127,5 @@ public class Statistics {
     public int getMaxRounds() {
         return maxRounds;
     }
-    
+
 }

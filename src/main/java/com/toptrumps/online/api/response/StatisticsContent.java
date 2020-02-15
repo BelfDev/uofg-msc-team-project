@@ -1,12 +1,10 @@
 package com.toptrumps.online.api.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.toptrumps.core.player.Player;
 import com.toptrumps.db.FullStats;
 import com.toptrumps.db.Statistics;
 
 import java.util.List;
-import java.util.Map;
 
 public class StatisticsContent {
 
@@ -23,7 +21,7 @@ public class StatisticsContent {
         this.numberOfHumanWins = statistics.getHumanWins();
         this.numberOfAverageDraws = statistics.getAverageDraws();
         this.numberOfMaxRounds = statistics.getMaxRounds();
-        this.performanceHistory = statistics.getFullStatsList();
+        this.performanceHistory = statistics.getPerformanceHistory();
     }
 
     @JsonProperty
