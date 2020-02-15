@@ -3,49 +3,32 @@ package com.toptrumps.db;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.toptrumps.core.player.Player;
-import com.toptrumps.online.api.request.PlayerState;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Refactor this class!!!
 public class FullStats {
 
-    public FullStats(ResultSet rs, PlayersList players) throws SQLException {
-
-        this.players = players;
-        this.gameID = rs.getInt("game_id");
-        this.winnerID = rs.getInt("winner_id");
-        this.roundsPlayed = rs.getInt("rounds_played");
-        this.draws = rs.getInt("draws");
-        this.winner = players.getPlayer(this.winnerID);
-        roundsMap = new HashMap<Player, Integer>();
-    }
-
     private int gameID;
-    private int winnerID;
     private Player winner;
-    private PlayersList players;
     private int roundsPlayed;
     private int draws;
-    private Map<Player, Integer> roundsMap;
+    private Map<String, Integer> roundsMap;
 
-    public void printStats() {
-        System.out.println("Game ID: " + this.gameID);
-        System.out.println("Winner ID: " + this.winnerID);
-        System.out.println("Rounds Played: " + this.roundsPlayed);
-        System.out.println("Draws: " + this.draws);
-
-        for (Map.Entry<Player, Integer> entry : roundsMap.entrySet()) {
-            System.out.println("Player " + entry.getKey().getName() + " won " + entry.getValue());
-        }
+    public FullStats(ResultSet rs, Map<Integer, String> players) throws SQLException {
+        this.gameID = rs.getInt("game_id");
+        this.winner = new Player(rs.getInt("winner_id"), players.get(rs.getInt("winner_id")));
+        this.roundsPlayed = rs.getInt("rounds_played");
+        this.draws = rs.getInt("draws");
+        roundsMap = new HashMap<>();
     }
 
-    public void buildRoundStats(ResultSet rs) throws SQLException {
-
-        this.roundsMap.put(players.getPlayer(rs.getInt("player_id")), rs.getInt("rounds_won"));
+    public void buildRoundStats(ResultSet rs, Map<Integer, String> players) throws SQLException {
+        int playerID = rs.getInt("player_id");
+        String playerName = players.get(playerID);
+        this.roundsMap.put(playerName, rs.getInt("rounds_won"));
     }
 
     @JsonProperty
@@ -54,8 +37,8 @@ public class FullStats {
     }
 
     @JsonProperty
-    public int getWinnerID() {
-        return this.winnerID;
+    public Integer getWinnerID() {
+        return winner.getId();
     }
 
     @JsonProperty
@@ -69,18 +52,13 @@ public class FullStats {
     }
 
     @JsonIgnore
-    public Map<Player, Integer> getRoundsMap() {
+    public Player getWinner() {
+        return winner;
+    }
+
+    @JsonProperty("roundWins")
+    public Map<String, Integer> getRoundsMap() {
         return this.roundsMap;
     }
 
-    // TODO: REFACTOR THIS!
-    @JsonProperty("roundWins")
-    public Map<String, Integer> getPlayerNameRoundsMap() {
-        Map<String, Integer> playerStateRoundsMap = new HashMap<>();
-        this.roundsMap.forEach((player, roundWins) -> {
-                playerStateRoundsMap.put(player.getName(), roundWins);
-            }
-        );
-        return playerStateRoundsMap;
-    }
 }

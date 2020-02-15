@@ -1,12 +1,14 @@
 package com.toptrumps.db;
 
 import com.toptrumps.core.statistics.GameStateCollector;
-import java.util.List;
-import java.util.ArrayList;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Statistics {
 
@@ -17,29 +19,34 @@ public class Statistics {
     private int maxRounds;
     private GameDAOImpl concreteGameDAO;
     private PerformanceDAOImpl concretePerformanceDAO;
+    private PlayersDAOImpl concretePlayerDAO;
 
+    public Statistics() {
 
-    public Statistics(){
-        try{
+        try {
+
             buildStatistics(retrieveHighStats());
             concreteGameDAO = new GameDAOImpl();
             concretePerformanceDAO = new PerformanceDAOImpl();
-        }catch(SQLException e){e.printStackTrace();}
+            concretePlayerDAO = new PlayersDAOImpl();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void persistData(GameStateCollector gameState){
+    public void persistData(GameStateCollector gameState) {
 
         concreteGameDAO.create(gameState);
         concretePerformanceDAO.create(gameState);
     }
 
-    private ResultSet retrieveHighStats(){
+    private ResultSet retrieveHighStats() {
 
         Connection conn = ConnectionFactory.getConnection();
         PreparedStatement playedStats = null;
         ResultSet rs = null;
         String playedStatsSQL =
-
                 "SELECT (SELECT COUNT (game_id)" +
                         "            FROM  individual_game_data) AS gamesplayed," +
                         "        (SELECT AVG(draws)" +
@@ -64,41 +71,40 @@ public class Statistics {
         return rs;
     }
 
-    public List<FullStats> getFullStatsList(){
-        PlayersList players = new PlayersList();
+    public List<FullStats> getPerformanceHistory() {
+        Map<Integer, String> players = concretePlayerDAO.retrieve();
         List<FullStats> allStats = new ArrayList<FullStats>();
         ResultSet gameStats = concreteGameDAO.retrieve();
         ResultSet roundStats = concretePerformanceDAO.retrieve();
         int counter = 0;
+        int gameId = 0;
 
-        try{
-            while(gameStats.next()){
-                allStats.add(new FullStats(gameStats,players));
+        try {
+            while (gameStats.next()) {
+                allStats.add(new FullStats(gameStats, players));
             }
 
-            while(roundStats.next()){
-                if(roundStats.getInt("game_id") == allStats.get(counter).getGameID()){
-                    allStats.get(counter).buildRoundStats(roundStats);
-                }else{
+            while (roundStats.next()) {
+                gameId = roundStats.getInt("game_id");
+                while (gameId != allStats.get(counter).getGameID()) {
                     counter++;
-                    if(roundStats.getInt("game_id") == allStats.get(counter).getGameID()){
-                    allStats.get(counter).buildRoundStats(roundStats);
-                    }
                 }
+                allStats.get(counter).buildRoundStats(roundStats, players);
             }
-        }catch(SQLException e){e.printStackTrace();}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return allStats;
     }
 
-    private void buildStatistics(ResultSet resultSet)throws SQLException{
-
-        while(resultSet.next()){
-            this.gamesPlayed = resultSet.getInt(1);
-            this.drawsAverage = resultSet.getInt(2);
-            this.maxRounds = resultSet.getInt(3);
-            this.humanWins = resultSet.getInt(4);
-            this.aiWins = resultSet.getInt(5);
+    private void buildStatistics(ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            this.gamesPlayed = resultSet.getInt("gamesplayed");
+            this.drawsAverage = resultSet.getInt("avgdraws");
+            this.maxRounds = resultSet.getInt("mostrounds");
+            this.humanWins = resultSet.getInt("humanwins");
+            this.aiWins = resultSet.getInt("aiwins");
         }
     }
 
@@ -121,6 +127,5 @@ public class Statistics {
     public int getMaxRounds() {
         return maxRounds;
     }
+
 }
-
-
