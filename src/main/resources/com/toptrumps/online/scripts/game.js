@@ -92,6 +92,7 @@ const Game = (($) => {
         numberOfOpponents = gameData.numberOfOpponents;
         activePlayerID = gameData.activePlayerId;
         humanPlayerID = gameData.humanPlayer.id;
+        PlayerModel.setHumanPlayerID(humanPlayerID);
 
         Logger.output("Active player ID", "startNewGame", activePlayerID);
         Logger.output("Human player ID", "startNewGame", humanPlayerID);
@@ -317,6 +318,10 @@ const Game = (($) => {
         DOMHelper.displayWinnerPlayer(playerID);
     };
 
+    const shuffleCards = cardsArray => {
+        return cardsArray.sort(() => Math.random() - 0.5);
+    };
+
     const distributeCards = (playerID, cardsOnTable) => {
         const cards = commonPile;
         cardsOnTable.forEach(data => {
@@ -325,6 +330,8 @@ const Game = (($) => {
 
         Logger.output("Cards for distribution:", "distributeCards", cards);
         Logger.output("Player receiving cards", "distributeCards", playerID);
+
+        shuffleCards(cards);
 
         PlayerModel.passCardsToPlayerByID(playerID, cards);
 

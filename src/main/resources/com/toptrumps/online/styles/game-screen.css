@@ -181,7 +181,7 @@
     top: 57%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 25;
+    z-index: 35;
     text-align: center;
     padding-top: 180px;
     padding-left: 60px;
@@ -211,7 +211,7 @@
     width: 11rem;
     height: 11rem;
     position: absolute;
-    background: url(https://cdn.iconscout.com/icon/free/png-256/crown-1777389-1511981.png) no-repeat;
+    background: url(../images/icon_crown.png) no-repeat;
     z-index: 20;
     background-size: contain;
     top: -9rem;
@@ -371,6 +371,7 @@
     margin: auto;
     left: 50%;
     top: 50%;
+    margin-left: -2rem;
     opacity: 0;
     transform: translate(-50%, -50%);
 }

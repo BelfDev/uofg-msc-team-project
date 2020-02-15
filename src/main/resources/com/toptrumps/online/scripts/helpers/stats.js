@@ -30,6 +30,10 @@ const StatsHelper = (($) => {
     };
 
     const getGameStats = () => {
+        if (finalWinner == null) {
+            finalWinner = PlayerModel.getPlayerWithMostCards();
+        }
+
         return {
             numberOfDraws,
             numberOfRounds,
