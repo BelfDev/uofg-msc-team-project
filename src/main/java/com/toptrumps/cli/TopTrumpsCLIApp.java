@@ -1,10 +1,6 @@
 package com.toptrumps.cli;
 
 
-import ch.qos.logback.core.util.FileUtil;
-
-import java.io.File;
-
 /**
  * Top Trumps command line application
  */
@@ -18,7 +14,8 @@ public class TopTrumpsCLIApp {
 
         boolean writeGameLogsToFile = false; // Should we write game logs to file?
 
-        if (args[0].equalsIgnoreCase("true")) Logger.getInstance().enable(); // Enables the logging of files to the command line
+        if (args[0].equalsIgnoreCase("true"))
+            Logger.getInstance().enable(); // Enables the logging of files to the command line
 
         CommandLineController cliController = new CommandLineController();
         cliController.start();

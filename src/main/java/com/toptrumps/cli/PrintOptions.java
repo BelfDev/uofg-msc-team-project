@@ -1,6 +1,6 @@
 package com.toptrumps.cli;
 
-public class PrintOptions {
+class PrintOptions {
 
     private PrintOptions() {
     }
