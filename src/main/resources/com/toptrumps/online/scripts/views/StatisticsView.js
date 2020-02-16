@@ -1,4 +1,9 @@
-$(function() {
+/**
+ * View for selection screen
+ */
+
+const StatisticsView = (($) => {
+    /** VARIABLES AND CONSTANTS */
     const statsGamesPlayedSelector = ".js-stats-games-played-value";
     const statsAIWinsSelector = ".js-stats-ai-wins-value";
     const statsHumanWinsSelector = ".js-stats-human-wins-value";
@@ -17,10 +22,55 @@ $(function() {
     const inputNumberSelector = ".js-opponents-quantity";
     const newGameButtonSelector = ".js-modal-new-game-button";
 
+    // Templates
     const templateStatsRowSelector = "#template-stats-row";
 
+    // Modals
+    const modalSelectors = {
+        ASK_FOR_NUMBER_OF_OPPONENTS: ".js-new-game-modal",
+    };
+
+    /** METHODS */
+
+    /**
+     * Initialization
+     */
+    const init = () => {
+       bindEvents();
+    };
+
+    /**
+     * Event binding
+     */
+    const bindEvents = () => {
+        $(newGameButtonSelector).on("click", () => {
+            showModal("ASK_FOR_NUMBER_OF_OPPONENTS", false, false);
+        });
+    }
+
+    /**
+     * Render stats based on provided data
+     * @param data
+     */
+    const renderStats = data => {
+        $(statsGamesPlayedSelector).text(data.numberOfGames);
+        $(statsAIWinsSelector).text(data.numberOfAIWins);
+        $(statsHumanWinsSelector).text(data.numberOfHumanWins);
+        $(statsAverageDrawsSelector).text(data.numberOfAverageDraws);
+        $(statsRoundsRecordSelector).text(data.numberOfMaxRounds);
+
+        $.each(data.performanceHistory, (index, record) => {
+            const rowNodes = createRow(record);
+            $(statsBodySelector).prepend(rowNodes);
+        });
+    }
+
+    /**
+     * Create row node for data item
+     * @param performanceHistory
+     * @returns {[]}
+     */
     const createRow = performanceHistory => {
-        const rowNodes = [];
         const rowTpl = $(templateStatsRowSelector).html();
         const rowNode = $(rowTpl).clone();
         const roundWins = performanceHistory.roundWins;
@@ -38,11 +88,15 @@ $(function() {
             $(rowNode).find(rowAIFourWinsSelector).text(getPlayerRoundWins(roundWins, "AiFour"));
         }
 
-        rowNodes.push(rowNode);
-
-        return rowNodes;
+        return rowNode;
     }
 
+    /**
+     * Get round wins number based on player name
+     * @param roundWins
+     * @param playerName
+     * @returns {Integer}
+     */
     const getPlayerRoundWins = (roundWins, playerName) => {
         const key = Object.keys(roundWins).find(player => {
             if (player == playerName) {
@@ -53,21 +107,21 @@ $(function() {
         return roundWins[key];
     }
 
-    NetworkHelper.makeRequest("api/statistics", false, "GET").then(response => {
-        $(statsGamesPlayedSelector).text(response.numberOfGames);
-        $(statsAIWinsSelector).text(response.numberOfAIWins);
-        $(statsHumanWinsSelector).text(response.numberOfHumanWins);
-        $(statsAverageDrawsSelector).text(response.numberOfAverageDraws);
-        $(statsRoundsRecordSelector).text(response.numberOfMaxRounds);
+    /**
+     * Reveals modal window with specific ID and configurable title and text
+     * @param selectorID - modal selector, matches one of the modalSelectors properties
+     * @param title - modal title
+     * @param hint - additional text
+     */
+    const showModal = (selectorID, title, hint) => {
+        const targetModalSelector = modalSelectors[selectorID];
 
-        $.each(response.performanceHistory, (index, record) => {
-            const rowNodes = createRow(record);
-            $(statsBodySelector).prepend(rowNodes);
-        });
-    });
+        Modal.openModal(targetModalSelector, title, hint);
+    };
 
-    InputNumber.init(inputNumberSelector);
-    $(newGameButtonSelector).on("click", () => {
-        DOMHelper.showModal("ASK_FOR_NUMBER_OF_OPPONENTS", false, false)
-    });
-});
+    /** EXPOSE PUBLIC METHODS **/
+    return {
+        init,
+        renderStats,
+    }
+})(jQuery);

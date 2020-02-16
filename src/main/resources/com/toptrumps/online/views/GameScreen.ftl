@@ -23,20 +23,13 @@
 	<script src="/assets/scripts/libs/anime.min.js"></script>
 	<script src="/assets/scripts/config/settings.js"></script>
 	<script src="/assets/scripts/plugins/screen.js"></script>
-	<script src="/assets/scripts/helpers/logger.js"></script>
-	<script src="/assets/scripts/helpers/stats.js"></script>
-	<script src="/assets/scripts/helpers/dom.js"></script>
 	<script src="/assets/scripts/helpers/network.js"></script>
 	<script src="/assets/scripts/plugins/message.js"></script>
 	<script src="/assets/scripts/plugins/modal.js"></script>
 	<script src="/assets/scripts/plugins/countdown.js"></script>
-	<script src="/assets/scripts/models/player.js"></script>
-	<script src="/assets/scripts/game.js"></script>
-	<script>
-		$(function() {
-			Screen.init()
-			Game.init()
-		});
-	</script>
+	<script src="/assets/scripts/views/GameView.js"></script>
+	<script src="/assets/scripts/models/StatsModel.js"></script>
+	<script src="/assets/scripts/models/GameModel.js"></script>
+	<script src="/assets/scripts/GameController.js"></script>
 </body>
 </html>

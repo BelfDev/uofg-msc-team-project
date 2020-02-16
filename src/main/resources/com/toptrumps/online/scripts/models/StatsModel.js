@@ -1,9 +1,22 @@
-const StatsHelper = (($) => {
+/**
+ * Statistics model
+ * Manipulates statistic data
+ */
+
+const StatsModel = (($) => {
+    // Model variables
     let numberOfRounds = 0;
     let numberOfDraws = 0;
     let finalWinner = {};
     const roundWins = [];
 
+
+    /** METHODS **/
+
+    /**
+     * Initiate model data
+     * @param players
+     */
     const init = players => {
         $.each(players, (i, player) => {
             roundWins.push({
@@ -14,7 +27,21 @@ const StatsHelper = (($) => {
         });
     };
 
-    const incrementRoundNumber = winner => {
+    /**
+     * Increments round number
+     * @param winner
+     */
+    const incrementRoundNumber = () => {
+        numberOfRounds++;
+    };
+
+    /**
+     * Sets current winner and increments his number of wins
+     * @param winner
+     */
+    const setWinner = winner => {
+        incrementRoundNumber();
+
         if (winner === null) {
             finalWinner = null;
             numberOfDraws++;
@@ -25,13 +52,17 @@ const StatsHelper = (($) => {
             })
             roundWins[winnerIndex].numberOfWins++;
         }
+    }
 
-        numberOfRounds++;
-    };
-
+    /**
+     * Return game stats
+     * @returns {{numberOfDraws: number, roundWins: [], numberOfRounds: number, finalWinner: {}}}
+     */
     const getGameStats = () => {
+        // If no final winner after last turn, but there is a player left with cards
+        // set him as a game winner
         if (finalWinner == null) {
-            finalWinner = PlayerModel.getPlayerWithMostCards();
+            finalWinner = GameModel.getPlayerWithMostCards();
         }
 
         return {
@@ -42,9 +73,12 @@ const StatsHelper = (($) => {
         }
     };
 
+
+    /** EXPOSE PUBLIC METHODS **/
+
     return {
         init,
         getGameStats,
-        incrementRoundNumber,
+        setWinner,
     }
 })(jQuery);

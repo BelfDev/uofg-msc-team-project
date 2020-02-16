@@ -18,7 +18,7 @@
     <script src="/assets/scripts/plugins/screen.js"></script>
     <script src="/assets/scripts/plugins/modal.js"></script>
     <script src="/assets/scripts/plugins/input-number.js"></script>
-    <script src="/assets/scripts/helpers/dom.js"></script>
-    <script src="/assets/scripts/selection.js"></script>
+    <script src="/assets/scripts/views/SelectionView.js"></script>
+    <script src="/assets/scripts/SelectionController.js"></script>
 </body>
 </html>

@@ -10,19 +10,28 @@
 
 const Screen = (($) => {
     /** VARIABLES AND CONSTANTS */
+
     // Constants
     const BASE_WIDTH = 1920;
     const MIN_WIDTH = 800;
     const BASE_SIZE = 10;
 
+
     /** METHODS */
 
-    /* Bind variables to the DOM elements and events */
+
+    /**
+     * Initialization
+     */
     const init = () => {
         bindEvents();
     };
 
+    /**
+     * Event binding
+     */
     const bindEvents = () => {
+        // If window size is larger than minimal size - change root font size
         $(window).on("resize load", () => {
             if ($(window).innerWidth() > MIN_WIDTH) {
                 changeBaseFontSize();
@@ -30,13 +39,16 @@ const Screen = (($) => {
         });
     };
 
+    /**
+     * Gets new font size and sets it for root html element
+     */
     const changeBaseFontSize = () => {
         const size = calculateFontSize();
         setPageFontSize(size);
     };
 
     /**
-     *  and tweaks font size accordingly
+     * Gets target width and tweaks font size accordingly
      * @returns {string} Font-size string in px
      */
     const calculateFontSize = () => {
@@ -54,9 +66,21 @@ const Screen = (($) => {
         return Math.min($(window).innerWidth(), BASE_WIDTH)
     };
 
+    /**
+     * Sets font size for root html element
+     * @param size
+     */
     const setPageFontSize = (size) => {
         $(document.documentElement).css("font-size", size);
     };
+
+    /** RUN AFTER PAGE IS LOADED **/
+    $(function() {
+        Screen.init();
+    });
+
+
+    /** EXPOSE PUBLIC METHODS **/
 
     return {
         init
