@@ -1,0 +1,651 @@
+.page-curtain {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: black;
+}
+
+.game-page {
+    background: url("../images/game_page_bg.jpg") no-repeat;
+    background-size: cover;
+    display: grid;
+    box-sizing: border-box;
+    grid-row-gap: 3rem;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+    min-height: 105rem;
+}
+
+.game-status {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.game-status__wrapper {
+    opacity: 0;
+}
+
+.game-status__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90rem;
+    height: 16rem;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    margin: 2rem 0 0;
+    padding: 3rem;
+    border-radius: 1rem;
+    border: 0.5rem solid #383029;
+    text-align: center;
+    background-color: black;
+    color: var(--color-font-light);
+}
+
+.game-status:after,
+.game-status:before {
+    display: block;
+    position: absolute;
+    content: "";
+    width: 53.6rem;
+    height: 17.8rem;
+    background: url(../images/panel_rope.png) no-repeat;
+    background-size: contain;
+}
+
+.game-status:after {
+    right: 0;
+    top: 0;
+    transform: scaleX(-1);
+}
+
+.game-status:before {
+    left: 0;
+    top: 0;
+}
+
+.game-status__log {
+    font-size: 4.2rem;
+}
+
+.game-status__letter {
+    display: inline-block;
+}
+
+.game-status__common-pile {
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    font-size: 1.4rem;
+    bottom: 1rem;
+    transition: opacity .8s ease-in-out;
+}
+
+.game-status__common-pile--active {
+    opacity: 1;
+}
+
+.opponents {
+    display: flex;
+    justify-content: space-evenly;
+    width: 130rem;
+    margin: auto;
+}
+
+.pcard {
+    position: relative;
+    display: inline-block;
+    width: 20.4rem;
+    height: 30.7rem;
+    transform-style: preserve-3d;
+    transition: box-shadow .3s;
+    border-radius: 0.8rem;
+}
+
+.pcard__front,
+.pcard__back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    backface-visibility: hidden;
+}
+
+.pcard__back {
+    background: url(../images/human_player_card_back.png) no-repeat;
+    background-size: cover;
+}
+
+.pcard__front {
+    text-align: center;
+    color: black;
+    border: 0.8rem solid transparent;
+    border-radius: 0.8rem;
+    transform: rotateY(180deg);
+}
+
+.ai-player .pcard__back {
+    background-image: url(../images/ai_player_card_back.png);
+}
+
+.defeated-player {
+    filter: grayscale(1);
+}
+
+.defeated-player .ai-player__name {
+    text-decoration: line-through;
+}
+
+.defeated-player .pcard.js-card {
+    transform: none !important;
+}
+
+.defeated-player .pcard__back {
+    background-image: url(../images/lost_player_card_back.png);
+}
+
+.ai-player.active-player .pcard {
+    animation: active-player-animation 1s ease-in-out infinite alternate;
+}
+
+.human-player.active-player .pcard {
+    animation: human-player-animation 1s ease-in-out infinite alternate;
+}
+
+.human-player.human-player--attr-selected .pcard {
+    animation: none;
+}
+
+.end-turn-button-active {
+    animation: human-player-animation 1s ease-in-out infinite alternate;
+}
+
+.ai-player, .human-player {
+    transition: transform .5s;
+    position: relative;
+    z-index: 20;
+}
+
+.draw-indicator {
+    background: url(../images/icon_swords.png) center 30px no-repeat;
+    background-size: 128px;
+    width: 128px;
+    display: block;
+    position: fixed;
+    top: 57%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 35;
+    text-align: center;
+    padding-top: 180px;
+    padding-left: 60px;
+    padding-right: 50px;
+    padding-bottom: 30px;
+    font-size: 5rem;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.draw-indicator.draw-indicator--active {
+    animation: bounceInDrop 2.267s linear 0s 1 normal both;
+    transform-origin: 50% 50%;
+}
+
+.winner-player .pcard {
+    animation: winner-player-animation .5s ease-in-out infinite alternate;
+}
+
+.winner-player .pcard__front {
+    border-color: #ffffff;
+}
+
+.winner-badge {
+    display: block;
+    width: 11rem;
+    height: 11rem;
+    position: absolute;
+    background: url(../images/icon_crown.png) no-repeat;
+    z-index: 20;
+    background-size: contain;
+    top: -9rem;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+}
+
+
+.winner-player .winner-badge {
+    opacity: 1;
+}
+
+@-webkit-keyframes active-player-animation {
+    from {
+        box-shadow: none;
+    }
+    to {
+        box-shadow: 0 0 3px var(--color-animation-active),
+        0 0 5px var(--color-animation-active),
+        0 0 8px var(--color-animation-active),
+        0 0 10px var(--color-animation-active),
+        0 0 18px var(--color-animation-active),
+        0 0 20px var(--color-animation-active),
+        0 0 25px var(--color-animation-active),
+        0 0 34px var(--color-animation-active);
+    }
+}
+
+@-webkit-keyframes human-player-animation {
+    from {
+        box-shadow: none;
+    }
+    to {
+        box-shadow: 0 0 3px var(--color-animation-human),
+        0 0 5px var(--color-animation-human),
+        0 0 8px var(--color-animation-human),
+        0 0 10px var(--color-animation-human),
+        0 0 18px var(--color-animation-human),
+        0 0 20px var(--color-animation-human),
+        0 0 25px var(--color-animation-human),
+        0 0 34px var(--color-animation-human);
+    }
+}
+
+@-webkit-keyframes winner-player-animation {
+    from {
+        box-shadow: none;
+    }
+    to {
+        box-shadow: 0 0 3px #fff,
+        0 0 5px #fff,
+        0 0 8px #fff,
+        0 0 10px #fff,
+        0 0 18px #fff,
+        0 0 20px #fff,
+        0 0 25px #fff,
+        0 0 34px #fff;
+    }
+}
+
+.pcard__image-box {
+    display: flex;
+    margin: 0.8rem auto 0;
+    overflow: hidden;
+    vertical-align: middle;
+    align-items: center;
+    border: 2px solid #fefefe;
+    border-radius: 0.8rem;
+    width: 16.1rem;
+    height: 15rem;
+}
+
+.pcard__image {
+    width: 100%;
+    position: relative;
+    top: 1.5rem;
+}
+
+.pcard__title {
+    position: relative;
+    font-size: 1.6rem;
+    font-weight: bold;
+    background-color: #f8f7f5;
+    border-radius: 1.6rem;
+    padding: 0.8rem;
+    color: #383029;
+    margin: -3.4rem 0.5rem 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.pcard__content {
+    display: block;
+    color: #fff;
+}
+
+.pcard__chars--active .pcard__char {
+    cursor: pointer;
+}
+
+.pcard__chars {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+    height: 12rem;
+    padding: 0.5rem 1rem;
+}
+
+.pcard__char {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.4rem;
+    transition: color .3ms ease-in;
+}
+
+.pcard__char--active {
+    color: #ffff00;
+    font-weight: bold;
+}
+
+.pcard__front {
+    background: #38302a;
+    border-color: #626767;
+}
+
+.countdown {
+    position: absolute;
+    font-weight: 900;
+    font-size: 4.5em;
+    background-color: rgba(0, 0, 0, 0.9);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 30;
+    transition: opacity 0.2s ease-in;
+}
+
+.countdown--active {
+    pointer-events: initial;
+    opacity: 1 !important;
+}
+
+.countdown__numbers {
+    position: absolute;
+    margin: auto;
+    left: 50%;
+    top: 50%;
+    margin-left: -2rem;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+}
+
+.human-player-panel {
+    padding-top: 8rem;
+    text-align: center;
+}
+
+.human-player {
+    display: inline-block;
+    transition: all .3s ease-in;
+}
+
+.human-player.active-player {
+    transform: scale(1.25) translateY(-4rem);
+    position: relative;
+}
+
+.human-player__hand {
+    margin-top: 1rem;
+}
+
+.action-panel {
+    width: 70rem;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    background: rgba(145, 145, 145, 0.4);
+    padding: 2rem 4rem;
+    border-radius: 6rem;
+    border: 1px solid #141a1f;
+    margin-top: -8rem;
+    margin-bottom: 1rem;
+}
+
+.ai-player__details {
+    padding: 0.5rem 0;
+    text-align: center;
+    background-color: #f8f7f5;
+    border: 2px solid #626767;
+    color: #626767;
+    border-radius: 0.6rem;
+    margin-top: 0.7rem;
+}
+
+.ai-player__name {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+.ai-player__hand {
+    font-size: 1.6rem;
+}
+
+.backdrop {
+    position: absolute;
+    z-index: 30;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    box-sizing: border-box;
+    position: absolute;
+    z-index: 35;
+    top: 50%;
+    left: 50%;
+    width: 100rem;
+    min-height: 50rem;
+    padding: 12rem;
+    transform: translate(-50%, -50%);
+    border: 0.4rem solid #dbdbdb;
+    border-radius: 1.6rem;
+    text-align: center;
+    color: #fff;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal__close {
+    display: block;
+    width: 3.2rem;
+    height: 3.2rem;
+    cursor: pointer;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: url(../images/icon_close.svg);
+    border: 0;
+    outline: 0;
+    background-size: contain;
+}
+
+.modal__button {
+    margin-top: 14rem;
+}
+
+.modal:after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 1.6rem;
+    background: rgba(20, 28, 33, 0.94);
+    z-index: -1;
+    backdrop-filter: blur(1px);
+}
+
+.modal__title {
+    color: #dbdbdb;
+    font-size: 3.6rem;
+    font-weight: normal;
+    margin-bottom: 4rem;
+}
+
+.modal__hint {
+    width: 100%;
+}
+
+.modal--opened {
+    opacity: 1;
+    pointer-events: initial;
+}
+
+.modal--wide {
+    width: 120rem;
+    padding: 7rem;
+}
+
+.game-stats-modal__winner-name {
+    display: block;
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.game-stats-modal__winner-icon {
+    background: url(../images/icon_crown.png);
+    background-size: contain;
+    display: block;
+    width: 6.4rem;
+    height: 6.4rem;
+    margin: auto;
+}
+
+.game-stats-modal__winner {
+    margin-bottom: 7rem;
+}
+
+.game-stats-modal__header {
+    font-weight: normal;
+}
+
+.game-stats-modal__rounds-box {
+    padding: 1.5rem 2rem;
+    border-right: 1px solid rgba(254, 254, 254, 0.41);
+    flex-basis: 20%;
+}
+
+.game-stats-modal__rounds-box:last-child {
+    border-right: 0
+}
+
+.game-stats-modal__rounds-number {
+    display: block;
+    font-size: 5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+}
+
+.game-stats-modal__rounds {
+    display: flex;
+    border: .3rem solid #fefefe;
+    border-radius: 1rem;
+}
+
+.modal--wide {
+    width: 120rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
+}
+
+.opponents-quantity {
+    position: relative;
+    width: 5.6rem;
+}
+
+.opponents-quantity__input::-webkit-inner-spin-button,
+.opponents-quantity__input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.opponents-quantity__input {
+    width: 5.6rem;
+    height: 4.8rem;
+    line-height: 4.8rem;
+    display: block;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    background: none;
+    font-size: 3.6rem;
+    font-weight: bold;
+    border: 0;
+    color: #dbdbdb;
+}
+
+.opponents-quantity__input:focus {
+    outline: 0;
+}
+
+.opponents-quantity__button {
+    position: absolute;
+    cursor: pointer;
+    width: 5.6rem;
+    height: 4.8rem;
+    top: 0;
+    background: #dbdbdb;
+    border-radius: 1rem;
+    text-align: center;
+    color: #454545;
+    font-weight: bold;
+    font-size: 3.6rem;
+    line-height: 4.8rem;
+    user-select: none;
+}
+
+.opponents-quantity__button--up {
+    right: -5.6rem;
+}
+
+.opponents-quantity__button--down {
+    left: -5.6rem;
+    font-size: 4.8rem;
+    line-height: 4.5rem;
+}
+
+@keyframes heartBeat {
+    0% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+
+    14% {
+        -webkit-transform: scale(1.3);
+        transform: scale(1.3);
+    }
+
+    28% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+
+    42% {
+        -webkit-transform: scale(1.3);
+        transform: scale(1.3);
+    }
+
+    70% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+
+.heartbeat {
+    -webkit-animation-name: heartBeat;
+    animation-name: heartBeat;
+    -webkit-animation-duration: 1.3s;
+    animation-duration: 1.3s;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+}

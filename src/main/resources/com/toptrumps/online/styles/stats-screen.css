@@ -1,0 +1,106 @@
+.statistics-page {
+    background: url("../images/statistics_page_bg.jpg") no-repeat;
+    background-size: cover;
+}
+
+.statistics-page:after {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    display: block;
+    content: '';
+    background: rgba(0, 0, 0, .5);
+    z-index: 1;
+}
+
+.statistics-page-top-panel,
+.statistics-total,
+.statistics-table {
+    position: relative;
+    width: 150rem;
+    margin: auto;
+    z-index: 2;
+}
+
+.statistics-page-top-panel {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10rem;
+    align-items: center;
+}
+
+.statistics-total {
+    display: flex;
+    border: .3rem solid rgba(254, 254, 254, 0.7);
+    border-radius: 1rem;
+    margin-top: 5rem;
+    background: rgba(0, 19, 31, 0.83);
+    margin-bottom: 3rem;
+}
+
+.statistics-total__item {
+    flex-basis: 20%;
+    text-align: center;
+    border-right: 1px solid rgba(254, 254, 254, 0.41);
+    padding: 1rem;
+    font-size: 3rem;
+    color: rgba(254, 254, 254, 0.7);
+}
+
+.statistics-total__item:last-child {
+    border-right: 0;
+}
+
+.statistics-total__item-value {
+    display: block;
+    font-size: 6rem;
+    font-weight: bold;
+    margin-top: 2rem;
+}
+
+.statistics-table {
+    border: .3rem solid rgba(254, 254, 254, 0.7);
+    border-radius: 1rem;
+}
+
+.statistics-table thead {
+    background: rgba(254, 254, 254, 0.7);
+    color: #383c3c;
+    text-transform: uppercase;
+}
+
+.statistics-table thead tr {
+    display: flex;
+    padding-right: 2rem;
+}
+
+.statistics-table th {
+    padding: 1rem .8rem;
+    flex-basis: 12.5%;
+}
+
+.statistics-table tbody {
+    background: rgba(0, 19, 31, 0.6);
+    display: block;
+    overflow: auto;
+    /*height: 68rem;*/
+    height: 45vh;
+    width: 100%;
+}
+
+.statistics-table tr {
+    display: flex;
+}
+
+.statistics-table tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.10)
+}
+
+.statistics-table td {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    flex-basis: 12.5%;
+}

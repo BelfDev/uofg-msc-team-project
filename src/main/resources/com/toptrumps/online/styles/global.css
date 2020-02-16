@@ -1,0 +1,154 @@
+@import "_normalize.css";
+
+/* ========================================================================== */
+/* Global Styles */
+/* ========================================================================== */
+
+:root {
+    --color-font-light: #dbdbdb;
+    --color-font-dark: #454545;
+    --color-button-light: #ffffff;
+    --color-font-button-light: #ffffff;
+    --color-button-light-hovered: #d8d8d8;
+
+    --color-animation-active: rgba(36, 142, 255, 0.3);
+    --color-animation-human: rgb(255, 221, 36);
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: url("../fonts/Montserrat-Bold.woff2") format("woff2"),
+        url("../fonts/Montserrat-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: url("../fonts/Montserrat-Regular.woff2") format("woff2"),
+        url("../fonts/Montserrat-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+main {
+    min-height: 100%;
+}
+
+html {
+    font-size: 4.33333px;
+}
+
+body {
+    position: relative;
+    font-family: "Montserrat", SansSerif;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 2rem;
+    background-color: black;
+    color: white;
+    min-width: 800px;
+}
+
+.button {
+    display: inline-block;
+    background-color: var(--color-button-light);
+    color: var(--color-font-dark);
+    padding: 2.4rem 4.4rem;
+    border-radius: 1.6rem;
+    border: 1px solid var(--color-button-light);
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 3.6rem;
+    white-space: nowrap;
+    transition: all 0.2s ease-in-out;
+    outline: 0;
+}
+
+.button--outlined {
+    background-color: transparent;
+    color: var(--color-font-button-light);
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: var(--color-button-light-hovered);
+    border-color: var(--color-button-light-hovered);
+}
+
+.button--outlined:hover {
+    background-color: transparent;
+    border-color: var(--color-button-light-hovered);
+    color: var(--color-button-light-hovered);
+}
+
+.button--small {
+    box-sizing: border-box;
+    padding-top: 1.6rem;
+    padding-bottom: 1.6rem;
+    min-width: 17.9rem;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+.loader {
+    position: absolute;
+    width: 20rem;
+    height: 8rem;
+    z-index: 50;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding-top: 12rem;
+}
+
+.loader__spinner,
+.loader__spinner:after {
+    border-radius: 50%;
+    width: 10rem;
+    height: 10rem;
+}
+
+.loader__spinner {
+    font-size: 1rem;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -5rem;
+    border-top: 1rem solid rgba(255, 255, 255, 0.2);
+    border-right: 1rem solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1rem solid rgba(255, 255, 255, 0.2);
+    border-left: 1rem solid #ffffff;
+    box-sizing: border-box;
+    animation: loader 1.1s infinite linear;
+}
+
+.active-loader {
+    position: relative;
+}
+
+.active-loader::before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .7);
+    z-index: 40;
+    pointer-events: none;
+}
+
+@keyframes loader {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
