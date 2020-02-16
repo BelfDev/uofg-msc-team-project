@@ -480,12 +480,15 @@ const GameView = (($) => {
      * @param cardsOnTable - array with all cards currently in play
      */
     const showOpponentsCards = cardsOnTable => {
-        cardsOnTable.forEach(async (data, index) => {
+        cardsOnTable.forEach((data, index) => {
             if (data.playerID === 0) return; // skip human player's card
 
-            await delay((timerBase / 2) * index);
-
-            showCard(data.playerID, data.card);
+            // For each loops work unstable with promises
+            // Switch to default timeouts, as it does not
+            // affect gameplay
+            setTimeout(() => {
+                showCard(data.playerID, data.card);
+            }, (timerBase / 2) * index);
         });
     };
 
