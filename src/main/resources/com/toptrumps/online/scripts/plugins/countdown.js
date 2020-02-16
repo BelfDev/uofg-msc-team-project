@@ -1,9 +1,12 @@
+/**
+ * This module is responsible for animating countdown
+ */
+
 const Countdown = (($) => {
     /** VARIABLES AND CONSTANTS */
-    let countdownSelector;
-    let $countdown;
 
     // Selectors
+    const countdownSelector = ".js-countdown";
     const countdownNumberOneSelector = ".js-countdown-number-1";
     const countdownNumberTwoSelector = ".js-countdown-number-2";
     const countdownNumberThreeSelector = ".js-countdown-number-3";
@@ -11,34 +14,42 @@ const Countdown = (($) => {
     // CSS classes to represent visual state
     const countdownActiveClass = "countdown--active";
 
+    // Animation variables
+    const timerBase = window.APP.TIMER_BASE;
+    const options = {
+        opacityIn: [0, 1],
+        scaleIn: [0.2, 1],
+        scaleOut: 3,
+        durationIn: timerBase / 3,
+        durationOut: timerBase / 5,
+        delay: timerBase / 15
+    };
 
     /** METHODS */
 
-    const init = selector => {
-        countdownSelector = selector;
-        $countdown = $(selector);
-    };
-
+    /**
+     * Method to run animation with callback after it finishes
+     * @param callback
+     */
     const run = callback => {
+        const $countdown = $(countdownSelector);
         $countdown.addClass(countdownActiveClass);
 
+        // If test mode enabled - run callback immediately
         if (window.TEST_MODE) {
             callback();
         } else {
-            animateCountdown(callback);
+            animateCountdown($countdown, callback);
         }
     };
 
-    const animateCountdown = (callback) => {
-        let countdown = {
-            opacityIn: [0, 1],
-            scaleIn: [0.2, 1],
-            scaleOut: 3,
-            durationIn: DOMHelper.timerBase / 3,
-            durationOut: DOMHelper.timerBase / 5,
-            delay: DOMHelper.timerBase / 15
-        };
-
+    /**
+     * Animates countdown
+     * Three numbers appear one after another
+     * @param $countdown
+     * @param callback
+     */
+    const animateCountdown = ($countdown, callback) => {
         anime
             .timeline({
                 complete: () => {
@@ -48,56 +59,58 @@ const Countdown = (($) => {
             })
             .add({
                 targets: countdownNumberOneSelector,
-                opacity: countdown.opacityIn,
-                scale: countdown.scaleIn,
-                duration: countdown.durationIn
+                opacity: options.opacityIn,
+                scale: options.scaleIn,
+                duration: options.durationIn
             })
             .add({
                 targets: countdownNumberOneSelector,
                 opacity: 0,
-                scale: countdown.scaleOut,
-                duration: countdown.durationOut,
+                scale: options.scaleOut,
+                duration: options.durationOut,
                 easing: "easeInExpo",
-                delay: countdown.delay
+                delay: options.delay
             })
             .add({
                 targets: countdownNumberTwoSelector,
-                opacity: countdown.opacityIn,
-                scale: countdown.scaleIn,
-                duration: countdown.durationIn
+                opacity: options.opacityIn,
+                scale: options.scaleIn,
+                duration: options.durationIn
             })
             .add({
                 targets: countdownNumberTwoSelector,
                 opacity: 0,
-                scale: countdown.scaleOut,
-                duration: countdown.durationOut,
+                scale: options.scaleOut,
+                duration: options.durationOut,
                 easing: "easeInExpo",
-                delay: countdown.delay
+                delay: options.delay
             })
             .add({
                 targets: countdownNumberThreeSelector,
-                opacity: countdown.opacityIn,
-                scale: countdown.scaleIn,
-                duration: countdown.durationIn
+                opacity: options.opacityIn,
+                scale: options.scaleIn,
+                duration: options.durationIn
             })
             .add({
                 targets: countdownNumberThreeSelector,
                 opacity: 0,
-                scale: countdown.scaleOut,
-                duration: countdown.durationOut,
+                scale: options.scaleOut,
+                duration: options.durationOut,
                 easing: "easeInExpo",
-                delay: countdown.delay
+                delay: options.delay
             })
             .add({
                 targets: countdownSelector,
                 opacity: 0,
-                duration: DOMHelper.timerBase / 2,
+                duration: timerBase / 2,
                 delay: 0
             });
     };
 
+
+    /** EXPOSE PUBLIC METHODS **/
+
     return {
-        init,
         run
     }
 
