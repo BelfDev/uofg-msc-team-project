@@ -3,7 +3,7 @@
  */
 
 const APP = {
-    TEST_MODE: true,
+    TEST_MODE: false,
     TIMER_BASE: 1000,
     STARTUP_DELAY: 1000,
     NEXT_ROUND_TIMER: 2000,
