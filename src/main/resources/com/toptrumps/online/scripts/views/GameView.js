@@ -27,6 +27,7 @@ const GameView = (($) => {
     const gameOverRoundsWrapperSelector = ".js-game-over-rounds-wrapper";
     const gameOverRoundsName = ".js-game-over-rounds-name";
     const gameOverRoundsNumber = ".js-game-over-rounds-number";
+    const gameBox = ".js-game-box";
 
     // Modals
     const modalSelectors = {
@@ -606,6 +607,22 @@ const GameView = (($) => {
         Modal.closeActiveModal();
     };
 
+    /**
+     * Show loader for statistics box
+     */
+    const showLoader = () => {
+        const $target = $(gameBox);
+        Loader.showLoader($target, "Saving statistics. Please wait...");
+    };
+
+    /**
+     * Removes active loader
+     */
+    const removeLoader = () => {
+        const $target = $(gameBox);
+        Loader.removeLoader($target);
+    };
+
 
     /** EXPOSE PUBLIC METHODS **/
 
@@ -622,12 +639,14 @@ const GameView = (($) => {
         enableAttributeSelection,
         getStatsMarkup,
         highlightAttribute,
+        removeLoader,
         renderPlayer,
         resetAttributeHighlight,
         resetCard,
         resetRound,
         setPlayerStateToDefeated,
         showCard,
+        showLoader,
         showMessage,
         showModal,
         showOpponentsCards,

@@ -1,6 +1,6 @@
 <#include "_parts/Header.ftl">
 
-	<main class="statistics-page">
+	<main class="statistics-page js-statistics-box">
 		<div class="statistics-page-top-panel">
 			<a href="/toptrumps/" class="button button--outlined">Go back</a>
 			<h1 class="game-title">Statistics</h1>
@@ -64,6 +64,7 @@
 	<script src="/assets/scripts/libs/jquery-3.4.1.min.js"></script>
 	<script src="/assets/scripts/config/settings.js"></script>
 	<script src="/assets/scripts/helpers/network.js"></script>
+	<script src="/assets/scripts/plugins/loader.js"></script>
 	<script src="/assets/scripts/plugins/screen.js"></script>
 	<script src="/assets/scripts/plugins/modal.js"></script>
 	<script src="/assets/scripts/plugins/input-number.js"></script>

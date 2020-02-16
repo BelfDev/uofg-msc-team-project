@@ -2,7 +2,7 @@
 
 	<div class="js-page-curtain page-curtain"></div>
 
-	<main class="game-page">
+	<main class="game-page js-game-box">
 		<div class="draw-indicator">Draw!</div>
 		<#include "_parts/GameStatus.ftl">
 		<#include "_parts/Opponents.ftl">
@@ -22,6 +22,7 @@
 	<script src="/assets/scripts/libs/jquery-3.4.1.min.js"></script>
 	<script src="/assets/scripts/libs/anime.min.js"></script>
 	<script src="/assets/scripts/config/settings.js"></script>
+	<script src="/assets/scripts/plugins/loader.js"></script>
 	<script src="/assets/scripts/plugins/screen.js"></script>
 	<script src="/assets/scripts/helpers/network.js"></script>
 	<script src="/assets/scripts/plugins/message.js"></script>
