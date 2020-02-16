@@ -4,6 +4,7 @@
 
 const StatisticsView = (($) => {
     /** VARIABLES AND CONSTANTS */
+    const statsPage = ".js-statistics-box";
     const statsGamesPlayedSelector = ".js-stats-games-played-value";
     const statsAIWinsSelector = ".js-stats-ai-wins-value";
     const statsHumanWinsSelector = ".js-stats-human-wins-value";
@@ -119,9 +120,27 @@ const StatisticsView = (($) => {
         Modal.openModal(targetModalSelector, title, hint);
     };
 
+    /**
+     * Show loader for statistics box
+     */
+    const showLoader = () => {
+        const $target = $(statsPage);
+        Loader.showLoader($target, "Loading statistics. Please wait...");
+    };
+
+    /**
+     * Removes active loader
+     */
+    const removeLoader = () => {
+        const $target = $(statsPage);
+        Loader.removeLoader($target);
+    };
+
     /** EXPOSE PUBLIC METHODS **/
     return {
         init,
+        removeLoader,
         renderStats,
+        showLoader,
     }
 })(jQuery);

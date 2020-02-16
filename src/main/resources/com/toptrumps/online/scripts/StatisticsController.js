@@ -22,8 +22,11 @@ const StatisticsController = (($) => {
      * Fetch statistics from the server and render results
      */
     const fetchStats = () => {
+        StatisticsView.showLoader();
+
         NetworkHelper.makeRequest("statistics", false, "GET").then(response => {
             view.renderStats(response);
+            StatisticsView.removeLoader();
         });
     }
 
