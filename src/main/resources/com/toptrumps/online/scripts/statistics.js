@@ -44,12 +44,13 @@ $(function() {
     }
 
     const getPlayerRoundWins = (roundWins, playerName) => {
-        return Object.keys(roundWins).find(player => {
+        const key = Object.keys(roundWins).find(player => {
             if (player == playerName) {
                 const val = roundWins[player];
                 return val >= 0;
             }
-        })
+        });
+        return roundWins[key];
     }
 
     NetworkHelper.makeRequest("api/statistics", false, "GET").then(response => {
