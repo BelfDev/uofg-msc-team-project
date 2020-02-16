@@ -24,6 +24,7 @@ const Screen = (($) => {
      * Initialization
      */
     const init = () => {
+        runScreenResize();
         bindEvents();
     };
 
@@ -31,13 +32,20 @@ const Screen = (($) => {
      * Event binding
      */
     const bindEvents = () => {
-        // If window size is larger than minimal size - change root font size
-        $(window).on("resize load", () => {
-            if ($(window).innerWidth() > MIN_WIDTH) {
-                changeBaseFontSize();
-            }
+        $(window).on("resize", () => {
+            runScreenResize();
         });
     };
+
+    /**
+     * Resize screen
+     */
+    const runScreenResize = () => {
+        // If window size is larger than minimal size - change root font size
+        if ($(window).innerWidth() > MIN_WIDTH) {
+            changeBaseFontSize();
+        }
+    }
 
     /**
      * Gets new font size and sets it for root html element
