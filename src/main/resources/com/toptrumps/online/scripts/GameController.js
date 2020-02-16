@@ -225,12 +225,6 @@ const GameController = (($) => {
             view.displayRemovedPlayers(removedPlayerIds);
         }
 
-        // Update deck count for every player
-        const players = model.getPlayers();
-        $.each(players, (i, player) => {
-            view.updateDeckCount(player.id, player.deck.length);
-        });
-
         showRoundOutcome(response);
 
     };
@@ -256,6 +250,12 @@ const GameController = (($) => {
             model.setActivePlayer(response.winner.id);
             view.displayWinnerPlayer(response.winner.id);
         }
+
+        // Update deck count for every player
+        const players = model.getPlayers();
+        $.each(players, (i, player) => {
+            view.updateDeckCount(player.id, player.deck.length);
+        });
 
         await view.delay(timerBase * 2);
 
