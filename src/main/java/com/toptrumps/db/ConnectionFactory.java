@@ -19,7 +19,7 @@ package com.toptrumps.db;
                 e.printStackTrace(); 
             } 
             if (connection != null) { 
-                System.out.println("You are in control."); 
+                System.out.println("Establishing connection with the database."); 
             } 
             else { 
                 System.out.println("Failed to establish connection!"); 
