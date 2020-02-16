@@ -5,9 +5,9 @@ package com.toptrumps.db;
     
     public class ConnectionFactory { 
 
-        private static String localhost = "jdbc:postgresql://localhost:5432/";
-        private static String username = "postgres";
-        private static String password = "postgres";
+        private static String localhost = "jdbc:postgresql://52.24.215.108/MadStax";
+        private static String username = "MadStax";
+        private static String password = "MadStax";
 
         public static Connection getConnection() { 
           
