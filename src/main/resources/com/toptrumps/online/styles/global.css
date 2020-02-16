@@ -35,6 +35,10 @@ main {
     min-height: 100%;
 }
 
+form {
+    margin: 0;
+}
+
 html {
     font-size: 4.33333px;
 }
