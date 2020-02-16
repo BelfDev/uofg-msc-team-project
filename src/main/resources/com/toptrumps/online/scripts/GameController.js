@@ -218,11 +218,21 @@ const GameController = (($) => {
             model.distributeCards(response.winner.id);
         }
 
-        if (!model.isEndGame()) {
-            showRoundOutcome(response);
-        } else {
-            showGameOutcome(response);
+        // If there are defeated players - display them
+        const removedPlayerIds = response.removedPlayerIds;
+        if (removedPlayerIds.length > 0) {
+            model.updateRemovedPlayers(removedPlayerIds);
+            view.displayRemovedPlayers(removedPlayerIds);
         }
+
+        // Update deck count for every player
+        const players = model.getPlayers();
+        $.each(players, (i, player) => {
+            view.updateDeckCount(player.id, player.deck.length);
+        });
+
+        showRoundOutcome(response);
+
     };
 
     /**
@@ -247,22 +257,13 @@ const GameController = (($) => {
             view.displayWinnerPlayer(response.winner.id);
         }
 
-        // If there are defeated players - display them
-        const removedPlayerIds = response.removedPlayerIds;
-        if (removedPlayerIds.length > 0) {
-            model.updateRemovedPlayers(removedPlayerIds);
-            view.displayRemovedPlayers(removedPlayerIds);
-        }
-
-        // Update deck count for every player
-        const players = model.getPlayers();
-        $.each(players, (i, player) => {
-            view.updateDeckCount(player.id, player.deck.length);
-        });
-
         await view.delay(timerBase * 2);
 
-        startNewRound(false);
+        if (!model.isEndGame()) {
+            startNewRound(false);
+        } else {
+            showGameOutcome(response);
+        }
     };
 
     /**
@@ -282,8 +283,11 @@ const GameController = (($) => {
      * Sends request to save game statistics
      */
     const saveGameStats = () => {
+        GameView.showLoader();
         const gameData = StatsModel.getGameStats();
-        NetworkHelper.makeRequest(`statistics`, gameData);
+        NetworkHelper.makeRequest(`statistics`, gameData).then(() => {
+            GameView.removeLoader();
+        });
     };
 
 
